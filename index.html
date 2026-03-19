@@ -754,12 +754,9 @@
     .hafs-ayah-line .verse-num {
       vertical-align: middle;
     }
-    /* Hide justified lines while scaleX is being computed; centered lines always visible */
-    .hafs-pending .hafs-ayah-line.hafs-line--justified {
+    /* Hide lines while scaleX is being computed */
+    .hafs-pending .hafs-ayah-line {
       opacity: 0;
-    }
-    .hafs-pending .hafs-ayah-line.hafs-line--centered {
-      opacity: 1;
     }
     /* Verse number markers (button to avoid iOS "Open in New Tab" on long-press) */
     .verse-num {
@@ -1989,7 +1986,7 @@
         }
       }
       // Determine centering for each hafs line (mirrors IP13 rule):
-      // Center if: all words are Surah 1, OR surah 2 starts on this page, OR all words are surahs 103-114.
+      // Center if: all words are Surah 1, OR surah 2 starts on this page, OR all words are surahs 101-114.
       const pageSurahStarts = new Set();
       for (const v of json.verses || []) {
         const [ch, vn] = (v.verse_key||'').split(':').map(Number);
@@ -2006,7 +2003,7 @@
         rl.centered = arr.length > 0 && (
           arr.every(s => s === 1) ||
           pageSurahStarts.has(2) ||
-          arr.every(s => s >= 103 && s <= 114)
+          arr.every(s => s >= 101 && s <= 114)
         );
       }
       return { playlist, items, surahs: [...surahs], hafsLines };
@@ -2231,22 +2228,23 @@
 
     function applyHafsJustification(rootEl) {
       if (!hafsMusharMatchOn()) return;
-      const justRows = Array.from(rootEl.querySelectorAll('.hafs-ayah-line.hafs-line--justified'));
-      if (!justRows.length) {
-        // No justified rows but there may be centered rows — just remove pending.
+      const justRows   = Array.from(rootEl.querySelectorAll('.hafs-ayah-line.hafs-line--justified'));
+      const centRows   = Array.from(rootEl.querySelectorAll('.hafs-ayah-line.hafs-line--centered'));
+      const allRows    = [...justRows, ...centRows];
+      if (!allRows.length) {
         rootEl.querySelectorAll('.pageless-section, #mushaf-content').forEach(c => c.classList.remove('hafs-pending'));
         rootEl.classList && rootEl.classList.remove('hafs-pending');
         return;
       }
       const containerMap = new Map();
-      justRows.forEach(row => {
+      allRows.forEach(row => {
         const cont = row.closest('.pageless-section, #mushaf-content') || row.parentElement;
         cont.classList.add('hafs-pending');
         if (!containerMap.has(cont)) containerMap.set(cont, []);
         containerMap.get(cont).push(row);
       });
-      // Reset justified rows so we can measure natural inner width.
-      justRows.forEach(row => {
+      // Reset all rows so we can measure natural inner width.
+      allRows.forEach(row => {
         row.style.width = 'max-content';
         const inner = row.querySelector('.hafs-line-inner');
         if (inner) {
@@ -2266,11 +2264,15 @@
             if (!inner) return;
             const naturalW = inner.getBoundingClientRect().width;
             if (naturalW < 1) return;
-            row.style.width = targetW + 'px';
-            const scale = targetW / naturalW;
-            inner.style.transform = `scaleX(${scale.toFixed(5)})`;
+            const isCentered = row.classList.contains('hafs-line--centered');
+            // Justified: always scale to fill. Centered: only compress if overflowing.
+            const scale = isCentered
+              ? Math.min(1, targetW / naturalW)
+              : targetW / naturalW;
+            row.style.width = isCentered ? '' : targetW + 'px';
+            inner.style.transform = scale < 0.9999 ? `scaleX(${scale.toFixed(5)})` : '';
             inner.querySelectorAll('.verse-num').forEach(btn => {
-              btn.style.transform = `scaleX(${(1 / scale).toFixed(5)})`;
+              btn.style.transform = scale < 0.9999 ? `scaleX(${(1 / scale).toFixed(5)})` : '';
             });
           });
           cont.classList.remove('hafs-pending');
