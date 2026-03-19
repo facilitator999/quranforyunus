@@ -758,6 +758,11 @@
     .hafs-pending .hafs-ayah-line {
       opacity: 0;
     }
+    /* Sajdah indicator — line above the word containing ۩ */
+    .sajdah-word {
+      border-top: 1.5px solid #4a8c6a;
+      padding-top: 2px;
+    }
     /* Verse number markers (button to avoid iOS "Open in New Tab" on long-press) */
     .verse-num {
       display: inline-flex;
@@ -1954,6 +1959,20 @@
         } else if (ch !== prevSurah) {
           prevSurah = ch;
         }
+        // If this is a sajdah verse (any word has ۩), find the word with سجد root
+        const vWords = (v.words || []).filter(w2 => w2.char_type_name === 'word');
+        const isSajdahVerse = vWords.some(w2 => (w2.text_uthmani || w2.text || '').includes('\u06E9'));
+        // playlist index that will belong to the سجد word (-1 = none)
+        let sajdahWordPi = -1;
+        if (isSajdahVerse) {
+          const sjdIdx = vWords.findIndex(w2 => {
+            // Strip diacritics/harakat then look for consecutive seen-jeem-dal
+            const bare = (w2.text_uthmani || w2.text || '').replace(/[\u064B-\u065F\u0610-\u061A\u0670\u06D6-\u06ED]/g, '');
+            return bare.includes('\u0633\u062C\u062F'); // سجد
+          });
+          if (sjdIdx >= 0) sajdahWordPi = playlist.length + sjdIdx;
+        }
+
         for (const w of v.words || []) {
           const lineNum = w.line_number || 0;
           if (w.char_type_name === 'word') {
@@ -1963,7 +1982,8 @@
               verse_key: w.verse_key,
               pronunciation: getSegmentPronunciation(w.text_uthmani || w.text),
               wordSound: WORD_SOUNDS[w.text_uthmani||w.text] || w.transliteration?.text || '',
-              translation: w.translation?.text || ''
+              translation: w.translation?.text || '',
+              hasSajdah: pi === sajdahWordPi
             });
             items.push({ type: 'word', playIndex: pi, text: playlist[pi].text });
             if (!pendingHafsLine.has(lineNum)) {
@@ -1986,7 +2006,7 @@
         }
       }
       // Determine centering for each hafs line (mirrors IP13 rule):
-      // Center if: all words are Surah 1, OR surah 2 starts on this page, OR all words are surahs 101-114.
+      // Center if: all words are Surah 1, OR surah 2 starts on this page, OR all words are surahs 99-114.
       const pageSurahStarts = new Set();
       for (const v of json.verses || []) {
         const [ch, vn] = (v.verse_key||'').split(':').map(Number);
@@ -2003,7 +2023,7 @@
         rl.centered = arr.length > 0 && (
           arr.every(s => s === 1) ||
           pageSurahStarts.has(2) ||
-          arr.every(s => s >= 101 && s <= 114)
+          arr.every(s => s >= 99 && s <= 114)
         );
       }
       return { playlist, items, surahs: [...surahs], hafsLines };
@@ -2270,10 +2290,17 @@
               ? Math.min(1, targetW / naturalW)
               : targetW / naturalW;
             row.style.width = isCentered ? '' : targetW + 'px';
-            inner.style.transform = scale < 0.9999 ? `scaleX(${scale.toFixed(5)})` : '';
-            inner.querySelectorAll('.verse-num').forEach(btn => {
-              btn.style.transform = scale < 0.9999 ? `scaleX(${(1 / scale).toFixed(5)})` : '';
-            });
+            if (isCentered) {
+              inner.style.transform = scale < 0.9999 ? `scaleX(${scale.toFixed(5)})` : '';
+              inner.querySelectorAll('.verse-num').forEach(btn => {
+                btn.style.transform = scale < 0.9999 ? `scaleX(${(1 / scale).toFixed(5)})` : '';
+              });
+            } else {
+              inner.style.transform = `scaleX(${scale.toFixed(5)})`;
+              inner.querySelectorAll('.verse-num').forEach(btn => {
+                btn.style.transform = `scaleX(${(1 / scale).toFixed(5)})`;
+              });
+            }
           });
           cont.classList.remove('hafs-pending');
         });
@@ -2327,7 +2354,7 @@
             if (!cur) continue;
             if (needSpace) inner.appendChild(document.createTextNode('\u00a0'));
             const sp = document.createElement('span');
-            sp.className = 'word';
+            sp.className = cur.hasSajdah ? 'word sajdah-word' : 'word';
             sp.dataset.page = String(pageNum);
             sp.dataset.playIndex = String(pi);
             const parts = cur.pronunciation;
