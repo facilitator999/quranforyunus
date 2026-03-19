@@ -50,11 +50,95 @@ python serve_fast.py
 
 ## Scripts
 
-| Script | Purpose |
-|--------|---------|
-| `audio/generate_audio.py` | Clone a reciter's voice and generate letter/vowel MP3s via ElevenLabs |
-| `audio/repair_surah_batch.py` | Repair word-level timestamps for an entire surah using WhisperX forced alignment |
-| `audio/repair_timestamps.py` | Repair timestamps for a single verse |
+### `audio/generate_audio.py` — Generate letter audio via ElevenLabs
+
+Clone a reciter's voice from their recitation and generate MP3s for every Arabic letter and vowel marker.
+
+```bash
+# First time — clone voice from recitation/1.mp3, then generate letters
+python audio/generate_audio.py --reciter maher --clone
+
+# After cloning — regenerate letters only (uses saved voice ID)
+python audio/generate_audio.py --reciter maher
+
+# Force overwrite existing files
+python audio/generate_audio.py --reciter maher --force
+
+# Use a custom sample file for cloning
+python audio/generate_audio.py --reciter maher --clone --sample path/to/sample.mp3
+```
+
+Requires `ELEVENLABS_API_KEY` in `.env`. Voice IDs are saved to `audio/voice_ids.json` after cloning.
+
+---
+
+### `audio/repair_surah_batch.py` — Repair timestamps for a whole surah
+
+Uses WhisperX forced alignment to fix word-level timestamps for every verse in a surah. Loads the Arabic model once and processes all verses sequentially. Automatically detects and fixes duplicate-segment export bugs.
+
+```bash
+# Repair all verses in surah 2 for Maher
+python audio/repair_surah_batch.py --reciter maher --surah 2
+
+# Resume from verse 100 if interrupted
+python audio/repair_surah_batch.py --reciter maher --surah 2 --start-verse 100
+
+# Preview changes without writing anything
+python audio/repair_surah_batch.py --reciter maher --surah 2 --dry-run
+
+# Repair all 114 surahs (runs for many hours)
+for i in $(seq 1 114); do python audio/repair_surah_batch.py --reciter maher --surah $i; done
+```
+
+Progress is saved every 10 verses. A `.bak` backup of the original timestamps is created before any changes.
+
+---
+
+### `audio/repair_timestamps.py` — Repair timestamps for a single verse
+
+Fixes word-level timestamps for one specific verse using WhisperX.
+
+```bash
+python audio/repair_timestamps.py --reciter maher --verse 2:5
+```
+
+## Adding a New Reciter
+
+Full instructions are in [`audio/ADDING_RECITER_AND_REPAIRING.md`](audio/ADDING_RECITER_AND_REPAIRING.md). Summary:
+
+**1. Get timestamps + audio (matched pair)**
+
+| Source | Use when |
+|--------|----------|
+| [Quran.com API](https://api.quran.com) | Reciter is in the 12 supported (Minshawi, Alafasy, Sudais, etc.) |
+| [Tarteel QUL](https://qul.tarteel.ai/resources/recitation) | Any other reciter with segments — filter by "With Segments", use Surah by Surah (Gapless) |
+
+**2. Generate letter audio**
+```bash
+python audio/generate_audio.py --reciter {name} --clone
+```
+Clones the reciter's voice from `audio/{name}/recitation/1.mp3` via ElevenLabs and generates 48 letter/vowel MP3s.
+
+**3. Register in `index.html`**
+
+Add one line to `RECITERS` and one `<option>` to the reciter `<select>`.
+
+**4. Push — auto-deploys to server**
+
+**Hard rules:**
+- Only surah-level MP3s (`1.mp3`…`114.mp3`) — no per-verse files
+- Audio and timestamps must be from the same source or word highlighting will drift
+- Always verify MP3 duration matches the last `timestamp_to` in the JSON before pushing
+
+### Reciters currently in the app
+
+| Key | Name | Timestamps source |
+|-----|------|------------------|
+| `minshawi` | Muhammad Siddiq Al-Minshawi | Quran.com API (ID 9) |
+| `alafasy` | Mishary Alafasy | Quran.com API (ID 7) |
+| `maher` | Maher Al-Muaiqly | Tarteel QUL |
+
+---
 
 ## Deployment
 

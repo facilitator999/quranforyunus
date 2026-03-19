@@ -2281,7 +2281,9 @@
     // Strip Quranic annotation signs (U+06D6–U+06ED) that render as visible circles/marks
     // in the UthmanicHafs font but are not part of the readable text
     function stripHafsMarks(str) {
-      return str ? str.replace(/[\u06D6-\u06ED]/g, '') : str;
+      // Strip Quranic annotation/pause marks but preserve Small Waw (06E5) and Small Yeh (06E6)
+      // which are part of the written word (e.g. إِۦلَـٰفِهِمْ)
+      return str ? str.replace(/[\u06D6-\u06E4\u06E7-\u06ED]/g, '') : str;
     }
 
     function renderHafsLinesBlock(container, playlist, hafsLines, surahsArr, pageNum, { updateToolbarMeta } = {}) {
