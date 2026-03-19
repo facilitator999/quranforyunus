@@ -4,7 +4,10 @@ A Quran learning app built for my son Yunus — so he can read, listen, and lear
 
 ## What it does
 
-- **Full Quran** — all 604 pages, 114 surahs, in the Uthmanic script
+- **Full Quran** — all 604 pages, 114 surahs in three scripts:
+  - **Uthmanic Hafs** — the standard mushaf font
+  - **IndoPak Nastaleeq** — Hanafi style with waqf lazmi markers
+  - **Tajweed coloured** — colour-coded by tajweed rules
 - **Click any word** to hear it recited in isolation
 - **Word-by-word highlighting** as the recitation plays
 - **Letter pronunciation** — tap any Arabic letter to hear how it sounds
