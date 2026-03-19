@@ -5,7 +5,8 @@
 # ElevenLabs voice IDs (contain account-specific clone IDs)
 audio/voice_ids.json
 
-# Large binary files — recitation MP3s are 1-2 GB each, use a CDN/server instead
+# Audio files — see audio/WHERE_TO_GET_AUDIO.md for how to obtain them
+*.mp3
 audio/*/recitation/
 
 # Backup files created by repair scripts
