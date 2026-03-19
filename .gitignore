@@ -1,0 +1,34 @@
+# Secrets — never commit these
+.env
+.env.local
+
+# ElevenLabs voice IDs (contain account-specific clone IDs)
+audio/voice_ids.json
+
+# Large binary files — recitation MP3s are 1-2 GB each, use a CDN/server instead
+audio/*/recitation/
+
+# Backup files created by repair scripts
+audio/*/timestamps/*.bak
+
+# ffmpeg binaries (382 MB) — install locally, not tracked in git
+ffmpeg/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py[cod]
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor / temp
+.vscode/
+.claude/
+*.swp
+*.swo
+*.psd
+index - Copy.html

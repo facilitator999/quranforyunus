@@ -1,0 +1,86 @@
+﻿{
+    "audio_file":  {
+                       "id":  0,
+                       "chapter_id":  112,
+                       "audio_url":  "audio/alafasy/recitation/112.mp3",
+                       "timestamps":  [
+                                          {
+                                              "verse_key":  "112:1",
+                                              "timestamp_from":  0,
+                                              "timestamp_to":  2300,
+                                              "duration":  2300,
+                                              "segments":  [
+                                                               1,
+                                                               30,
+                                                               390,
+                                                               2,
+                                                               400,
+                                                               790,
+                                                               3,
+                                                               800,
+                                                               1640,
+                                                               4,
+                                                               1650,
+                                                               2300
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "112:2",
+                                              "timestamp_from":  2300,
+                                              "timestamp_to":  4150,
+                                              "duration":  1850,
+                                              "segments":  [
+                                                               1,
+                                                               2340,
+                                                               3280,
+                                                               2,
+                                                               3290,
+                                                               4150
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "112:3",
+                                              "timestamp_from":  4150,
+                                              "timestamp_to":  6640,
+                                              "duration":  2490,
+                                              "segments":  [
+                                                               1,
+                                                               4210,
+                                                               4540,
+                                                               2,
+                                                               4550,
+                                                               5150,
+                                                               3,
+                                                               5160,
+                                                               5870,
+                                                               4,
+                                                               5880,
+                                                               6640
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "112:4",
+                                              "timestamp_from":  6640,
+                                              "timestamp_to":  10210,
+                                              "duration":  3570,
+                                              "segments":  [
+                                                               1,
+                                                               6670,
+                                                               7290,
+                                                               2,
+                                                               7300,
+                                                               7770,
+                                                               3,
+                                                               7780,
+                                                               8680,
+                                                               4,
+                                                               8690,
+                                                               9590,
+                                                               5,
+                                                               9600,
+                                                               10210
+                                                           ]
+                                          }
+                                      ]
+                   }
+}

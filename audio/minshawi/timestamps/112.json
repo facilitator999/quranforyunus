@@ -1,0 +1,118 @@
+{
+  "audio_file": {
+    "id": 0,
+    "chapter_id": 112,
+    "audio_url": "audio/minshawi/recitation/112.mp3",
+    "timestamps": [
+      {
+        "verse_key": "112:1",
+        "timestamp_from": 0,
+        "timestamp_to": 3400,
+        "duration": 3400,
+        "segments": [
+          [
+            1,
+            0,
+            710
+          ],
+          [
+            2,
+            710,
+            980
+          ],
+          [
+            3,
+            980,
+            2090
+          ],
+          [
+            4,
+            2090,
+            2815
+          ]
+        ]
+      },
+      {
+        "verse_key": "112:2",
+        "timestamp_from": 3400,
+        "timestamp_to": 6060,
+        "duration": 2660,
+        "segments": [
+          [
+            1,
+            3400,
+            4760
+          ],
+          [
+            2,
+            4760,
+            5595
+          ]
+        ]
+      },
+      {
+        "verse_key": "112:3",
+        "timestamp_from": 6060,
+        "timestamp_to": 9530,
+        "duration": 3470,
+        "segments": [
+          [
+            1,
+            6060,
+            6760
+          ],
+          [
+            2,
+            6760,
+            7410
+          ],
+          [
+            3,
+            7410,
+            8260
+          ],
+          [
+            4,
+            8260,
+            9035
+          ]
+        ]
+      },
+      {
+        "verse_key": "112:4",
+        "timestamp_from": 9530,
+        "timestamp_to": 14410,
+        "duration": 4880,
+        "segments": [
+          [
+            1,
+            9530,
+            10470
+          ],
+          [
+            2,
+            10470,
+            11078
+          ],
+          [
+            3,
+            11078,
+            12030
+          ],
+          [
+            4,
+            12030,
+            13130
+          ],
+          [
+            5,
+            13130,
+            13765
+          ]
+        ]
+      }
+    ],
+    "file_size": 0,
+    "format": "mp3"
+  }
+}

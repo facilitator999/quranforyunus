@@ -1,0 +1,291 @@
+﻿{
+    "audio_file":  {
+                       "id":  0,
+                       "chapter_id":  91,
+                       "audio_url":  "audio/alafasy/recitation/91.mp3",
+                       "timestamps":  [
+                                          {
+                                              "verse_key":  "91:1",
+                                              "timestamp_from":  0,
+                                              "timestamp_to":  2520,
+                                              "duration":  2520,
+                                              "segments":  [
+                                                               1,
+                                                               30,
+                                                               1040,
+                                                               2,
+                                                               1050,
+                                                               2520
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:2",
+                                              "timestamp_from":  2520,
+                                              "timestamp_to":  5540,
+                                              "duration":  3020,
+                                              "segments":  [
+                                                               1,
+                                                               2550,
+                                                               3530,
+                                                               2,
+                                                               3540,
+                                                               4160,
+                                                               3,
+                                                               4170,
+                                                               5540
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:3",
+                                              "timestamp_from":  5540,
+                                              "timestamp_to":  9800,
+                                              "duration":  4260,
+                                              "segments":  [
+                                                               1,
+                                                               5570,
+                                                               7700,
+                                                               2,
+                                                               7710,
+                                                               8330,
+                                                               3,
+                                                               8340,
+                                                               9800
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:4",
+                                              "timestamp_from":  9800,
+                                              "timestamp_to":  13030,
+                                              "duration":  3230,
+                                              "segments":  [
+                                                               1,
+                                                               9830,
+                                                               10880,
+                                                               2,
+                                                               10890,
+                                                               11480,
+                                                               3,
+                                                               11490,
+                                                               13030
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:5",
+                                              "timestamp_from":  13030,
+                                              "timestamp_to":  17490,
+                                              "duration":  4460,
+                                              "segments":  [
+                                                               1,
+                                                               13060,
+                                                               15650,
+                                                               2,
+                                                               15660,
+                                                               16290,
+                                                               3,
+                                                               16300,
+                                                               17490
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:6",
+                                              "timestamp_from":  17490,
+                                              "timestamp_to":  20360,
+                                              "duration":  2870,
+                                              "segments":  [
+                                                               1,
+                                                               17520,
+                                                               18540,
+                                                               2,
+                                                               18550,
+                                                               19130,
+                                                               3,
+                                                               19140,
+                                                               20360
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:7",
+                                              "timestamp_from":  20360,
+                                              "timestamp_to":  24110,
+                                              "duration":  3750,
+                                              "segments":  [
+                                                               1,
+                                                               20390,
+                                                               21290,
+                                                               2,
+                                                               21300,
+                                                               22580,
+                                                               3,
+                                                               22590,
+                                                               24110
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:8",
+                                              "timestamp_from":  24110,
+                                              "timestamp_to":  28610,
+                                              "duration":  4500,
+                                              "segments":  [
+                                                               1,
+                                                               24140,
+                                                               25480,
+                                                               2,
+                                                               25490,
+                                                               26890,
+                                                               3,
+                                                               26900,
+                                                               28610
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:9",
+                                              "timestamp_from":  28610,
+                                              "timestamp_to":  32260,
+                                              "duration":  3650,
+                                              "segments":  [
+                                                               1,
+                                                               28640,
+                                                               28950,
+                                                               2,
+                                                               28960,
+                                                               29830,
+                                                               3,
+                                                               29840,
+                                                               30780,
+                                                               4,
+                                                               30790,
+                                                               32260
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:10",
+                                              "timestamp_from":  32260,
+                                              "timestamp_to":  36030,
+                                              "duration":  3770,
+                                              "segments":  [
+                                                               1,
+                                                               32290,
+                                                               32760,
+                                                               2,
+                                                               32770,
+                                                               33500,
+                                                               3,
+                                                               33510,
+                                                               34620,
+                                                               4,
+                                                               34630,
+                                                               36030
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:11",
+                                              "timestamp_from":  36030,
+                                              "timestamp_to":  39560,
+                                              "duration":  3530,
+                                              "segments":  [
+                                                               1,
+                                                               36060,
+                                                               36900,
+                                                               2,
+                                                               36910,
+                                                               37860,
+                                                               3,
+                                                               37870,
+                                                               39560
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:12",
+                                              "timestamp_from":  39560,
+                                              "timestamp_to":  42840,
+                                              "duration":  3280,
+                                              "segments":  [
+                                                               1,
+                                                               39590,
+                                                               39940,
+                                                               2,
+                                                               39950,
+                                                               41430,
+                                                               3,
+                                                               41440,
+                                                               42840
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:13",
+                                              "timestamp_from":  42840,
+                                              "timestamp_to":  49530,
+                                              "duration":  6690,
+                                              "segments":  [
+                                                               1,
+                                                               42870,
+                                                               43680,
+                                                               2,
+                                                               43690,
+                                                               44230,
+                                                               3,
+                                                               44240,
+                                                               45170,
+                                                               4,
+                                                               45180,
+                                                               46070,
+                                                               5,
+                                                               46080,
+                                                               46890,
+                                                               6,
+                                                               46900,
+                                                               47800,
+                                                               7,
+                                                               47810,
+                                                               49530
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:14",
+                                              "timestamp_from":  49530,
+                                              "timestamp_to":  60020,
+                                              "duration":  10490,
+                                              "segments":  [
+                                                               1,
+                                                               49560,
+                                                               50950,
+                                                               2,
+                                                               50960,
+                                                               52460,
+                                                               3,
+                                                               52470,
+                                                               53510,
+                                                               4,
+                                                               53520,
+                                                               54570,
+                                                               5,
+                                                               54580,
+                                                               56320,
+                                                               6,
+                                                               56330,
+                                                               58160,
+                                                               7,
+                                                               58170,
+                                                               60020
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "91:15",
+                                              "timestamp_from":  60020,
+                                              "timestamp_to":  63690,
+                                              "duration":  3670,
+                                              "segments":  [
+                                                               1,
+                                                               60050,
+                                                               60680,
+                                                               2,
+                                                               60690,
+                                                               61720,
+                                                               3,
+                                                               61730,
+                                                               63690
+                                                           ]
+                                          }
+                                      ]
+                   }
+}

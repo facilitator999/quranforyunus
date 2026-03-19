@@ -1,0 +1,4425 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google" content="notranslate">
+  <title>Quran for Yunus — Read &amp; Listen | quranforyunus.com</title>
+  <meta name="description" content="Read the full Quran with word-by-word recitation and spelling. Listen to Muhammad Siddiq Al-Minshawi. All 604 pages, 114 surahs. quranforyunus.com">
+  <meta property="og:title" content="Quran for Yunus — Read &amp; Listen | quranforyunus.com">
+  <meta property="og:description" content="Read the full Quran with word-by-word recitation and spelling. Listen to Muhammad Siddiq Al-Minshawi. All 604 pages, 114 surahs.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://quranforyunus.com/logo-white.png?v=6">
+  <meta property="og:image:type" content="image/png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image" content="https://quranforyunus.com/logo-white.png?v=6">
+  <link rel="icon" href="logo-white.png?v=6" type="image/png" sizes="32x32">
+  <link rel="icon" href="logo-white.png?v=6" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="logo-white.png?v=6">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preload" href="fonts/UthmanicHafs1Ver18.woff2" as="font" type="font/woff2" crossorigin>
+  <meta name="theme-color" content="#115e59">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Quran for Yunus">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <style>
+    @font-face {
+      font-family: 'UthmanicHafs';
+      src: url('fonts/UthmanicHafs1Ver18.woff2') format('woff2'),
+           url('fonts/UthmanicHafs1Ver18.ttf') format('truetype');
+      font-display: block;
+    }
+    /* Indopak Nastaleeq (Hanafi, waqf lazmi) — QUL font 242; local copy + CDN fallback */
+    @font-face {
+      font-family: 'IndoPak';
+      src: url('fonts/indopak-nastaleeq.woff2') format('woff2'),
+           url('fonts/indopak-nastaleeq.ttf') format('truetype'),
+           url('https://static-cdn.tarteel.ai/qul/fonts/nastaleeq/Hanafi/normal-v4.2.2/with-waqf-lazmi/font.woff2') format('woff2'),
+           url('https://static-cdn.tarteel.ai/qul/fonts/nastaleeq/Hanafi/normal-v4.2.2/with-waqf-lazmi/font.ttf') format('truetype');
+      font-display: block;
+    }
+    @font-face {
+      font-family: 'Tajweed';
+      src: url('https://cdn.jsdelivr.net/gh/AbuYusof/Quran-Fonts-HAFS-Uthmanic-Colored-By-Tajweed-Ruls@main/Fonts/KFGQPCHAFSColored-Bold.woff2') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/AbuYusof/Quran-Fonts-HAFS-Uthmanic-Colored-By-Tajweed-Ruls@main/Fonts/KFGQPCHAFSColored-Bold.woff') format('woff'),
+           url('https://raw.githubusercontent.com/AbuYusof/Quran-Fonts-HAFS-Uthmanic-Colored-By-Tajweed-Ruls/main/Fonts/KFGQPCHAFSColored-Bold.ttf') format('truetype');
+      font-display: block;
+    }
+    @font-face {
+      font-family: 'surah-header';
+      src: url('fonts/QCF_SurahHeader_COLOR-Regular.ttf') format('truetype');
+      font-display: block;
+    }
+
+    :root {
+      --bg: #faf9f6;
+      --paper: #ffffff;
+      --ink: #1c1917;
+      --ink-muted: #78716c;
+      --accent: #115e59;
+      --accent-light: #ccfbf1;
+      --accent-hover: #0d4f4a;
+      --border: #e7e5e4;
+      --highlight: rgba(17, 94, 89, 0.12);
+      --highlight-strong: rgba(17, 94, 89, 0.22);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --radius: 12px;
+      --bg-hover: #e7e5e4;
+    }
+
+    body.night-mode {
+      --bg: #1a1a1a;
+      --paper: #2d2d2d;
+      --ink: #e7e5e4;
+      --ink-muted: #a8a29e;
+      --accent: #2dd4bf;
+      --accent-light: #134e4a;
+      --accent-hover: #5eead4;
+      --border: #404040;
+      --highlight: rgba(45, 212, 191, 0.15);
+      --highlight-strong: rgba(45, 212, 191, 0.25);
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+      --bg-hover: #404040;
+    }
+    body.night-mode .controls,
+    body.night-mode .controls-handle {
+      background: rgba(45, 45, 45, 0.95);
+    }
+    body.night-mode .idx-header {
+      background: rgba(45, 45, 45, 0.95);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { overflow-x: hidden; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      padding: 0 0 4.5rem;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top bar: [home] [surah · juz in middle] [font, install, settings] */
+    .page-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      max-width: 680px;
+      margin: 0.75rem auto 0;
+      padding: 0 0.5rem 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-toolbar .home-btn { flex-shrink: 0; }
+    .toolbar-title {
+      flex: 1 1 0;
+      min-width: 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ink);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      line-height: 1.25;
+      text-align: center;
+    }
+    @media (max-width: 480px) {
+      .toolbar-title {
+        font-size: 0.78rem;
+        white-space: normal;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        word-break: break-word;
+      }
+    }
+    .toolbar-title .juz { color: var(--ink-muted); font-weight: 500; }
+    .font-size-ctrl {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.15rem;
+    }
+    .font-size-ctrl button {
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .font-size-ctrl button:hover { background: var(--bg-hover); }
+
+    /* Settings menu */
+    .settings-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.35);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+    .settings-overlay.open { opacity: 1; pointer-events: auto; }
+    .settings-panel {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -48%);
+      background: var(--paper);
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      width: min(340px, 90vw);
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      opacity: 0;
+      direction: ltr;
+      text-align: left;
+    }
+    .settings-overlay.open .settings-panel { transform: translate(-50%, -50%); opacity: 1; }
+    .settings-panel .settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .settings-panel h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0;
+    }
+    .night-mode-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--ink);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .night-mode-toggle:hover {
+      background: var(--bg-hover);
+    }
+    .night-mode-toggle svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+    .night-mode-toggle .icon-sun { display: block; }
+    .night-mode-toggle .icon-moon { display: none; }
+    body.night-mode .night-mode-toggle .icon-sun { display: none; }
+    body.night-mode .night-mode-toggle .icon-moon { display: block; }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row .settings-subhint {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.78rem;
+      font-weight: 400;
+      opacity: 0.78;
+      line-height: 1.25;
+    }
+    .settings-row label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .settings-toggle {
+      position: relative;
+      width: 2.6rem;
+      height: 1.4rem;
+      background: #ccc;
+      border-radius: 0.7rem;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .settings-toggle.on { background: var(--accent); }
+    .settings-toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: calc(1.4rem - 4px);
+      height: calc(1.4rem - 4px);
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .settings-toggle.on::after { transform: translateX(1.2rem); }
+    .settings-select {
+      font-size: 0.85rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--paper);
+      color: var(--ink);
+      min-width: 5rem;
+    }
+    .settings-install-row {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.5rem;
+    }
+    .settings-install-row .install-btn {
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      background: var(--accent-light);
+      color: var(--accent);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .settings-install-row .install-btn:hover { background: var(--accent); color: white; }
+    .settings-install-row .install-hint {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+    .settings-info {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      line-height: 1.6;
+    }
+    .settings-info a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .settings-info a:hover { text-decoration: underline; }
+    .settings-info .dedication {
+      font-style: italic;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    .gear-btn {
+      width: 1.8rem;
+      height: 1.8rem;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .gear-btn svg { width: 1rem; height: 1rem; fill: currentColor; }
+    #btn-quick-install svg { fill: none; stroke: currentColor; stroke-width: 2px; }
+    .gear-btn:hover { background: var(--bg-hover); }
+    @media (max-width: 720px) {
+      .controls.bar-hidden { transform: translateY(100%); }
+    }
+    /* Desktop pull-up handle */
+    .controls-handle {
+      display: none;
+    }
+    @media (min-width: 721px) {
+      .controls-handle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: -2rem;
+        right: 1.5rem;
+        left: auto;
+        transform: none;
+        width: 3.5rem;
+        height: calc(2rem + 2px);
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-bottom: none;
+        border-radius: 8px 8px 0 0;
+        cursor: pointer;
+        color: var(--ink-light, #888);
+        transition: color 0.15s;
+        padding: 0;
+        z-index: 1;
+      }
+      .controls-handle:hover { color: var(--ink); }
+      .controls-handle svg {
+        width: 1.25rem; height: 1.25rem;
+        transition: transform 0.3s ease;
+      }
+      .controls.bar-collapsed .controls-handle svg {
+        transform: rotate(180deg);
+      }
+      .controls.bar-collapsed {
+        transform: translateY(100%);
+      }
+    }
+    .nav-btn, #btn-play, #btn-share-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 0;
+      font-weight: 700;
+      transition: background 0.2s;
+      flex-shrink: 0;
+      padding: 0;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .nav-btn svg, #btn-play svg, #btn-share-link svg { width: 1rem; height: 1rem; fill: currentColor; }
+    .nav-btn:hover, #btn-play:hover, #btn-share-link:hover { background: var(--bg-hover); }
+    #btn-share-link { flex-shrink: 0; margin-left: 0.25rem; display: none; }
+    #btn-share-link.visible { display: inline-flex; }
+
+    /* Mode toggle pills */
+    .mode-toggle {
+      display: flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 0;
+      flex-shrink: 0;
+      height: 2.2rem;
+      align-items: center;
+    }
+    .mode-btn {
+      padding: 0 0.75rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--ink-muted);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      height: calc(2.2rem - 4px);
+      line-height: calc(2.2rem - 4px);
+    }
+    .mode-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+    .mode-btn:not(.active):hover {
+      color: var(--ink);
+      background: rgba(0,0,0,0.04);
+    }
+
+    /* Mushaf container */
+    .mushaf-page {
+      max-width: 680px;
+      margin: 1.25rem auto;
+      padding: 1.5rem 1.75rem 2rem;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow-x: clip;
+    }
+    /* Pageless: no side padding on desktop, restore on mobile */
+    #page-view.qk-pageless .mushaf-page {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    @media (max-width: 720px) {
+      #page-view.qk-pageless .mushaf-page {
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
+      }
+    }
+    @media (max-width: 720px) {
+      .mushaf-page {
+        margin: 0;
+        padding: 0.5rem 0.9rem 1.5rem;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        background: var(--bg);
+      }
+      body { background: var(--bg); }
+    }
+    /* Pageless: fixed top toolbar (settings always reachable); hides on scroll down */
+    #page-view.qk-pageless #mushaf-content {
+      margin-top: 3.35rem;
+      transition: margin-top 0.22s ease;
+    }
+    #page-view.qk-pageless.qk-pageless-toolbar-hidden #mushaf-content {
+      margin-top: 0.35rem;
+    }
+    #page-view.qk-pageless .page-toolbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 55;
+      margin: 0;
+      max-width: none;
+      padding-top: max(0.35rem, env(safe-area-inset-top));
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+      padding-bottom: 0.5rem;
+      background: var(--paper);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+      transition: transform 0.22s ease;
+    }
+    body.night-mode #page-view.qk-pageless .page-toolbar {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+    }
+    #page-view.qk-pageless .page-toolbar.pageless-toolbar-hidden {
+      transform: translateY(-100%);
+    }
+    @media (min-width: 721px) {
+      #page-view.qk-pageless .page-toolbar {
+        left: 50%;
+        right: auto;
+        width: min(680px, calc(100% - 2.5rem));
+        transform: translateX(-50%);
+        border-radius: 0 0 var(--radius) var(--radius);
+        border: 1px solid var(--border);
+        border-top: none;
+      }
+      #page-view.qk-pageless .page-toolbar.pageless-toolbar-hidden {
+        transform: translate(-50%, -100%);
+      }
+    }
+    @media (max-width: 720px) {
+      #page-view.qk-pageless .page-toolbar {
+        background: var(--bg);
+      }
+      #page-view:not(.qk-pageless) .page-toolbar {
+        margin-top: max(0.75rem, env(safe-area-inset-top));
+      }
+    }
+
+    .pageless-section {
+      padding-bottom: 1.25rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      overflow-x: clip;
+    }
+    .pageless-section:last-of-type { border-bottom: none; }
+    .page-section-end-num {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      padding-top: 0.35rem;
+      padding-bottom: 0.35rem;
+      user-select: none;
+    }
+
+    .page-number {
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--ink-muted);
+      margin-top: 1rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Surah headers */
+    .surah-name {
+      max-width: 100%;
+      text-align: center;
+      margin: 0.4em auto 0.15em;
+      overflow: hidden;
+      perspective: 600px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .surah-name-inner {
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.4s ease;
+    }
+    .surah-name-inner.flipped { transform: rotateY(180deg); }
+    .surah-name .surah-header-icon {
+      display: block;
+      width: 100%;
+      font-family: 'surah-header', serif;
+      font-size: clamp(6rem, 18vw, 11rem);
+      color: var(--accent);
+      line-height: 0.5;
+      text-align: center;
+      backface-visibility: hidden;
+    }
+    .surah-name .surah-name-en {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backface-visibility: hidden;
+      transform: rotateY(180deg);
+      font-size: clamp(1rem, 4vw, 1.4rem);
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+
+    /* Basmallah */
+    .basmallah-line {
+      text-align: center;
+      margin: 0.08em 0;
+      line-height: 1.2;
+    }
+    .basmallah {
+      font-family: var(--qk-mushaf-font, 'UthmanicHafs'), serif;
+      font-size: 1.35rem;
+      color: var(--accent);
+    }
+
+    /* Ayah lines */
+    .ayah-line {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: baseline;
+      gap: 0.12em;
+      font-family: var(--qk-mushaf-font, 'UthmanicHafs'), 'Traditional Arabic', serif;
+      font-size: calc(clamp(1.5rem, 4.5vw, 2rem) * var(--qk-font-scale, 1));
+      min-height: 2.35em;
+      padding: 0.12em 0;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    /* IndoPak 13-line Qudratullah: one row per printed line — kashida in word text stays intact */
+    .mushaf-indopak13#mushaf-content,
+    .pageless-section.mushaf-indopak13 {
+      /* No max-width — let it fill the mushaf-page inner width */
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 0.35rem;
+      padding-right: 0.35rem;
+    }
+    .mushaf-indopak13 .ip13-ayah-line {
+      /* Width is set dynamically in JS to the container width */
+      width: max-content;
+      box-sizing: border-box;
+      font-family: var(--qk-mushaf-font, 'IndoPak'), serif;
+      /* Font sized so natural line width ≈ container width: desktop ~2.2rem fills ~624px,
+         mobile 5.5vw fills ~360px — scaleX is then only a tiny fine-tune. */
+      font-size: calc(clamp(1.15rem, 5.5vw, 2.2rem) * var(--qk-font-scale, 1));
+      font-feature-settings: "jalt" 1, "calt" 1;
+      -webkit-font-feature-settings: "jalt" 1, "calt" 1;
+      line-height: 1.55;
+      min-height: 1.38em;
+      margin: 0.03em 0 0.06em;
+      padding: 0.02em 0;
+      color: var(--ink);
+      overflow: visible;
+      white-space: nowrap;
+      direction: rtl;
+    }
+    /* Free mode: single flowing paragraph replaces all ip13 line divs */
+    .ip13-flow-para {
+      font-family: var(--qk-mushaf-font, 'IndoPak'), serif;
+      font-size: calc(clamp(1.5rem, 4.5vw, 2rem) * var(--qk-font-scale, 1));
+      font-feature-settings: "jalt" 1, "calt" 1;
+      -webkit-font-feature-settings: "jalt" 1, "calt" 1;
+      line-height: 1.8;
+      color: var(--ink);
+      text-align: center;
+      direction: rtl;
+      white-space: normal;
+      width: 100%;
+    }
+    .ip13-flow-para .word {
+      display: inline;
+      white-space: normal;
+    }
+    /* Centre surah name and basmallah in free mode — override ip13-align-start */
+    .mushaf-indopak13.ip13-free .surah-name,
+    .mushaf-indopak13.ip13-free .surah-name.ip13-align-start,
+    .mushaf-indopak13.ip13-free .surah-name .surah-header-icon,
+    .mushaf-indopak13.ip13-free .surah-name.ip13-align-start .surah-header-icon,
+    .mushaf-indopak13.ip13-free .basmallah-line,
+    .mushaf-indopak13.ip13-free .basmallah-line.ip13-align-start {
+      text-align: center !important;
+    }
+    /* Only hide justified lines while we're waiting to apply scaleX (mushaf match on). */
+    .mushaf-indopak13.ip13-pending .ip13-ayah-line.indopak13-line--justified {
+      opacity: 0;
+    }
+    .mushaf-indopak13.ip13-pending .ip13-ayah-line.indopak13-line--centered {
+      opacity: 1;
+    }
+    .mushaf-indopak13 .ip13-ayah-line.indopak13-line--justified {
+      display: block;
+      text-align: right;
+    }
+    .mushaf-indopak13 .ip13-ayah-line .ip13-line-inner {
+      display: inline-block;
+      white-space: nowrap;
+      transform-origin: right center;
+    }
+    .mushaf-indopak13 .ip13-ayah-line .word {
+      display: inline;
+      white-space: nowrap;
+      unicode-bidi: embed;
+    }
+    .mushaf-indopak13 .ip13-ayah-line .verse-num {
+      vertical-align: middle;
+    }
+    .mushaf-indopak13 .ip13-ayah-line.indopak13-line--centered {
+      display: block;
+      text-align: center;
+      width: 100% !important;
+    }
+    .mushaf-indopak13 .surah-name,
+    .mushaf-indopak13 .basmallah-line {
+      font-family: var(--qk-mushaf-font, 'IndoPak'), serif;
+    }
+    /* Mushaf Match off: headers not forced to print center */
+    .mushaf-indopak13 .surah-name.ip13-align-start {
+      text-align: right;
+    }
+    .mushaf-indopak13 .surah-name.ip13-align-start .surah-header-icon {
+      text-align: right;
+    }
+    .mushaf-indopak13 .basmallah-line.ip13-align-start {
+      text-align: right;
+    }
+    /* Hafs (standard Uthmani) mushaf line layout — mirrors IP13 approach */
+    .hafs-ayah-line {
+      box-sizing: border-box;
+      font-family: var(--qk-mushaf-font, 'UthmanicHafs'), 'Traditional Arabic', serif;
+      font-size: calc(clamp(1.4rem, 4vw, 2.1rem) * var(--qk-font-scale, 1));
+      line-height: 1.7;
+      min-height: 1.6em;
+      margin: 0.04em 0;
+      padding: 0.02em 0;
+      color: var(--ink);
+      overflow: visible;
+      white-space: nowrap;
+      direction: rtl;
+      display: block;
+    }
+    .hafs-ayah-line.hafs-line--justified {
+      text-align: right;
+    }
+    .hafs-ayah-line.hafs-line--centered {
+      text-align: center;
+      width: 100% !important;
+    }
+    .hafs-line-inner {
+      display: inline-block;
+      white-space: nowrap;
+      transform-origin: right center;
+    }
+    .hafs-ayah-line .word {
+      display: inline;
+      white-space: nowrap;
+      unicode-bidi: embed;
+    }
+    .hafs-ayah-line .verse-num {
+      vertical-align: middle;
+    }
+    /* Hide justified lines while scaleX is being computed; centered lines always visible */
+    .hafs-pending .hafs-ayah-line.hafs-line--justified {
+      opacity: 0;
+    }
+    .hafs-pending .hafs-ayah-line.hafs-line--centered {
+      opacity: 1;
+    }
+    /* Verse number markers (button to avoid iOS "Open in New Tab" on long-press) */
+    .verse-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.45em;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.15s, background 0.15s;
+      vertical-align: middle;
+      box-sizing: border-box;
+      min-width: 1.9em;
+      width: auto;
+      height: 1.9em;
+      padding: 0 0.42em;
+      border: 2px solid var(--accent);
+      border-radius: 999px;
+      margin: 0 0.1em;
+      background: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    .verse-num:hover { opacity: 0.7; }
+    .verse-num.playing-verse {
+      background: var(--accent-light);
+    }
+    .verse-num.bookmarked {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .verse-num.shared-verse {
+      box-shadow: 0 0 0 3px var(--accent);
+      background: var(--accent-light);
+      animation: shared-verse-pulse 1.5s ease-out 2;
+    }
+    @keyframes shared-verse-pulse {
+      0%, 100% { box-shadow: 0 0 0 3px var(--accent); }
+      50% { box-shadow: 0 0 0 8px rgba(17,94,89,0.25); }
+    }
+
+    /* Words */
+    .word {
+      display: inline;
+      padding: 0.12em 0.06em;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.12s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .word:hover { background: rgba(17,94,89,0.06); }
+    .word:active { background: rgba(17,94,89,0.14); }
+    .word.highlight {
+      background: var(--highlight-strong);
+      box-shadow: 0 0 0 2px rgba(17,94,89,0.1);
+    }
+    /* Spelling mode: current letter in verse */
+    .word .word-letter {
+      display: inline;
+      border-radius: 3px;
+      transition: color 0.12s ease, background 0.12s ease, text-shadow 0.12s ease;
+    }
+    .word .word-letter.spelling-active {
+      color: #d92d20;
+      font-weight: 700;
+      text-shadow: 0 0 1px rgba(217, 45, 32, 0.35);
+    }
+    .letter-breakdown .lb-part.spelling-active {
+      outline: 2px solid rgba(217, 45, 32, 0.45);
+      border-radius: 6px;
+    }
+    .letter-breakdown .lb-part.spelling-active .lb-letter {
+      color: #d92d20;
+      font-weight: 700;
+    }
+
+    /* Pronunciation hint */
+    .pronunciation-hint {
+      text-align: center;
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+      min-height: 1.4em;
+      margin-top: 0.75rem;
+      font-style: italic;
+      transition: opacity 0.2s;
+    }
+
+    /* Bottom controls */
+    .controls {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 0.65rem 1rem;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      transition: transform 0.3s ease;
+    }
+    .controls-nav {
+      display: flex;
+      gap: 0.35rem;
+      align-items: center;
+    }
+    .btn {
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.55rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+    .btn-primary { background: var(--accent); color: white; }
+    #btn-play { width: 2.5rem; height: 2.5rem; }
+    #btn-play svg { width: 1.1rem; height: 1.1rem; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-secondary { background: var(--bg); color: var(--ink); border: 1px solid var(--border); }
+    .btn-secondary:hover:not(:disabled) { background: #eee; }
+
+    /* Settings drawer (collapsed by default) */
+    /* Letter breakdown panel */
+    .bookmark-toast {
+      position: fixed;
+      bottom: 4.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 0.5rem 1.2rem;
+      z-index: 70;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--ink);
+      white-space: nowrap;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+    .bookmark-toast.fade-out { opacity: 0; }
+    .letter-breakdown {
+      position: fixed;
+      bottom: 4.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 0.6rem 1rem;
+      z-index: 60;
+      display: flex;
+      gap: 0.75rem;
+      direction: rtl;
+      max-width: 95vw;
+      overflow-x: auto;
+    }
+    .letter-breakdown .lb-part {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+      cursor: pointer;
+      padding: 0.25rem 0.4rem;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .letter-breakdown .lb-part:hover { background: var(--accent-light); }
+    .letter-breakdown .lb-part.active { background: var(--highlight-strong); }
+    .letter-breakdown .lb-letter {
+      font-family: var(--qk-mushaf-font, 'UthmanicHafs'), serif;
+      font-size: 1.4rem;
+      line-height: 1.2;
+      color: var(--ink);
+    }
+    .letter-breakdown .lb-haraka {
+      font-size: 0.65rem;
+      color: var(--accent);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .letter-breakdown .lb-dot {
+      color: var(--ink-muted);
+      font-size: 0.8rem;
+      align-self: center;
+    }
+
+    /* Word translation panel (recite mode) */
+    .word-translation-panel {
+      position: fixed;
+      bottom: 4.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      padding: 0.5rem 1.4rem 0.6rem;
+      z-index: 60;
+      text-align: center;
+      max-width: 90vw;
+      min-width: 7rem;
+    }
+    .word-translation-panel .wt-arabic {
+      display: block;
+      font-family: var(--qk-mushaf-font, 'UthmanicHafs'), serif;
+      font-size: 1.6rem;
+      color: var(--ink);
+      line-height: 1.4;
+      direction: rtl;
+    }
+    .word-translation-panel .wt-translation {
+      display: block;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 0.88rem;
+      color: var(--accent);
+      font-weight: 600;
+      direction: ltr;
+      margin-top: 0.1rem;
+    }
+
+    /* Repeat badge (verses only) */
+    .repeat-badge {
+      position: absolute;
+      top: -0.5em;
+      right: -0.3em;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.5rem;
+      font-weight: 700;
+      background: var(--accent);
+      color: white;
+      border-radius: 999px;
+      padding: 0.1em 0.35em;
+      line-height: 1;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+    .repeat-badge.fade-out {
+      opacity: 0;
+    }
+
+    /* Loading */
+    .page-loading { text-align: center; padding: 3rem 1rem; color: var(--ink-muted); font-size: 0.95rem; }
+    .page-loading.error { color: #dc2626; }
+
+    /* === Index view === */
+    #index-view { display: none; }
+    #index-view.active { display: block; }
+    #page-view { display: none; }
+    #page-view.active { display: block; }
+
+    .idx-header {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 1.2rem 1rem;
+      text-align: center;
+      position: sticky; top: 0; z-index: 50;
+      /* allow absolute gear */
+    }
+    .idx-header .gear-btn {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .idx-header .site-logo {
+      display: block;
+      height: 2.5rem;
+      width: auto;
+      margin: 0 auto 0.4rem;
+    }
+    .idx-header .site-logo-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+    }
+    .idx-header .site-logo-wrap img { height: 2rem; width: auto; display: block; }
+    .idx-header h1 { font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-bottom: 0.15rem; }
+    .idx-header p { font-size: 0.85rem; color: var(--ink-muted); }
+
+    .idx-grid {
+      max-width: 720px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .idx-card {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.85rem 1rem;
+      text-decoration: none;
+      color: var(--ink);
+      cursor: pointer;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .idx-card:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
+
+    .idx-card .card-num {
+      display: flex; align-items: center; justify-content: center;
+      width: 2.4rem; height: 2.4rem; border-radius: 50%;
+      background: var(--accent-light); color: var(--accent);
+      font-weight: 700; font-size: 0.8rem; flex-shrink: 0;
+    }
+    .idx-card .card-name { font-size: 0.92rem; font-weight: 600; color: var(--ink); }
+    .idx-card .card-meta { font-size: 0.72rem; color: var(--ink-muted); }
+
+    .idx-surah-search-wrap {
+      grid-column: 1 / -1;
+      margin-bottom: 0.25rem;
+      direction: ltr;
+      text-align: left;
+    }
+    .idx-surah-search {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--paper);
+      color: var(--ink);
+      direction: ltr;
+      text-align: left;
+    }
+    .idx-surah-search::placeholder { color: var(--ink-muted); }
+    .idx-surah-search:focus { outline: none; border-color: var(--accent); }
+
+    .idx-section-label {
+      grid-column: 1 / -1;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.5rem 0 0;
+    }
+
+    .idx-card.recent {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .home-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 2rem; height: 2rem; border-radius: 50%;
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--accent); text-decoration: none;
+      font-size: 1rem; font-weight: 700; flex-shrink: 0;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .home-btn:hover { background: var(--accent-light); }
+  </style>
+</head>
+<body>
+  <script>(function(){var on=localStorage.getItem('qk_night_mode')==='1';if(on){document.body.classList.add('night-mode');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#1a1a1a');}var f=localStorage.getItem('qk_mushaf_font')||'uthmani';var fam=(f==='indopak'||f==='indopak13')?'IndoPak':f==='tajweed'?'Tajweed':'UthmanicHafs';document.documentElement.style.setProperty('--qk-mushaf-font',fam);})();</script>
+  <script>if('serviceWorker'in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
+  <!-- ===== INDEX VIEW ===== -->
+  <div id="index-view">
+    <div class="idx-header" style="position:relative;">
+      <div class="site-logo-wrap"><img src="logo.png?v=7" alt="Quran for Yunus" class="site-logo" width="48" height="48"></div>
+      <h1 id="site-title">Quran for Yunus</h1>
+      <p>Learn to read the Quran</p>
+    </div>
+    <div class="idx-grid" id="idx-grid"></div>
+  </div>
+
+  <!-- ===== PAGE VIEW ===== -->
+  <div id="page-view">
+    <div class="page-toolbar">
+      <a href="?" class="home-btn" id="btn-home" title="Back to index">&#8962;</a>
+      <div class="toolbar-title" id="toolbar-surah-juz" aria-label="Surah and Juz"></div>
+      <div class="font-size-ctrl">
+        <button id="font-cycle" title="Increase text size">A+</button>
+        <button class="gear-btn" id="btn-quick-install" title="Install app" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button class="gear-btn" id="btn-settings" title="Settings">
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94a7.07 7.07 0 0 0 .06-.94c0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.04 7.04 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.37 1.03.7 1.62.94l.36 2.54c.05.24.26.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="mushaf-page" translate="no">
+      <div id="mushaf-content"></div>
+      <div class="pronunciation-hint" id="pronunciation-hint"></div>
+      <div class="page-number" id="page-title"></div>
+    </div>
+
+    <div class="controls" dir="ltr">
+      <button class="controls-handle" id="controls-toggle" title="Hide/show bar" aria-label="Toggle controls bar">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41 12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+      </button>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="mode-recite">Recite</button>
+        <button class="mode-btn" id="mode-spelling">Spelling</button>
+      </div>
+      <div class="controls-nav">
+        <a href="?" class="nav-btn" id="btn-prev" title="Next page"><svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></a>
+        <button id="btn-play" title="Play page"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+        <a href="?" class="nav-btn" id="btn-next" title="Previous page"><svg viewBox="0 0 24 24"><path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg></a>
+        <button type="button" class="nav-btn" id="btn-share-link" title="Copy link to share"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== Site name (change here for branding) ===== */
+    const SITE_NAME = 'Quran for Yunus';
+
+    function updatePageMeta(title, description) {
+      document.title = title;
+      let m = document.querySelector('meta[name="description"]');
+      if (!m) { m = document.createElement('meta'); m.name = 'description'; document.head.appendChild(m); }
+      m.setAttribute('content', description);
+      for (const prop of ['og:title', 'og:description']) {
+        let el = document.querySelector('meta[property="' + prop + '"]');
+        if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el); }
+        el.setAttribute('content', prop === 'og:title' ? title : description);
+      }
+      let url = document.querySelector('meta[property="og:url"]');
+      if (!url) { url = document.createElement('meta'); url.setAttribute('property', 'og:url'); document.head.appendChild(url); }
+      url.setAttribute('content', window.location.href);
+    }
+
+    /* ===== Routing: index vs page view ===== */
+    const SURAHS = [
+      {n:1,name:'Al-Fatiha'},{n:2,name:'Al-Baqarah'},{n:3,name:"Al-Imran"},
+      {n:4,name:"An-Nisa'"},{n:5,name:"Al-Ma'idah"},{n:6,name:"Al-An'am"},
+      {n:7,name:"Al-A'raf"},{n:8,name:'Al-Anfal'},{n:9,name:'At-Tawbah'},
+      {n:10,name:'Yunus'},{n:11,name:'Hud'},{n:12,name:'Yusuf'},
+      {n:13,name:"Ar-Ra'd"},{n:14,name:'Ibrahim'},{n:15,name:'Al-Hijr'},
+      {n:16,name:'An-Nahl'},{n:17,name:'Al-Isra'},{n:18,name:'Al-Kahf'},
+      {n:19,name:'Maryam'},{n:20,name:'Ta Ha'},{n:21,name:'Al-Anbiya'},
+      {n:22,name:'Al-Hajj'},{n:23,name:'Al-Muminun'},{n:24,name:'An-Nur'},
+      {n:25,name:'Al-Furqan'},{n:26,name:"Ash-Shu'ara"},{n:27,name:'An-Naml'},
+      {n:28,name:'Al-Qasas'},{n:29,name:"Al-Ankabut"},{n:30,name:'Ar-Rum'},
+      {n:31,name:'Luqman'},{n:32,name:'As-Sajdah'},{n:33,name:'Al-Ahzab'},
+      {n:34,name:'Saba'},{n:35,name:'Fatir'},{n:36,name:'Ya Sin'},
+      {n:37,name:'As-Saffat'},{n:38,name:'Sad'},{n:39,name:'Az-Zumar'},
+      {n:40,name:'Ghafir'},{n:41,name:'Fussilat'},{n:42,name:'Ash-Shura'},
+      {n:43,name:'Az-Zukhruf'},{n:44,name:'Ad-Dukhan'},{n:45,name:'Al-Jathiyah'},
+      {n:46,name:'Al-Ahqaf'},{n:47,name:'Muhammad'},{n:48,name:'Al-Fath'},
+      {n:49,name:'Al-Hujurat'},{n:50,name:'Qaf'},{n:51,name:'Ad-Dhariyat'},
+      {n:52,name:'At-Tur'},{n:53,name:'An-Najm'},{n:54,name:'Al-Qamar'},
+      {n:55,name:'Ar-Rahman'},{n:56,name:"Al-Waqi'ah"},{n:57,name:'Al-Hadid'},
+      {n:58,name:'Al-Mujadalah'},{n:59,name:'Al-Hashr'},{n:60,name:'Al-Mumtahanah'},
+      {n:61,name:'As-Saff'},{n:62,name:'Al-Jumuah'},{n:63,name:'Al-Munafiqun'},
+      {n:64,name:'At-Taghabun'},{n:65,name:'At-Talaq'},{n:66,name:'At-Tahrim'},
+      {n:67,name:'Al-Mulk'},{n:68,name:'Al-Qalam'},{n:69,name:'Al-Haqqah'},
+      {n:70,name:'Al-Maarij'},{n:71,name:'Nuh'},{n:72,name:'Al-Jinn'},
+      {n:73,name:'Al-Muzzammil'},{n:74,name:'Al-Muddaththir'},{n:75,name:'Al-Qiyamah'},
+      {n:76,name:'Al-Insan'},{n:77,name:'Al-Mursalat'},{n:78,name:'An-Naba'},
+      {n:79,name:"An-Nazi'at"},{n:80,name:'Abasa'},{n:81,name:'At-Takwir'},
+      {n:82,name:'Al-Infitar'},{n:83,name:'Al-Mutaffifin'},{n:84,name:'Al-Inshiqaq'},
+      {n:85,name:'Al-Buruj'},{n:86,name:'At-Tariq'},{n:87,name:"Al-A'la"},
+      {n:88,name:'Al-Ghashiyah'},{n:89,name:'Al-Fajr'},{n:90,name:'Al-Balad'},
+      {n:91,name:'Ash-Shams'},{n:92,name:'Al-Layl'},{n:93,name:'Ad-Duha'},
+      {n:94,name:'Ash-Sharh'},{n:95,name:'At-Tin'},{n:96,name:'Al-Alaq'},
+      {n:97,name:'Al-Qadr'},{n:98,name:'Al-Bayyinah'},{n:99,name:'Az-Zalzalah'},
+      {n:100,name:'Al-Adiyat'},{n:101,name:"Al-Qari'ah"},{n:102,name:'At-Takathur'},
+      {n:103,name:'Al-Asr'},{n:104,name:'Al-Humazah'},{n:105,name:'Al-Fil'},
+      {n:106,name:'Quraysh'},{n:107,name:"Al-Ma'un"},{n:108,name:'Al-Kawthar'},
+      {n:109,name:'Al-Kafirun'},{n:110,name:'An-Nasr'},{n:111,name:'Al-Masad'},
+      {n:112,name:'Al-Ikhlas'},{n:113,name:'Al-Falaq'},{n:114,name:'An-Nas'}
+    ];
+
+    /** Juz 2..30 start verses (surah, ayah) — Hafs mushaf; used for index "Juz X Page Y" */
+    const JUZ_STARTS_INDEX = [
+      {s:2,v:142},{s:2,v:253},{s:3,v:93},{s:4,v:24},{s:4,v:148},{s:5,v:82},{s:6,v:111},{s:6,v:165},
+      {s:7,v:88},{s:8,v:41},{s:9,v:93},{s:11,v:6},{s:12,v:53},{s:15,v:1},{s:17,v:1},{s:18,v:75},
+      {s:21,v:1},{s:23,v:1},{s:25,v:21},{s:27,v:56},{s:33,v:31},{s:36,v:22},{s:39,v:32},{s:41,v:47},
+      {s:46,v:1},{s:51,v:31},{s:58,v:1},{s:67,v:1},{s:78,v:1}
+    ];
+    function getJuzForVerseIndex(surah, verse) {
+      let j = 1;
+      for (let i = 0; i < JUZ_STARTS_INDEX.length; i++) {
+        const st = JUZ_STARTS_INDEX[i];
+        if (surah > st.s || (surah === st.s && verse >= st.v)) j = i + 2;
+      }
+      return Math.min(j, 30);
+    }
+
+    const PAGE_PARAM = new URLSearchParams(location.search).get('page');
+    const IS_PAGE_VIEW = PAGE_PARAM !== null;
+
+    if (!IS_PAGE_VIEW) {
+      document.getElementById('index-view').classList.add('active');
+      const titleEl = document.getElementById('site-title');
+      if (titleEl) titleEl.textContent = SITE_NAME;
+      updatePageMeta(
+        SITE_NAME + ' — Read & Listen | quranforyunus.com',
+        'Read the full Quran with word-by-word recitation and spelling. Listen to Muhammad Siddiq Al-Minshawi. All 604 pages, 114 surahs. quranforyunus.com'
+      );
+      renderIndex();
+    } else {
+      document.getElementById('page-view').classList.add('active');
+    }
+
+    function renderIndex() {
+      const grid = document.getElementById('idx-grid');
+      const lastPage = localStorage.getItem('qk_last_page');
+
+      fetch('data/full_quran.json')
+        .then(r => r.json())
+        .then(async data => {
+          const surahStartPage = {};
+          const pages = Object.keys(data).map(Number).sort((a,b) => a - b);
+          for (const page of pages) {
+            for (const ch of data[page].surahs) {
+              if (!surahStartPage[ch]) surahStartPage[ch] = page;
+            }
+          }
+          if (localStorage.getItem('qk_mushaf_font') === 'indopak13') {
+            try {
+              const sp = await fetch('data/indopak13/surah_start_pages.json').then(r => r.json());
+              for (let n = 1; n <= 114; n++) {
+                if (sp[String(n)] != null) surahStartPage[n] = Number(sp[String(n)]);
+              }
+            } catch (_) { /* keep Hafs mapping if import not run */ }
+          }
+
+          const bookmark = (() => { try { return JSON.parse(localStorage.getItem('qk_bookmark')); } catch { return null; } })();
+          const qkPagelessQ = localStorage.getItem('qk_pageless') === '1' ? '&pageless=1' : '';
+          const pageJsonDir = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 'data/indopak13/pages/' : 'data/pages/';
+          const maxPageForFont = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 849 : 604;
+          const safePage = (p) => Math.min(Math.max(1, parseInt(String(p), 10) || 1), maxPageForFont);
+          function firstVerseKeyFromPageJson(pd) {
+            if (pd.layout === 'indopak13_qudratullah') {
+              for (const ln of pd.lines || []) {
+                if (ln.line_type === 'ayah' && ln.words && ln.words[0]) {
+                  return ln.words[0].surah + ':' + ln.words[0].ayah;
+                }
+              }
+            }
+            const v = pd.verses && pd.verses[0];
+            return v && v.verse_key;
+          }
+          {
+            const label = document.createElement('div');
+            label.className = 'idx-section-label';
+            label.textContent = 'Continue reading';
+            grid.appendChild(label);
+
+            if (lastPage) {
+              const lp = safePage(lastPage);
+              const a = document.createElement('a');
+              a.className = 'idx-card recent';
+              a.href = '?page=' + lp + qkPagelessQ;
+              a.innerHTML = `
+                <span class="card-num">&#9654;</span>
+                <span style="flex:1;min-width:0;display:flex;flex-direction:column">
+                  <span class="card-name">Juz 1 Page ${lp}</span>
+                  <span class="card-meta">last visited</span>
+                </span>`;
+              grid.appendChild(a);
+              fetch(pageJsonDir + lp + '.json').then(r => r.json()).then(pd => {
+                const vk = firstVerseKeyFromPageJson(pd);
+                if (vk) {
+                  const [s, vn] = vk.split(':').map(Number);
+                  const juz = getJuzForVerseIndex(s, vn);
+                  const el = a.querySelector('.card-name');
+                  if (el) el.textContent = 'Juz ' + juz + ' Page ' + lastPage;
+                }
+              }).catch(() => {});
+            }
+
+            if (bookmark) {
+              const currentFont = localStorage.getItem('qk_mushaf_font') || 'uthmani';
+              const bookmarkFont = bookmark.font || 'uthmani';
+              const fontChanged = (currentFont === 'indopak13') !== (bookmarkFont === 'indopak13');
+              const vm = /^(\d+):(\d+)$/.exec(String(bookmark.verse || '').trim());
+              let bp;
+              if (fontChanged && vm) {
+                // Bookmark was saved with a different page-count script — use surahStartPage
+                // for the current script so we land near the right verse.
+                bp = safePage(surahStartPage[Number(vm[1])] || bookmark.page);
+              } else {
+                bp = safePage(bookmark.page);
+              }
+              const a = document.createElement('a');
+              a.className = 'idx-card recent';
+              // When font changed, force pageless so scroll-to-verse can scan across pages
+              const bmPagelessQ = fontChanged ? '&pageless=1' : qkPagelessQ;
+              let bmHref = '?page=' + bp + bmPagelessQ;
+              if (vm) bmHref += '&surah=' + vm[1] + '&verse=' + vm[2];
+              a.href = bmHref;
+              a.innerHTML = `
+                <span class="card-num" style="background:var(--accent);color:white;border-color:var(--accent)">&#x1F516;</span>
+                <span style="flex:1;min-width:0;display:flex;flex-direction:column">
+                  <span class="card-meta">Bookmark</span>
+                  <span class="card-name">Verse ${bookmark.verse}</span>
+                  <span class="card-meta card-meta-page">Juz 1 Page ${bp}</span>
+                </span>`;
+              grid.appendChild(a);
+              fetch(pageJsonDir + bp + '.json').then(r => r.json()).then(pd => {
+                const vk = firstVerseKeyFromPageJson(pd);
+                if (vk) {
+                  const [s, vn] = vk.split(':').map(Number);
+                  const juz = getJuzForVerseIndex(s, vn);
+                  const el = a.querySelector('.card-meta-page');
+                  if (el) el.textContent = 'Juz ' + juz + ' Page ' + bp;
+                }
+              }).catch(() => {});
+            } else {
+              const hint = document.createElement('div');
+              hint.className = 'idx-card';
+              hint.style.cursor = 'default';
+              hint.innerHTML = `
+                <span class="card-num" style="opacity:0.45">&#x1F516;</span>
+                <span style="flex:1;min-width:0;display:flex;flex-direction:column">
+                  <span class="card-name" style="color:var(--ink-muted)">No Bookmarks</span>
+                  <span class="card-meta">Hold verse number</span>
+                </span>`;
+              grid.appendChild(hint);
+            }
+
+            const searchWrap = document.createElement('div');
+            searchWrap.className = 'idx-surah-search-wrap';
+            const searchInput = document.createElement('input');
+            searchInput.type = 'search';
+            searchInput.className = 'idx-surah-search';
+            searchInput.placeholder = 'Search surah…';
+            searchInput.setAttribute('aria-label', 'Search surah by name or number');
+            searchWrap.appendChild(searchInput);
+            grid.appendChild(searchWrap);
+
+            const label2 = document.createElement('div');
+            label2.className = 'idx-section-label';
+            label2.textContent = 'All Surahs';
+            grid.appendChild(label2);
+          }
+
+          for (const s of SURAHS) {
+            const page = surahStartPage[s.n];
+            if (!page) continue;
+            const juz = getJuzForVerseIndex(s.n, 1);
+            const a = document.createElement('a');
+            a.className = 'idx-card idx-card-surah';
+            a.href = '?page=' + page + '&surah=' + s.n + qkPagelessQ;
+            a.dataset.name = s.name.toLowerCase();
+            a.dataset.num = String(s.n);
+            a.innerHTML = `
+              <span class="card-num">${s.n}</span>
+              <span style="flex:1;min-width:0;display:flex;flex-direction:column">
+                <span class="card-name">${s.name}</span>
+                <span class="card-meta">Juz ${juz} Page ${page}</span>
+              </span>`;
+            grid.appendChild(a);
+          }
+
+          const searchInput = grid.querySelector('.idx-surah-search');
+          if (searchInput) {
+            searchInput.addEventListener('input', () => {
+              const q = (searchInput.value || '').trim().toLowerCase();
+              grid.querySelectorAll('.idx-card-surah').forEach(card => {
+                const match = !q || card.dataset.name.includes(q) || card.dataset.num === q;
+                card.style.display = match ? '' : 'none';
+              });
+            });
+          }
+        });
+    }
+
+  </script>
+
+  <script>
+    function toArabicNum(n) {
+      const d = '\u0660\u0661\u0662\u0663\u0664\u0665\u0666\u0667\u0668\u0669';
+      return String(n).split('').map(c => d[c] || c).join('');
+    }
+
+    if (!document.getElementById('page-view').classList.contains('active')) {
+      // Index view — nothing more to do
+    } else {
+    const LETTER_NAMES = {
+      'ا': 'Alif', 'أ': 'Alif', 'إ': 'Alif', 'آ': 'Alif Madd',
+      'ب': 'Ba', 'ت': 'Ta', 'ث': 'Tha', 'ج': 'Jeem', 'ح': 'Ha',
+      'خ': 'Kha', 'د': 'Dal', 'ذ': 'Dhal', 'ر': 'Ra', 'ز': 'Zay',
+      'س': 'Seen', 'ش': 'Sheen', 'ص': 'Sad', 'ض': 'Dad',
+      'ط': 'Taa', 'ظ': 'Dhaa', 'ع': 'Ayn', 'غ': 'Ghayn',
+      'ف': 'Fa', 'ق': 'Qaf', 'ك': 'Kaf', 'ل': 'Lam', 'م': 'Meem',
+      'ن': 'Noon', 'ه': 'Haa', 'و': 'Waw', 'ي': 'Ya', 'ى': 'Ya',
+      'ء': 'Hamza', 'ؤ': 'Waw Hamza', 'ئ': 'Ya Hamza', 'ة': 'Ta Marbuta',
+      'ٱ': 'Alif Wasla', 'ٰ': 'Alif Khanjariya'
+    };
+
+    const HARAKAT_SIMPLE = {
+      '\u064B': 'fathatan', '\u064C': 'dammatan', '\u064D': 'kasratan',
+      '\u064E': 'fatha', '\u064F': 'damma', '\u0650': 'kasra',
+      '\u0651': 'shadda', '\u0652': 'sukun'
+    };
+
+    const WORD_SOUNDS = {
+      'قُلْ': 'Qul', 'هُوَ': 'Huwa', 'ٱللَّهُ': 'Allahu', 'اللَّهُ': 'Allahu',
+      'أَحَدٌ': 'Ahad', 'أَحَدٌۢ': 'Ahad', 'ٱلصَّمَدُ': 'As-Samad', 'الصَّمَدُ': 'As-Samad',
+      'لَمْ': 'Lam', 'يَلِدْ': 'Yalid', 'وَلَمْ': 'Wa lam', 'يُولَدْ': 'Yoolad',
+      'يَكُن': 'Yakun', 'لَّهُۥ': 'Lahu', 'لَّهُ': 'Lahu', 'كُفُوًا': 'Kufuwan',
+      'أَعُوذُ': 'A-udhu', 'بِرَبِّ': 'Bi rabbi', 'ٱلْفَلَقِ': 'Al-Falaq', 'الْفَلَقِ': 'Al-Falaq',
+      'مِن': 'Min', 'شَرِّ': 'Sharri', 'مَا': 'Ma', 'خَلَقَ': 'Khalaqa',
+      'غَاسِقٍ': 'Ghasiquin', 'إِذَا': 'Idha', 'وَقَبَ': 'Waqab',
+      'ٱلنَّفَّٰثَٰتِ': 'An-naffathat', 'ٱلنَّفَّـٰثَـٰتِ': 'An-naffathat', 'فِي': 'Fee', 'فِى': 'Fee', 'ٱلْعُقَدِ': 'Al-uqad',
+      'حَاسِدٍ': 'Hasidin', 'حَسَدَ': 'Hasada',
+      'ٱلنَّاسِ': 'An-nas', 'النَّاسِ': 'An-nas', 'مَلِكِ': 'Maliki', 'إِلَٰهِ': 'Ilahi', 'إِلَـٰهِ': 'Ilahi',
+      'ٱلْوَسْوَاسِ': 'Al-waswas', 'ٱلْخَنَّاسِ': 'Al-khannas',
+      'ٱلَّذِي': 'Alladhi', 'ٱلَّذِى': 'Alladhi', 'يُوَسْوِسُ': 'Yuwassisu', 'صُدُورِ': 'Sudoori',
+      'مِنَ': 'Mina', 'ٱلْجِنَّةِ': 'Al-jinnati', 'وَٱلنَّاسِ': 'Wan-nas', 'وَمِن': 'Wa min'
+    };
+
+    function useIndopak13() { return localStorage.getItem('qk_mushaf_font') === 'indopak13'; }
+    /** IndoPak 13: use SQL is_centered + justified rules (default on). */
+    function ip13MushafMatchOn() { return localStorage.getItem('qk_mushaf_match') !== '0'; }
+    function refreshIp13MushafMatchLayout() {
+      if (!useIndopak13()) return;
+      const match = ip13MushafMatchOn();
+      document.querySelectorAll('.ip13-ayah-line').forEach(row => {
+        const alwaysC = row.dataset.ip13AlwaysCentered === '1';
+        const dbC = row.dataset.ip13DbCentered === '1';
+        const eff = alwaysC || (match && dbC);
+        row.classList.toggle('indopak13-line--centered', eff);
+        row.classList.toggle('indopak13-line--justified', !eff);
+      });
+      document.querySelectorAll('.mushaf-indopak13 .surah-name[data-ip13-db-centered]').forEach(el => {
+        const dbC = el.dataset.ip13DbCentered === '1';
+        el.classList.toggle('ip13-align-start', !(match && dbC));
+      });
+      document.querySelectorAll('.mushaf-indopak13 .basmallah-line[data-ip13-db-centered]').forEach(el => {
+        const dbC = el.dataset.ip13DbCentered === '1';
+        el.classList.toggle('ip13-align-start', !(match && dbC));
+      });
+      if (match) {
+        // collapseIp13ToFlow removes .ip13-ayah-line elements entirely — if they're gone
+        // we must re-render from cache rather than trying to re-justify missing elements.
+        const needsRerender = !!document.querySelector('.mushaf-indopak13.ip13-free, #mushaf-content.ip13-free');
+        if (needsRerender) {
+          if (isPagelessMode()) {
+            const c = $('mushaf-content');
+            c.querySelectorAll('.pageless-section.mushaf-indopak13').forEach(section => {
+              const pageNum = Number(section.dataset.page);
+              const d = pagelessCache.get(pageNum);
+              if (!d) return;
+              section.innerHTML = '';
+              section.classList.remove('ip13-free');
+              section.classList.add('ip13-pending');
+              renderIndopak13Block(section, d.playlist, d.indopakLines, d.surahs, pageNum, { updateToolbarMeta: false });
+              document.fonts.ready.then(() => setTimeout(() => applyIp13Justification(section), 300));
+            });
+          } else {
+            renderMushafPage();
+          }
+          return;
+        }
+        // Lines still in DOM — re-add classes and justify.
+        document.querySelectorAll('.ip13-ayah-line').forEach(row => {
+          const alwaysC = row.dataset.ip13AlwaysCentered === '1';
+          const dbC = row.dataset.ip13DbCentered === '1';
+          const centered = alwaysC || dbC;
+          row.classList.toggle('indopak13-line--centered', centered);
+          row.classList.toggle('indopak13-line--justified', !centered);
+        });
+        document.querySelectorAll('.mushaf-indopak13').forEach(c => c.classList.remove('ip13-free'));
+        applyIp13Justification(document);
+      } else {
+        // Clear all line classes, transforms and inline widths so lines render naturally.
+        document.querySelectorAll('.ip13-ayah-line').forEach(row => {
+          row.classList.remove('indopak13-line--justified', 'indopak13-line--centered');
+          row.style.width = '';
+          const inner = row.querySelector('.ip13-line-inner');
+          if (inner) {
+            inner.style.transform = '';
+            inner.querySelectorAll('.verse-num').forEach(btn => btn.style.transform = '');
+          }
+        });
+        document.querySelectorAll('.mushaf-indopak13').forEach(c => collapseIp13ToFlow(c));
+      }
+    }
+    /** Hafs (standard Uthmani): mushaf line layout default ON. */
+    function hafsMusharMatchOn() { return localStorage.getItem('qk_hafs_match') !== '0'; }
+    function refreshHafsMatchLayout() {
+      if (useIndopak13()) return;
+      const c = $('mushaf-content');
+      if (isPagelessMode()) {
+        c.querySelectorAll('.pageless-section:not(.mushaf-indopak13)').forEach(section => {
+          const pageNum = Number(section.dataset.page);
+          const d = pagelessCache.get(pageNum);
+          if (!d) return;
+          section.innerHTML = '';
+          if (hafsMusharMatchOn() && d.hafsLines) {
+            section.classList.add('hafs-pending');
+            renderHafsLinesBlock(section, d.playlist, d.hafsLines, d.surahs, pageNum, { updateToolbarMeta: false });
+            document.fonts.ready.then(() => setTimeout(() => applyHafsJustification(section), 300));
+          } else {
+            section.classList.remove('hafs-pending');
+            renderMushafBlock(section, d.playlist, d.items, d.surahs, pageNum, { updateToolbarMeta: false });
+          }
+        });
+      } else {
+        renderMushafPage();
+      }
+    }
+    function getPageDataDir() { return useIndopak13() ? 'data/indopak13/pages/' : 'data/pages/'; }
+    function getMaxPage() { return useIndopak13() ? 849 : 604; }
+    const RECITERS = {
+      minshawi: { name: 'Muhammad Siddiq Al-Minshawi', recitationDir: 'audio/minshawi/recitation', timestampsDir: 'audio/minshawi/timestamps', lettersDir: 'audio/minshawi/letters' },
+      alafasy:  { name: 'Mishary Alafasy',              recitationDir: 'audio/alafasy/recitation',  timestampsDir: 'audio/alafasy/timestamps',  lettersDir: 'audio/alafasy/letters'  },
+      maher:    { name: 'Maher Al-Muaiqly',             recitationDir: 'audio/maher/recitation',    timestampsDir: 'audio/maher/timestamps',    lettersDir: 'audio/maher/letters'    }
+    };
+    function getReciter() { return localStorage.getItem('qk_reciter') || 'minshawi'; }
+    function getTimestampDataDir() { return RECITERS[getReciter()].timestampsDir + '/'; }
+    function getRecitationDir() { return RECITERS[getReciter()].recitationDir + '/'; }
+    function getLettersDir() { return RECITERS[getReciter()].lettersDir + '/'; }
+    let TIMESTAMP_DATA_DIR = getTimestampDataDir();
+    /** Hafs = 604 pages; IndoPak 13 = 849. Requesting page > max 404s — common after switching mushaf on PWA. */
+    const _urlPageNum = parseInt(new URLSearchParams(location.search).get('page'), 10);
+    const _maxPageForMushaf = useIndopak13() ? 849 : 604;
+    const CURRENT_PAGE = (Number.isFinite(_urlPageNum) && _urlPageNum >= 1)
+      ? Math.min(_urlPageNum, _maxPageForMushaf)
+      : 1;
+    (function syncPageUrlToMushafMax() {
+      if (!Number.isFinite(_urlPageNum) || _urlPageNum < 1 || _urlPageNum <= _maxPageForMushaf) return;
+      try {
+        const u = new URL(location.href);
+        u.searchParams.set('page', String(CURRENT_PAGE));
+        history.replaceState(null, '', u.pathname + u.search + (u.hash || ''));
+      } catch (_) {}
+    })();
+    (function syncPagelessFromUrl() {
+      const p = new URLSearchParams(location.search).get('pageless');
+      if (p === '1') localStorage.setItem('qk_pageless', '1');
+      if (p === '0') localStorage.removeItem('qk_pageless');
+    })();
+    /** Juz 2..30 start verses (surah, ayah) — Hafs mushaf (same as index) */
+    const JUZ_STARTS = [
+      {s:2,v:142},{s:2,v:253},{s:3,v:93},{s:4,v:24},{s:4,v:148},{s:5,v:82},{s:6,v:111},{s:6,v:165},
+      {s:7,v:88},{s:8,v:41},{s:9,v:93},{s:11,v:6},{s:12,v:53},{s:15,v:1},{s:17,v:1},{s:18,v:75},
+      {s:21,v:1},{s:23,v:1},{s:25,v:21},{s:27,v:56},{s:33,v:31},{s:36,v:22},{s:39,v:32},{s:41,v:47},
+      {s:46,v:1},{s:51,v:31},{s:58,v:1},{s:67,v:1},{s:78,v:1}
+    ];
+    function getJuzForVerse(surah, verse) {
+      let j = 1;
+      for (let i = 0; i < JUZ_STARTS.length; i++) {
+        const st = JUZ_STARTS[i];
+        if (surah > st.s || (surah === st.s && verse >= st.v)) j = i + 2;
+      }
+      return Math.min(j, 30);
+    }
+    let PAGE_SURAHS = [];
+    let SURAH_AUDIO = {};
+    const BASMALLAH = '\uFDFD';
+    const SURAH_HEADER_CHARS = {
+      1:'\uFC45',2:'\uFC46',3:'\uFC47',4:'\uFC4A',5:'\uFC4B',6:'\uFC4E',7:'\uFC4F',
+      8:'\uFC51',9:'\uFC52',10:'\uFC53',11:'\uFC55',12:'\uFC56',13:'\uFC58',14:'\uFC5A',
+      15:'\uFC5B',16:'\uFC5C',17:'\uFC5D',18:'\uFC5E',19:'\uFC61',20:'\uFC62',21:'\uFC64',
+      22:'\uFB51',23:'\uFB52',24:'\uFB54',25:'\uFB55',26:'\uFB57',27:'\uFB58',28:'\uFB5A',
+      29:'\uFB5B',30:'\uFB5D',31:'\uFB5E',32:'\uFB60',33:'\uFB61',34:'\uFB63',35:'\uFB64',
+      36:'\uFB66',37:'\uFB67',38:'\uFB69',39:'\uFB6A',40:'\uFB6C',41:'\uFB6D',42:'\uFB6F',
+      43:'\uFB70',44:'\uFB72',45:'\uFB73',46:'\uFB75',47:'\uFB76',48:'\uFB78',49:'\uFB79',
+      50:'\uFB7B',51:'\uFB7C',52:'\uFB7E',53:'\uFB7F',54:'\uFB81',55:'\uFB82',56:'\uFB84',
+      57:'\uFB85',58:'\uFB87',59:'\uFB88',60:'\uFB8A',61:'\uFB8B',62:'\uFB8D',63:'\uFB8E',
+      64:'\uFB90',65:'\uFB91',66:'\uFB93',67:'\uFB94',68:'\uFB96',69:'\uFB97',70:'\uFB99',
+      71:'\uFB9A',72:'\uFB9C',73:'\uFB9D',74:'\uFB9F',75:'\uFBA0',76:'\uFBA2',77:'\uFBA3',
+      78:'\uFBA5',79:'\uFBA6',80:'\uFBA8',81:'\uFBA9',82:'\uFBAB',83:'\uFBAC',84:'\uFBAE',
+      85:'\uFBAF',86:'\uFBB1',87:'\uFBB2',88:'\uFBB4',89:'\uFBB5',90:'\uFBB7',91:'\uFBB8',
+      92:'\uFBBA',93:'\uFBBB',94:'\uFBBD',95:'\uFBBE',96:'\uFBC0',97:'\uFBC1',98:'\uFBD3',
+      99:'\uFBD4',100:'\uFBD6',101:'\uFBD7',102:'\uFBD9',103:'\uFBDA',104:'\uFBDC',
+      105:'\uFBDD',106:'\uFBDF',107:'\uFBE0',108:'\uFBE2',109:'\uFBE3',110:'\uFBE5',
+      111:'\uFBE6',112:'\uFBE8',113:'\uFBE9',114:'\uFBEB'
+    };
+    const AR_NUMS = ['\u0661','\u0662','\u0663','\u0664','\u0665','\u0666','\u0667','\u0668','\u0669'];
+
+    function letterAudioDir() { return getLettersDir(); }
+    const LETTER_AUDIO_MAP = {
+      'Alif': 'alif', 'Ba': 'ba', 'Ta': 'ta', 'Tha': 'tha',
+      'Jeem': 'jeem', 'Ha': 'ha-letter', 'Kha': 'kha',
+      'Dal': 'dal', 'Dhal': 'dhal', 'Ra': 'ra', 'Zay': 'zay',
+      'Seen': 'seen', 'Sheen': 'sheen', 'Sad': 'sad', 'Dad': 'dad',
+      'Taa': 'taa-letter', 'Dhaa': 'dhaa', 'Ayn': 'ayn', 'Ghayn': 'ghayn',
+      'Fa': 'fa', 'Qaf': 'qaf', 'Kaf': 'kaf', 'Lam': 'lam',
+      'Meem': 'meem', 'Noon': 'noon', 'Haa': 'haa', 'Waw': 'waw', 'Ya': 'ya',
+      'Hamza': 'hamza', 'Waw Hamza': 'hamza', 'Ya Hamza': 'hamza',
+      'Ta Marbuta': 'ta-marbuta', 'Alif Wasla': 'alif-wasla',
+      'Alif Madd': 'alif-madd', 'Alif Khanjariya': 'alif-khanjariya',
+      'Lam Alif': 'lam-alif',
+      'fatha': 'fatha', 'damma': 'damma', 'kasra': 'kasra',
+      'sukun': 'sukun', 'shadda': 'shadda',
+      'fathatan': 'fathatan', 'dammatan': 'dammatan', 'kasratan': 'kasratan',
+      'shadda fatha': 'shadda-fatha', 'shadda damma': 'shadda-damma',
+      'shadda kasra': 'shadda-kasra', 'shadda fathatan': 'shadda-fathatan',
+      'shadda dammatan': 'shadda-dammatan', 'shadda kasratan': 'shadda-kasratan'
+    };
+
+    let PAGE_PLAYLIST = null, PAGE_ITEMS = null, PAGE_INDOPAK_LINES = null, PAGE_HAFS_LINES = null;
+    let isPlaying = false, abortController = null, currentAudio = null;
+    function isPagelessMode() { return localStorage.getItem('qk_pageless') === '1'; }
+    let playbackHighlightPage = 1;
+    let pagelessVisiblePage = CURRENT_PAGE;
+    let pagelessMinLoaded = 1;
+    let pagelessMaxLoaded = 1;
+    const pagelessCache = new Map();
+    let pagelessScrollBusy = false;
+    let playMode = localStorage.getItem('qk_mode') || 'recite';
+    // Repeat is for verses only (verseRepeat); word click plays once.
+    const surahAudioElements = {}; // pre-created Audio elements per surah
+
+    const $ = id => document.getElementById(id);
+    const delay = ms => new Promise(r => setTimeout(r, ms));
+    function getVerseEndPauseMs() { const s = parseInt(localStorage.getItem('qk_verse_end_pause') || '0', 10); return (s >= 0 && s <= 10) ? s * 1000 : 0; }
+    const PLAYBACK_RATES = [0.5, 0.7, 0.9, 1, 1.1, 1.3, 1.5];
+    function getPlaybackRate() { const v = parseFloat(localStorage.getItem('qk_playback_rate') || '1'); return PLAYBACK_RATES.includes(v) ? v : 1; }
+    function applyPlaybackRate(audio) { if (audio) audio.playbackRate = getPlaybackRate(); }
+    function recordingMsToRealMs(recordingMs) { return recordingMs / getPlaybackRate(); }
+    document.addEventListener('playbackratechange', () => { if (currentAudio) currentAudio.playbackRate = getPlaybackRate(); });
+
+    document.addEventListener('reciterchange', async () => {
+      stopPlayback();
+      TIMESTAMP_DATA_DIR = getTimestampDataDir();
+      Object.keys(surahAudioElements).forEach(k => delete surahAudioElements[k]);
+      SURAH_AUDIO = {};
+      if (isPagelessMode() && pagelessCache.size > 0) {
+        const allS = new Set();
+        pagelessCache.forEach(d => d.surahs.forEach(s => allS.add(s)));
+        PAGE_SURAHS = [...allS];
+        await fetchSurahAudio();
+        preloadSurahAudio();
+        const c = $('mushaf-content');
+        const order = [...pagelessCache.keys()].sort((a, b) => a - b);
+        c.innerHTML = '';
+        for (const p of order) {
+          const d = pagelessCache.get(p);
+          const sec = document.createElement('section');
+          sec.className = 'pageless-section' + (d.indopak13 ? ' mushaf-indopak13' : '');
+          sec.dataset.page = String(p);
+          if (d.indopak13) {
+            if (ip13MushafMatchOn()) sec.classList.add('ip13-pending');
+            renderIndopak13Block(sec, d.playlist, d.indopakLines, d.surahs, p, { updateToolbarMeta: false });
+          } else if (hafsMusharMatchOn() && d.hafsLines) {
+            sec.classList.add('hafs-pending');
+            renderHafsLinesBlock(sec, d.playlist, d.hafsLines, d.surahs, p, { updateToolbarMeta: false });
+          } else {
+            renderMushafBlock(sec, d.playlist, d.items, d.surahs, p, { updateToolbarMeta: false });
+          }
+          c.appendChild(sec);
+          if (d.indopak13) {
+            if (ip13MushafMatchOn()) {
+              document.fonts.ready.then(() => setTimeout(() => applyIp13Justification(sec), 300));
+            } else {
+              collapseIp13ToFlow(sec);
+            }
+          } else if (hafsMusharMatchOn() && d.hafsLines) {
+            document.fonts.ready.then(() => setTimeout(() => applyHafsJustification(sec), 300));
+          }
+        }
+        pagelessMinLoaded = order[0];
+        pagelessMaxLoaded = order[order.length - 1];
+        const pd = pagelessCache.get(pagelessVisiblePage);
+        if (pd) {
+          updateToolbarForPageData(pd.items, pd.surahs, pagelessVisiblePage, pd.playlist);
+          PAGE_PLAYLIST = pd.playlist;
+          PAGE_ITEMS = pd.items;
+          PAGE_INDOPAK_LINES = pd.indopak13 ? pd.indopakLines : null;
+        }
+      } else {
+        await fetchSurahAudio();
+        preloadSurahAudio();
+        renderMushafPage();
+      }
+      for (const ch of PAGE_SURAHS) {
+        const el = surahAudioElements[ch];
+        if (el) applyPlaybackRate(el);
+      }
+    });
+
+    function setMode(mode) {
+      if (playMode !== mode && isPlaying) stopPlayback();
+      playMode = mode;
+      localStorage.setItem('qk_mode', mode);
+      $('mode-spelling').classList.toggle('active', mode === 'spelling');
+      $('mode-recite').classList.toggle('active', mode === 'recite');
+    }
+
+    function getAudioCacheBust() { return '?v=1&r=' + (getReciter() || ''); }
+    async function fetchSurahAudio() {
+      TIMESTAMP_DATA_DIR = getTimestampDataDir();
+      const recitationDir = getRecitationDir();
+      const localMp3Base = recitationDir;
+      const cacheBust = getAudioCacheBust();
+      const results = await Promise.allSettled(PAGE_SURAHS.map(ch =>
+        fetch(TIMESTAMP_DATA_DIR + ch + '.json' + cacheBust).then(r => {
+          if (!r.ok) throw new Error('Not found');
+          return r.json();
+        })
+      ));
+      PAGE_SURAHS.forEach((ch, i) => {
+        const r = results[i];
+        const localMp3 = localMp3Base + ch + '.mp3' + cacheBust;
+        if (r.status === 'fulfilled' && r.value) {
+          const af = r.value.audio_file;
+          if (af) {
+            let url = af.audio_url || '';
+            if (url.startsWith('http') || !url) url = localMp3;
+            else if (!url.includes('?')) url = url + cacheBust;
+            SURAH_AUDIO[ch] = { audio_url: url, timestamps: af.timestamps || [] };
+          } else {
+            SURAH_AUDIO[ch] = { audio_url: localMp3, timestamps: [] };
+          }
+        } else {
+          SURAH_AUDIO[ch] = { audio_url: localMp3, timestamps: [] };
+        }
+      });
+    }
+
+    function preloadSurahAudio() {
+      for (const ch of PAGE_SURAHS) {
+        const data = SURAH_AUDIO[ch];
+        if (!data) continue;
+        const audio = new Audio();
+        audio.preload = 'auto';
+        audio.src = data.audio_url;
+        surahAudioElements[ch] = audio;
+      }
+    }
+
+    function getSurahAudio(surah) {
+      if (!surahAudioElements[surah]) {
+        const data = SURAH_AUDIO[surah];
+        if (!data) return null;
+        const audio = new Audio();
+        audio.preload = 'auto';
+        audio.src = data.audio_url;
+        surahAudioElements[surah] = audio;
+      }
+      return surahAudioElements[surah];
+    }
+
+    function getVerseTimestamp(verseKey) {
+      const [surah] = (verseKey || '').split(':').map(Number);
+      const data = SURAH_AUDIO[surah];
+      if (!data) return null;
+      return data.timestamps.find(t => t.verse_key === verseKey) || null;
+    }
+
+    function getWordTimestamp(playIndex) {
+      if (!PAGE_PLAYLIST) return null;
+      const item = PAGE_PLAYLIST[playIndex];
+      if (!item) return null;
+      const ts = getVerseTimestamp(item.verse_key);
+      if (!ts) return null;
+      const vk = item.verse_key;
+      let wordIdx = item.word_in_ayah != null && item.word_in_ayah >= 0
+        ? item.word_in_ayah
+        : (() => {
+          let w = 0;
+          for (let i = 0; i < playIndex; i++) {
+            if (PAGE_PLAYLIST[i].verse_key === vk) w++;
+          }
+          return w;
+        })();
+      const seg = ts.segments?.[wordIdx];
+      if (!seg) return null;
+      const [surah] = vk.split(':').map(Number);
+      return { surah, startMs: seg[1], endMs: seg[2] };
+    }
+
+    function getSegmentPronunciation(segment) {
+      const parts = [];
+      for (let i = 0; i < segment.length; i++) {
+        const c = segment[i];
+        const name = LETTER_NAMES[c];
+        if (!name) continue;
+        // Check for Lam-Alif ligature
+        if (c === '\u0644' && i + 1 < segment.length) {
+          const next = segment[i+1];
+          if (next === '\u0627' || next === '\u0623' || next === '\u0625' || next === '\u0622') {
+            parts.push({ letter: 'Lam Alif', haraka: '', char: '\u0644\u0627' });
+            i++;
+            continue;
+          }
+        }
+        let marks = [], markChars = '';
+        for (let j = i+1; j < segment.length; j++) {
+          if (LETTER_NAMES[segment[j]] || segment[j] === ' ') break;
+          if (HARAKAT_SIMPLE[segment[j]]) { marks.push(HARAKAT_SIMPLE[segment[j]]); markChars += segment[j]; }
+        }
+        let haraka = 'sukun';
+        if (marks.length === 1) {
+          haraka = marks[0];
+        } else if (marks.length >= 2 && marks[0] === 'shadda') {
+          haraka = 'shadda ' + marks[1];
+        } else if (marks.length >= 2) {
+          haraka = marks.join(' ');
+        }
+        parts.push({ letter: name, haraka, char: c + markChars });
+      }
+      return parts;
+    }
+
+    function pronunciationToString(parts) {
+      return parts.map(p => p.letter + (p.haraka ? ' ' + p.haraka : '')).join(' \u00b7 ');
+    }
+
+    // --- Letter audio playback (pre-generated Minshawi clone) ---
+    const letterAudioEl = new Audio();
+    letterAudioEl.preload = 'auto';
+
+    // iOS Safari requires audio elements to be "unlocked" by a user gesture.
+    // We touch-play all audio elements at the moment of tap, before the async chain.
+    let _iosUnlocked = false;
+    function unlockAudioForIOS() {
+      if (_iosUnlocked) return;
+      _iosUnlocked = true;
+      const els = [letterAudioEl];
+      for (const ch of PAGE_SURAHS) {
+        const a = getSurahAudio(ch);
+        if (a) els.push(a);
+      }
+      els.forEach(a => {
+        a.volume = 0;
+        const p = a.play();
+        if (p) p.then(() => {
+          // Only reset if no real playback has claimed this element
+          if (currentAudio !== a) { a.pause(); a.currentTime = 0; }
+          a.volume = 1;
+        }).catch(() => { a.volume = 1; });
+      });
+    }
+
+    function playLetterAudio(key) {
+      const file = LETTER_AUDIO_MAP[key];
+      if (!file) return Promise.resolve();
+      return new Promise(resolve => {
+        let done = false;
+        const finish = () => {
+          if (done) return; done = true;
+          letterAudioEl.onended = null;
+          letterAudioEl.onerror = null;
+          resolve();
+        };
+        letterAudioEl.onended = () => setTimeout(finish, 60);
+        letterAudioEl.onerror = finish;
+        letterAudioEl.src = letterAudioDir() + file + '.mp3';
+        currentAudio = letterAudioEl;
+        applyPlaybackRate(letterAudioEl);
+        letterAudioEl.play().catch(finish);
+      });
+    }
+
+    // --- Fetch and render ---
+    function parsePageJson(json) {
+      const playlist = [], items = [];
+      const surahs = new Set();
+      let prevSurah = 0;
+      // hafs mushaf line layout — group words by line_number
+      const hafsLines = [];
+      const pendingHafsLine = new Map(); // lineNum → line entry object
+      for (const v of json.verses || []) {
+        const [ch, vn] = (v.verse_key||'').split(':').map(Number);
+        surahs.add(ch);
+        if (ch !== prevSurah && vn === 1) {
+          items.push({ type: 'surah_header', surah: ch });
+          if (ch !== 9) items.push({ type: 'basmallah' });
+          hafsLines.push({ kind: 'surah', surah: ch });
+          if (ch !== 9) hafsLines.push({ kind: 'basmallah' });
+          prevSurah = ch;
+        } else if (ch !== prevSurah) {
+          prevSurah = ch;
+        }
+        for (const w of v.words || []) {
+          const lineNum = w.line_number || 0;
+          if (w.char_type_name === 'word') {
+            const pi = playlist.length;
+            playlist.push({
+              text: w.text_uthmani || w.text,
+              verse_key: w.verse_key,
+              pronunciation: getSegmentPronunciation(w.text_uthmani || w.text),
+              wordSound: WORD_SOUNDS[w.text_uthmani||w.text] || w.transliteration?.text || '',
+              translation: w.translation?.text || ''
+            });
+            items.push({ type: 'word', playIndex: pi, text: playlist[pi].text });
+            if (!pendingHafsLine.has(lineNum)) {
+              const entry = { kind: 'line', lineNum, startPi: pi, count: 1, verseEnds: [] };
+              pendingHafsLine.set(lineNum, entry);
+              hafsLines.push(entry);
+            } else {
+              const entry = pendingHafsLine.get(lineNum);
+              entry.count = pi - entry.startPi + 1;
+            }
+          } else if (w.char_type_name === 'end' && vn) {
+            items.push({ type: 'verse_num', num: vn, verseKey: w.verse_key });
+            if (pendingHafsLine.has(lineNum)) {
+              pendingHafsLine.get(lineNum).verseEnds.push({
+                verseKey: w.verse_key,
+                afterPi: playlist.length - 1
+              });
+            }
+          }
+        }
+      }
+      // Determine centering for each hafs line (mirrors IP13 rule):
+      // Center if: all words are Surah 1, OR surah 2 starts on this page, OR all words are surahs 103-114.
+      const pageSurahStarts = new Set();
+      for (const v of json.verses || []) {
+        const [ch, vn] = (v.verse_key||'').split(':').map(Number);
+        if (vn === 1) pageSurahStarts.add(ch);
+      }
+      for (const rl of hafsLines) {
+        if (rl.kind !== 'line') continue;
+        const lineSurahs = new Set();
+        for (let j = 0; j < rl.count; j++) {
+          const pl = playlist[rl.startPi + j];
+          if (pl && pl.verse_key) lineSurahs.add(Number(pl.verse_key.split(':')[0]));
+        }
+        const arr = [...lineSurahs];
+        rl.centered = arr.length > 0 && (
+          arr.every(s => s === 1) ||
+          pageSurahStarts.has(2) ||
+          arr.every(s => s >= 103 && s <= 114)
+        );
+      }
+      return { playlist, items, surahs: [...surahs], hafsLines };
+    }
+
+    /** IndoPak 13 mushaf layout: center Al-Fatiha, Baqarah p.1 (mushaf page 2), Quraysh–Nas (106–114). */
+    function ip13MushafLayoutCenterAyahLine(pageNum, words, pageSurahHeaders) {
+      if (!words || !words.length) return false;
+      // Extract surah number from w.surah, falling back to word_key ("surah:ayah")
+      const surahs = words.map(w => {
+        if (w.surah) return Number(w.surah) || 0;
+        if (w.word_key) return Number(String(w.word_key).split(':')[0]) || 0;
+        return 0;
+      });
+      const result = (
+        surahs.every(s => s === 1) ||
+        (pageSurahHeaders && pageSurahHeaders.includes(2)) ||
+        surahs.every(s => s >= 106 && s <= 114)
+      );
+      // Debug: remove after confirming correct behaviour
+      if (result || surahs.some(s => s > 0)) {
+        console.log('[ip13 center]', { pageNum, pageSurahHeaders, surahs: [...new Set(surahs)], result, sample: words[0] });
+      }
+      return result;
+    }
+
+    function parseIndopak13PageJson(json) {
+      const playlist = [];
+      const renderLines = [];
+      const surahSet = [];
+      const pageNum = Number(json.page) || 0;
+
+      // First pass: collect all surah-name headers on this page so we can detect
+      // "first page of Baqarah" etc. without relying on page numbers.
+      const pageSurahHeaders = (json.lines || [])
+        .filter(ln => (ln.line_type || '').toLowerCase() === 'surah_name' && ln.surah_number)
+        .map(ln => Number(ln.surah_number));
+
+      for (const ln of json.lines || []) {
+        const lt = (ln.line_type || '').toLowerCase();
+        if (lt === 'surah_name') {
+          const sn = Number(ln.surah_number) || 0;
+          if (sn) {
+            surahSet.push(sn);
+            renderLines.push({ kind: 'surah', surah: sn, centered: ln.is_centered !== false });
+          }
+        } else if (lt === 'basmallah') {
+          renderLines.push({ kind: 'basmallah', centered: ln.is_centered !== false });
+        } else if (lt === 'ayah') {
+          const words = ln.words || [];
+          const startPi = playlist.length;
+          for (const w of words) {
+            const vk = (w.word_key && /^\d+:\d+$/.test(String(w.word_key)))
+              ? String(w.word_key)
+              : `${w.surah}:${w.ayah}`;
+            const sn = w.surah ? Number(w.surah) : (Number(vk.split(':')[0]) || 0);
+            if (sn && !surahSet.includes(sn)) surahSet.push(sn);
+            playlist.push({
+              text: w.text || '',
+              verse_key: vk,
+              pronunciation: getSegmentPronunciation(w.text_uthmani || w.text || ''),
+              wordSound: WORD_SOUNDS[w.text_uthmani || w.text] || w.transliteration?.text || '',
+              word_in_ayah: w.word_in_ayah != null ? w.word_in_ayah : 0,
+              translation: w.translation?.text || ''
+            });
+          }
+          const alwaysC = ip13MushafLayoutCenterAyahLine(pageNum, words, pageSurahHeaders);
+          renderLines.push({
+            kind: 'ayah',
+            centered: alwaysC || !!ln.is_centered,
+            alwaysCentered: alwaysC,
+            startPi,
+            count: words.length
+          });
+        }
+      }
+      return { playlist, renderLines, surahs: [...new Set(surahSet)] };
+    }
+
+    function attachVerseNumButton(btn, verseKey, pageNum) {
+      btn.type = 'button';
+      btn.className = 'verse-num';
+      const en = localStorage.getItem('qk_english_nums') === '1';
+      const vn = parseInt(String(verseKey).split(':')[1], 10) || 0;
+      btn.textContent = en ? String(vn) : (AR_NUMS[vn - 1] || String(vn));
+      btn.dataset.verseKey = verseKey;
+      btn.title = 'Tap: play verse · Hold: bookmark';
+      btn.addEventListener('click', (e) => {
+        if (btn._verseBookmarkJustFired) { btn._verseBookmarkJustFired = false; return; }
+        playVerseInline(verseKey, btn);
+      });
+      let holdTimer = null;
+      const startHold = (ev) => {
+        if (holdTimer && holdTimer !== 'fired') clearTimeout(holdTimer);
+        holdTimer = setTimeout(() => {
+          holdTimer = 'fired';
+          if (ev && ev.preventDefault) ev.preventDefault();
+          btn._verseBookmarkJustFired = true;
+          setBookmark(verseKey, pageNum);
+        }, 800);
+      };
+      const endHold = (ev) => {
+        if (holdTimer === 'fired' && ev && ev.preventDefault) ev.preventDefault();
+        if (holdTimer && holdTimer !== 'fired') clearTimeout(holdTimer);
+        holdTimer = null;
+      };
+      btn.addEventListener('pointerdown', startHold);
+      btn.addEventListener('pointerup', (ev) => { endHold(ev); });
+      btn.addEventListener('pointercancel', (ev) => { endHold(ev); });
+      btn.addEventListener('touchstart', (ev) => { startHold(ev); }, { passive: true });
+      btn.addEventListener('touchend', (ev) => { endHold(ev); }, { passive: false });
+      btn.addEventListener('touchcancel', (ev) => { endHold(ev); }, { passive: false });
+      btn.addEventListener('contextmenu', (ev) => ev.preventDefault());
+    }
+
+    /** IndoPak font encodes ayah end as PUA glyphs (–); we use app .verse-num only — strip from display. */
+    function indopak13HasAyahMarkerPUA(s) {
+      return typeof s === 'string' && /[\uF500-\uF8FF]/.test(s);
+    }
+    function stripIndopak13AyahMarkerGlyphs(s) {
+      if (!s || typeof s !== 'string') return '';
+      let t = s;
+      for (let k = 0; k < 4; k++) {
+        const n = t.replace(/[\u0617-\u061A\u061C\u06D6-\u06ED\u0640\u200C-\u200D]*[\uF500-\uF8FF]+\s*$/u, '').trimEnd();
+        if (n === t) break;
+        t = n;
+      }
+      return t.trim();
+    }
+
+    // Justify indopak13 lines: font is sized so natural line width ≈ container width.
+    // scaleX is a tiny fine-tune (±5%) to make every line exactly flush.
+    // In free mode (mushaf match off): replace all ip13-ayah-line block divs with a
+    // single flowing <div> so Arabic text wraps naturally like normal prose.
+    function collapseIp13ToFlow(container) {
+      container.classList.add('ip13-free');
+      // Group consecutive .ip13-ayah-line elements together, leaving surah headers
+      // and bismallah lines in place between groups.
+      const children = Array.from(container.children);
+      let group = [];
+
+      function flushGroup() {
+        if (!group.length) return;
+        const para = document.createElement('div');
+        para.className = 'ip13-flow-para';
+        para.dir = 'rtl';
+        group.forEach((line, i) => {
+          const inner = line.querySelector('.ip13-line-inner');
+          const src = inner || line;
+          while (src.firstChild) para.appendChild(src.firstChild);
+          if (i < group.length - 1) para.appendChild(document.createTextNode(' '));
+        });
+        group[0].parentNode.insertBefore(para, group[0]);
+        group.forEach(l => l.remove());
+        group = [];
+      }
+
+      for (const child of children) {
+        if (child.classList.contains('ip13-ayah-line')) {
+          group.push(child);
+        } else {
+          flushGroup();
+        }
+      }
+      flushGroup();
+    }
+
+    function applyIp13Justification(rootEl) {
+      if (!useIndopak13() || !ip13MushafMatchOn()) return;
+      const allRows = Array.from(rootEl.querySelectorAll('.ip13-ayah-line.indopak13-line--justified'));
+      if (!allRows.length) return;
+
+      // Mark containers pending so justified lines hide while we measure.
+      const containerMap = new Map();
+      allRows.forEach(row => {
+        const cont = row.closest('.mushaf-indopak13, #mushaf-content') || row.parentElement;
+        cont.classList.add('ip13-pending');
+        if (!containerMap.has(cont)) containerMap.set(cont, []);
+        containerMap.get(cont).push(row);
+      });
+
+      // Reset inline styles so we measure natural widths.
+      allRows.forEach(row => {
+        row.style.width = 'max-content';
+        const inner = row.querySelector('.ip13-line-inner');
+        if (inner) {
+          inner.style.transform = '';
+          inner.querySelectorAll('.verse-num').forEach(btn => btn.style.transform = '');
+        }
+      });
+      rootEl.querySelectorAll('.ip13-ayah-line.indopak13-line--centered').forEach(row => {
+        row.style.width = '';
+      });
+
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        containerMap.forEach((rows, cont) => {
+          const cs = getComputedStyle(cont);
+          const padL = parseFloat(cs.paddingLeft) || 0;
+          const padR = parseFloat(cs.paddingRight) || 0;
+          const targetW = cont.clientWidth - padL - padR;
+          if (targetW < 10) {
+            cont.classList.remove('ip13-pending');
+            return;
+          }
+          rows.forEach(row => {
+            const inner = row.querySelector('.ip13-line-inner');
+            if (!inner) return;
+            const naturalW = inner.getBoundingClientRect().width;
+            if (naturalW < 1) return;
+            row.style.width = targetW + 'px';
+            const scale = targetW / naturalW;
+            inner.style.transform = `scaleX(${scale.toFixed(5)})`;
+            inner.querySelectorAll('.verse-num').forEach(btn => {
+              btn.style.transform = `scaleX(${(1 / scale).toFixed(5)})`;
+            });
+          });
+          // Scaling done — reveal lines.
+          cont.classList.remove('ip13-pending');
+        });
+      }));
+    }
+
+    function applyHafsJustification(rootEl) {
+      if (!hafsMusharMatchOn()) return;
+      const justRows = Array.from(rootEl.querySelectorAll('.hafs-ayah-line.hafs-line--justified'));
+      if (!justRows.length) {
+        // No justified rows but there may be centered rows — just remove pending.
+        rootEl.querySelectorAll('.pageless-section, #mushaf-content').forEach(c => c.classList.remove('hafs-pending'));
+        rootEl.classList && rootEl.classList.remove('hafs-pending');
+        return;
+      }
+      const containerMap = new Map();
+      justRows.forEach(row => {
+        const cont = row.closest('.pageless-section, #mushaf-content') || row.parentElement;
+        cont.classList.add('hafs-pending');
+        if (!containerMap.has(cont)) containerMap.set(cont, []);
+        containerMap.get(cont).push(row);
+      });
+      // Reset justified rows so we can measure natural inner width.
+      justRows.forEach(row => {
+        row.style.width = 'max-content';
+        const inner = row.querySelector('.hafs-line-inner');
+        if (inner) {
+          inner.style.transform = '';
+          inner.querySelectorAll('.verse-num').forEach(btn => btn.style.transform = '');
+        }
+      });
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        containerMap.forEach((rows, cont) => {
+          const cs = getComputedStyle(cont);
+          const padL = parseFloat(cs.paddingLeft) || 0;
+          const padR = parseFloat(cs.paddingRight) || 0;
+          const targetW = cont.clientWidth - padL - padR;
+          if (targetW < 10) { cont.classList.remove('hafs-pending'); return; }
+          rows.forEach(row => {
+            const inner = row.querySelector('.hafs-line-inner');
+            if (!inner) return;
+            const naturalW = inner.getBoundingClientRect().width;
+            if (naturalW < 1) return;
+            row.style.width = targetW + 'px';
+            const scale = targetW / naturalW;
+            inner.style.transform = `scaleX(${scale.toFixed(5)})`;
+            inner.querySelectorAll('.verse-num').forEach(btn => {
+              btn.style.transform = `scaleX(${(1 / scale).toFixed(5)})`;
+            });
+          });
+          cont.classList.remove('hafs-pending');
+        });
+      }));
+    }
+
+    // Strip Quranic annotation signs (U+06D6–U+06ED) that render as visible circles/marks
+    // in the UthmanicHafs font but are not part of the readable text
+    function stripHafsMarks(str) {
+      return str ? str.replace(/[\u06D6-\u06ED]/g, '') : str;
+    }
+
+    function renderHafsLinesBlock(container, playlist, hafsLines, surahsArr, pageNum, { updateToolbarMeta } = {}) {
+      if (!playlist || !hafsLines) return;
+      for (const rl of hafsLines) {
+        if (rl.kind === 'surah') {
+          const d = document.createElement('div');
+          d.className = 'surah-name';
+          d.dataset.surah = String(rl.surah);
+          const surahInfo = SURAHS.find(s => s.n === rl.surah);
+          const nameEn = surahInfo ? `${rl.surah}. ${surahInfo.name}` : '';
+          d.innerHTML = `<div class="surah-name-inner"><span class="surah-header-icon">${SURAH_HEADER_CHARS[rl.surah]||''}</span><span class="surah-name-en">${nameEn}</span></div>`;
+          d.addEventListener('click', () => {
+            const inner = d.querySelector('.surah-name-inner');
+            inner.classList.add('flipped');
+            setTimeout(() => inner.classList.remove('flipped'), 1800);
+          });
+          container.appendChild(d);
+        } else if (rl.kind === 'basmallah') {
+          const d = document.createElement('div');
+          d.className = 'basmallah-line';
+          d.innerHTML = `<span class="basmallah">${BASMALLAH}</span>`;
+          container.appendChild(d);
+        } else if (rl.kind === 'line') {
+          const row = document.createElement('div');
+          const lineClass = rl.centered ? 'hafs-line--centered' : 'hafs-line--justified';
+          row.className = `hafs-ayah-line mushaf-line-row ${lineClass}`;
+          row.setAttribute('lang', 'ar');
+          const inner = document.createElement('span');
+          inner.className = 'hafs-line-inner';
+          row.appendChild(inner);
+          // Map: afterPi → verseKey for verse-num button placement
+          const verseEndMap = new Map();
+          for (const ve of rl.verseEnds || []) verseEndMap.set(ve.afterPi, ve.verseKey);
+          let needSpace = false;
+          for (let j = 0; j < rl.count; j++) {
+            const pi = rl.startPi + j;
+            const cur = playlist[pi];
+            if (!cur) continue;
+            if (needSpace) inner.appendChild(document.createTextNode('\u00a0'));
+            const sp = document.createElement('span');
+            sp.className = 'word';
+            sp.dataset.page = String(pageNum);
+            sp.dataset.playIndex = String(pi);
+            const parts = cur.pronunciation;
+            const assembled = parts && parts.length ? parts.map(p => p.char != null ? p.char : '').join('') : '';
+            const tNorm = (cur.text || '').normalize('NFC');
+            const aNorm = assembled.normalize('NFC');
+            if (parts && parts.length && aNorm === tNorm) {
+              parts.forEach((p, pi2) => {
+                const le = document.createElement('span');
+                le.className = 'word-letter';
+                le.dataset.partIndex = String(pi2);
+                le.textContent = stripHafsMarks(p.char != null ? p.char : '');
+                sp.appendChild(le);
+              });
+            } else {
+              sp.textContent = stripHafsMarks(cur.text);
+            }
+            sp.addEventListener('click', () => onWordClick(pi, pageNum));
+            inner.appendChild(sp);
+            needSpace = true;
+            if (verseEndMap.has(pi)) {
+              inner.appendChild(document.createTextNode('\u00a0'));
+              const btn = document.createElement('button');
+              attachVerseNumButton(btn, verseEndMap.get(pi), pageNum);
+              inner.appendChild(btn);
+            }
+          }
+          container.appendChild(row);
+        }
+      }
+      if (container.classList && container.classList.contains('pageless-section')) {
+        const foot = document.createElement('div');
+        foot.className = 'page-section-end-num';
+        const en = localStorage.getItem('qk_english_nums') === '1';
+        foot.textContent = 'Page ' + (en ? String(pageNum) : toArabicNum(pageNum));
+        container.appendChild(foot);
+      }
+      if (updateToolbarMeta) updateToolbarForPageData(null, surahsArr, pageNum, playlist);
+      applyBookmarkHighlight();
+    }
+
+    function renderIndopak13Block(container, playlist, renderLines, surahsArr, pageNum, { updateToolbarMeta } = {}) {
+      if (!playlist || !renderLines) return;
+      const match = ip13MushafMatchOn();
+      const order = [];
+      for (const rl of renderLines) {
+        if (rl.kind === 'ayah') {
+          for (let j = 0; j < rl.count; j++) order.push(rl.startPi + j);
+        }
+      }
+      const nextInOrder = {};
+      order.forEach((pi, idx) => { nextInOrder[pi] = order[idx + 1]; });
+
+      for (const rl of renderLines) {
+        if (rl.kind === 'surah') {
+          const d = document.createElement('div');
+          const surahDbCentered = !!rl.centered;
+          d.className = 'surah-name' + (match && surahDbCentered ? '' : ' ip13-align-start');
+          d.dataset.surah = String(rl.surah);
+          d.dataset.ip13DbCentered = surahDbCentered ? '1' : '0';
+          const surahInfo = SURAHS.find(s => s.n === rl.surah);
+          const nameEn = surahInfo ? `${rl.surah}. ${surahInfo.name}` : '';
+          d.innerHTML = `<div class="surah-name-inner"><span class="surah-header-icon">${SURAH_HEADER_CHARS[rl.surah] || ''}</span><span class="surah-name-en">${nameEn}</span></div>`;
+          d.addEventListener('click', () => {
+            const inner = d.querySelector('.surah-name-inner');
+            inner.classList.add('flipped');
+            setTimeout(() => inner.classList.remove('flipped'), 1800);
+          });
+          container.appendChild(d);
+        } else if (rl.kind === 'basmallah') {
+          const d = document.createElement('div');
+          const basDbCentered = !!rl.centered;
+          d.className = 'basmallah-line' + (match && basDbCentered ? '' : ' ip13-align-start');
+          d.dataset.ip13DbCentered = basDbCentered ? '1' : '0';
+          d.innerHTML = `<span class="basmallah">${BASMALLAH}</span>`;
+          container.appendChild(d);
+        } else if (rl.kind === 'ayah') {
+          const row = document.createElement('div');
+          const ayahCentered = !!rl.alwaysCentered || !!(match && rl.centered);
+          row.dataset.ip13DbCentered = rl.centered ? '1' : '0';
+          row.dataset.ip13AlwaysCentered = rl.alwaysCentered ? '1' : '0';
+          // Only apply justified/centered classes when mushaf match is on.
+          // When off, lines render naturally with no scaling or centering logic.
+          const lineClass = match
+            ? (ayahCentered ? 'indopak13-line--centered' : 'indopak13-line--justified')
+            : '';
+          row.className = ('ip13-ayah-line mushaf-line-row ' + lineClass).trim();
+          row.setAttribute('lang', 'ar');
+
+          // All words go in an inner span — we scaleX this to fill the line width
+          const inner = document.createElement('span');
+          inner.className = 'ip13-line-inner';
+          row.appendChild(inner);
+
+          let needSpace = false;
+          const sp_char = match ? '\u00a0' : '\u0020';
+          for (let j = 0; j < rl.count; j++) {
+            const pi = rl.startPi + j;
+            const cur = playlist[pi];
+            if (!cur) continue;
+            const raw = cur.text || '';
+            const displayText = stripIndopak13AyahMarkerGlyphs(raw);
+            const skipMarkerOnlyWord = !displayText && indopak13HasAyahMarkerPUA(raw);
+            if (!skipMarkerOnlyWord) {
+              if (needSpace) inner.appendChild(document.createTextNode(sp_char));
+              const sp = document.createElement('span');
+              sp.className = 'word';
+              sp.dataset.page = String(pageNum);
+              sp.dataset.playIndex = String(pi);
+              sp.textContent = displayText || raw;
+              sp.addEventListener('click', () => onWordClick(pi, pageNum));
+              inner.appendChild(sp);
+              needSpace = true;
+            }
+            const nextPi = nextInOrder[pi];
+            const verseAfter = !nextPi || playlist[nextPi].verse_key !== cur.verse_key;
+            if (verseAfter && cur.verse_key) {
+              if (inner.lastChild) inner.appendChild(document.createTextNode(sp_char));
+              const btn = document.createElement('button');
+              attachVerseNumButton(btn, cur.verse_key, pageNum);
+              inner.appendChild(btn);
+              needSpace = true;
+            }
+          }
+          container.appendChild(row);
+        }
+      }
+      if (container.classList && container.classList.contains('pageless-section')) {
+        const foot = document.createElement('div');
+        foot.className = 'page-section-end-num';
+        const en = localStorage.getItem('qk_english_nums') === '1';
+        foot.textContent = 'Page ' + (en ? String(pageNum) : toArabicNum(pageNum));
+        container.appendChild(foot);
+      }
+      if (updateToolbarMeta) {
+        updateToolbarForPageData(null, surahsArr, pageNum, playlist);
+      }
+      applyBookmarkHighlight();
+
+      // Justification is triggered by the caller after the DOM is fully built.
+    }
+
+    async function fetchPageData() {
+      const res = await fetch(getPageDataDir() + CURRENT_PAGE + '.json');
+      if (!res.ok) throw new Error('Failed');
+      const json = await res.json();
+      if (useIndopak13() && json.layout === 'indopak13_qudratullah') {
+        const d = parseIndopak13PageJson(json);
+        PAGE_PLAYLIST = d.playlist;
+        PAGE_ITEMS = null;
+        PAGE_INDOPAK_LINES = d.renderLines;
+        PAGE_HAFS_LINES = null;
+        PAGE_SURAHS = d.surahs;
+        return;
+      }
+      PAGE_INDOPAK_LINES = null;
+      const { playlist, items, surahs, hafsLines } = parsePageJson(json);
+      PAGE_PLAYLIST = playlist;
+      PAGE_ITEMS = items;
+      PAGE_SURAHS = surahs;
+      PAGE_HAFS_LINES = hafsLines;
+    }
+
+    async function fetchSurahsAudioForList(surahNums) {
+      const need = surahNums.filter(ch => SURAH_AUDIO[ch] === undefined);
+      if (!need.length) return;
+      TIMESTAMP_DATA_DIR = getTimestampDataDir();
+      const recitationDir = getRecitationDir();
+      const cacheBust = getAudioCacheBust();
+      const results = await Promise.allSettled(need.map(ch =>
+        fetch(TIMESTAMP_DATA_DIR + ch + '.json' + cacheBust).then(r => {
+          if (!r.ok) throw new Error('Not found');
+          return r.json();
+        })
+      ));
+      need.forEach((ch, i) => {
+        const r = results[i];
+        const localMp3 = recitationDir + ch + '.mp3' + cacheBust;
+        if (r.status === 'fulfilled' && r.value) {
+          const af = r.value.audio_file;
+          if (af) {
+            let url = af.audio_url || '';
+            if (url.startsWith('http') || !url) url = localMp3;
+            else if (!url.includes('?')) url = url + cacheBust;
+            SURAH_AUDIO[ch] = { audio_url: url, timestamps: af.timestamps || [] };
+          } else {
+            SURAH_AUDIO[ch] = { audio_url: localMp3, timestamps: [] };
+          }
+        } else {
+          SURAH_AUDIO[ch] = { audio_url: localMp3, timestamps: [] };
+        }
+        if (!surahAudioElements[ch]) {
+          const audio = new Audio();
+          audio.preload = 'auto';
+          audio.src = SURAH_AUDIO[ch].audio_url;
+          surahAudioElements[ch] = audio;
+        }
+      });
+    }
+
+    function renderMushafBlock(container, playlist, items, surahsArr, pageNum, { updateToolbarMeta } = {}) {
+      if (!playlist || !items) return;
+      let line = null;
+      for (const it of items) {
+        if (it.type === 'surah_header') {
+          const d = document.createElement('div');
+          d.className = 'surah-name';
+          d.dataset.surah = String(it.surah);
+          const surahInfo = SURAHS.find(s => s.n === it.surah);
+          const nameEn = surahInfo ? `${it.surah}. ${surahInfo.name}` : '';
+          d.innerHTML = `<div class="surah-name-inner"><span class="surah-header-icon">${SURAH_HEADER_CHARS[it.surah]||''}</span><span class="surah-name-en">${nameEn}</span></div>`;
+          d.addEventListener('click', () => {
+            const inner = d.querySelector('.surah-name-inner');
+            inner.classList.add('flipped');
+            setTimeout(() => inner.classList.remove('flipped'), 1800);
+          });
+          container.appendChild(d);
+          line = null;
+        } else if (it.type === 'basmallah') {
+          const d = document.createElement('div');
+          d.className = 'basmallah-line';
+          d.innerHTML = `<span class="basmallah">${BASMALLAH}</span>`;
+          container.appendChild(d);
+          line = null;
+        } else {
+          if (!line) { line = document.createElement('div'); line.className = 'ayah-line'; container.appendChild(line); }
+          if (it.type === 'word') {
+            const sp = document.createElement('span');
+            sp.className = 'word';
+            sp.dataset.page = String(pageNum);
+            const pl = playlist[it.playIndex];
+            const parts = pl && pl.pronunciation;
+            let assembled = '';
+            if (parts && parts.length) {
+              assembled = parts.map(p => (p.char != null ? p.char : '')).join('');
+            }
+            const tNorm = (it.text || '').normalize('NFC');
+            const aNorm = assembled.normalize('NFC');
+            if (parts && parts.length && aNorm === tNorm) {
+              parts.forEach((p, pi) => {
+                const le = document.createElement('span');
+                le.className = 'word-letter';
+                le.dataset.partIndex = String(pi);
+                le.textContent = p.char != null ? p.char : '';
+                sp.appendChild(le);
+              });
+            } else {
+              sp.textContent = it.text;
+            }
+            sp.dataset.playIndex = it.playIndex;
+            sp.addEventListener('click', () => onWordClick(it.playIndex, pageNum));
+            line.appendChild(sp);
+          } else {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'verse-num';
+            btn.dataset.page = String(pageNum);
+            btn.dataset.num = it.num;
+            btn.textContent = localStorage.getItem('qk_english_nums') === '1' ? it.num : toArabicNum(it.num);
+            btn.dataset.verseKey = it.verseKey;
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              if (btn._verseBookmarkJustFired) { btn._verseBookmarkJustFired = false; return; }
+              playVerseInline(it.verseKey, btn);
+            });
+            let holdTimer = null;
+            const startHold = (e) => {
+              if (holdTimer && holdTimer !== 'fired') clearTimeout(holdTimer);
+              holdTimer = setTimeout(() => {
+                holdTimer = 'fired';
+                if (e && e.preventDefault) e.preventDefault();
+                btn._verseBookmarkJustFired = true;
+                setBookmark(it.verseKey, pageNum);
+              }, 800);
+            };
+            const endHold = (e) => {
+              if (holdTimer === 'fired' && e && e.preventDefault) e.preventDefault();
+              if (holdTimer && holdTimer !== 'fired') clearTimeout(holdTimer);
+              holdTimer = null;
+            };
+            btn.addEventListener('pointerdown', startHold);
+            btn.addEventListener('pointerup', (e) => { endHold(e); });
+            btn.addEventListener('pointercancel', (e) => { endHold(e); });
+            btn.addEventListener('touchstart', (e) => { startHold(e); }, { passive: true });
+            btn.addEventListener('touchend', (e) => { endHold(e); }, { passive: false });
+            btn.addEventListener('touchcancel', (e) => { endHold(e); }, { passive: false });
+            btn.addEventListener('contextmenu', (e) => e.preventDefault());
+            line.appendChild(btn);
+          }
+        }
+      }
+      if (container.classList && container.classList.contains('pageless-section')) {
+        const foot = document.createElement('div');
+        foot.className = 'page-section-end-num';
+        const en = localStorage.getItem('qk_english_nums') === '1';
+        foot.textContent = 'Page ' + (en ? String(pageNum) : toArabicNum(pageNum));
+        container.appendChild(foot);
+      }
+      if (updateToolbarMeta) {
+        const surahNames = (surahsArr || []).map(ch => {
+          const s = SURAHS.find(x => x.n === ch);
+          return s ? s.name : 'Surah ' + ch;
+        }).join(', ');
+        const firstVerse = (items || []).find(it => it.verseKey);
+        let juzNum = null;
+        if (firstVerse && firstVerse.verseKey) {
+          const [s, v] = firstVerse.verseKey.split(':').map(Number);
+          juzNum = getJuzForVerse(s, v);
+        }
+        const toolbarEl = document.getElementById('toolbar-surah-juz');
+        if (toolbarEl) {
+          if (surahNames) {
+            toolbarEl.innerHTML = juzNum != null
+              ? `${surahNames} · <span class="juz">Juz ${juzNum}</span>`
+              : surahNames;
+          } else {
+            toolbarEl.textContent = '';
+          }
+        }
+        const pageTitle = surahNames
+          ? `Surah ${surahNames} — Page ${pageNum} | quranforyunus.com`
+          : `Page ${pageNum} | quranforyunus.com`;
+        const pageDesc = surahNames
+          ? `Read and listen to ${surahNames}, Page ${pageNum} of the Quran. Word-by-word recitation and spelling.`
+          : `Page ${pageNum} of the Quran. Read and listen with word-by-word recitation.`;
+        updatePageMeta(pageTitle, pageDesc);
+      }
+      applyBookmarkHighlight();
+    }
+
+    function renderMushafPage() {
+      const c = $('mushaf-content');
+      c.innerHTML = '';
+      c.classList.toggle('mushaf-indopak13', useIndopak13());
+      playbackHighlightPage = CURRENT_PAGE;
+      if (useIndopak13() && PAGE_PLAYLIST && PAGE_INDOPAK_LINES) {
+        if (ip13MushafMatchOn()) c.classList.add('ip13-pending');
+        renderIndopak13Block(c, PAGE_PLAYLIST, PAGE_INDOPAK_LINES, PAGE_SURAHS, CURRENT_PAGE, { updateToolbarMeta: true });
+        $('page-title').textContent = `Page ${CURRENT_PAGE}`;
+        if (ip13MushafMatchOn()) {
+          c.classList.remove('ip13-free');
+          document.fonts.ready.then(() => setTimeout(() => applyIp13Justification(c), 300));
+        } else {
+          // Free mode: collapse all ip13-ayah-line divs into one flowing paragraph
+          // so text wraps naturally like normal Arabic prose.
+          collapseIp13ToFlow(c);
+        }
+        return;
+      }
+      if (!PAGE_PLAYLIST) return;
+      if (hafsMusharMatchOn() && PAGE_HAFS_LINES) {
+        c.classList.add('hafs-pending');
+        renderHafsLinesBlock(c, PAGE_PLAYLIST, PAGE_HAFS_LINES, PAGE_SURAHS, CURRENT_PAGE, { updateToolbarMeta: true });
+        $('page-title').textContent = `Page ${CURRENT_PAGE}`;
+        document.fonts.ready.then(() => setTimeout(() => applyHafsJustification(c), 300));
+        return;
+      }
+      if (!PAGE_ITEMS) return;
+      renderMushafBlock(c, PAGE_PLAYLIST, PAGE_ITEMS, PAGE_SURAHS, CURRENT_PAGE, { updateToolbarMeta: true });
+      $('page-title').textContent = `Page ${CURRENT_PAGE}`;
+    }
+
+    function updateToolbarForPageData(items, surahsArr, pageNum, playlistOpt) {
+      const surahNames = (surahsArr || []).map(ch => {
+        const s = SURAHS.find(x => x.n === ch);
+        return s ? s.name : 'Surah ' + ch;
+      }).join(', ');
+      let firstVerse = (items || []).find(it => it.verseKey);
+      if (!firstVerse && playlistOpt && playlistOpt.length) {
+        const p = playlistOpt.find(x => x.verse_key);
+        if (p) firstVerse = { verseKey: p.verse_key };
+      }
+      let juzNum = null;
+      if (firstVerse && firstVerse.verseKey) {
+        const [s, v] = firstVerse.verseKey.split(':').map(Number);
+        juzNum = getJuzForVerse(s, v);
+      }
+      const toolbarEl = document.getElementById('toolbar-surah-juz');
+      if (toolbarEl) {
+        if (surahNames) {
+          toolbarEl.innerHTML = juzNum != null
+            ? `${surahNames} · <span class="juz">Juz ${juzNum}</span>`
+            : surahNames;
+        } else toolbarEl.textContent = '';
+      }
+      const pageTitle = surahNames
+        ? `Surah ${surahNames} — Page ${pageNum} | quranforyunus.com`
+        : `Page ${pageNum} | quranforyunus.com`;
+      const pageDesc = surahNames
+        ? `Read and listen to ${surahNames}, Page ${pageNum} of the Quran. Word-by-word recitation and spelling.`
+        : `Page ${pageNum} of the Quran. Read and listen with word-by-word recitation.`;
+      updatePageMeta(pageTitle, pageDesc);
+    }
+
+    async function ensurePagelessPageLoaded(pageNum, mode) {
+      if (pageNum < 1 || pageNum > getMaxPage()) return;
+      if (pagelessCache.has(pageNum)) {
+        if (mode === 'prepend' && pageNum < pagelessMinLoaded) pagelessMinLoaded = pageNum;
+        if (mode !== 'prepend' && pageNum > pagelessMaxLoaded) pagelessMaxLoaded = pageNum;
+        return;
+      }
+      const res = await fetch(getPageDataDir() + pageNum + '.json');
+      if (!res.ok) throw new Error('Failed page ' + pageNum);
+      const json = await res.json();
+      let data;
+      if (useIndopak13() && json.layout === 'indopak13_qudratullah') {
+        const d = parseIndopak13PageJson(json);
+        data = {
+          playlist: d.playlist,
+          items: null,
+          surahs: d.surahs,
+          indopak13: true,
+          indopakLines: d.renderLines
+        };
+      } else {
+        const parsed = parsePageJson(json);
+        data = { ...parsed, indopak13: false, indopakLines: null };
+      }
+      pagelessCache.set(pageNum, data);
+      await fetchSurahsAudioForList(data.surahs);
+      const section = document.createElement('section');
+      section.className = 'pageless-section' + (useIndopak13() ? ' mushaf-indopak13' : '');
+      section.dataset.page = String(pageNum);
+      if (data.indopak13) {
+        if (ip13MushafMatchOn()) section.classList.add('ip13-pending');
+        renderIndopak13Block(section, data.playlist, data.indopakLines, data.surahs, pageNum, { updateToolbarMeta: false });
+      } else if (hafsMusharMatchOn() && data.hafsLines) {
+        section.classList.add('hafs-pending');
+        renderHafsLinesBlock(section, data.playlist, data.hafsLines, data.surahs, pageNum, { updateToolbarMeta: false });
+      } else {
+        renderMushafBlock(section, data.playlist, data.items, data.surahs, pageNum, { updateToolbarMeta: false });
+      }
+      const container = $('mushaf-content');
+      if (mode === 'prepend') {
+        const h0 = document.documentElement.scrollHeight;
+        container.insertBefore(section, container.firstChild);
+        pagelessMinLoaded = Math.min(pagelessMinLoaded, pageNum);
+        requestAnimationFrame(() => {
+          const delta = document.documentElement.scrollHeight - h0;
+          window.scrollTo(0, window.scrollY + delta);
+        });
+      } else {
+        container.appendChild(section);
+        pagelessMaxLoaded = Math.max(pagelessMaxLoaded, pageNum);
+        pagelessMinLoaded = Math.min(pagelessMinLoaded, pageNum);
+      }
+      // Trigger justification after section is in DOM so clientWidth is available.
+      if (data.indopak13) {
+        if (ip13MushafMatchOn()) {
+          document.fonts.ready.then(() => setTimeout(() => applyIp13Justification(section), 300));
+        } else {
+          collapseIp13ToFlow(section);
+        }
+      } else if (hafsMusharMatchOn() && data.hafsLines) {
+        document.fonts.ready.then(() => setTimeout(() => applyHafsJustification(section), 300));
+      }
+    }
+
+    async function initPagelessView(startPage) {
+      const c = $('mushaf-content');
+      c.innerHTML = '<div class="page-loading">Loading\u2026</div>';
+      pagelessCache.clear();
+      pagelessMinLoaded = pagelessMaxLoaded = startPage;
+      pagelessVisiblePage = startPage;
+      playbackHighlightPage = startPage;
+      try {
+        await ensurePagelessPageLoaded(startPage, 'append');
+        c.querySelectorAll('.page-loading').forEach(n => n.remove());
+      } catch (e) {
+        c.innerHTML = '<div class="page-loading error">Could not load.</div>';
+        throw e;
+      }
+      const d = pagelessCache.get(startPage);
+      if (d) {
+        PAGE_PLAYLIST = d.playlist;
+        PAGE_ITEMS = d.items;
+        PAGE_SURAHS = d.surahs;
+        PAGE_INDOPAK_LINES = d.indopak13 ? d.indopakLines : null;
+        PAGE_HAFS_LINES = d.indopak13 ? null : (d.hafsLines || null);
+      }
+      $('page-title').textContent = `Page ${startPage}`;
+      updateToolbarForPageData(d.items, d.surahs, startPage, d.playlist);
+      applyBookmarkHighlight();
+    }
+
+    let pagelessScrollTimer = null;
+    function updatePagelessVisibleFromScroll() {
+      if (!isPagelessMode()) return;
+      let best = 0, bestP = pagelessVisiblePage;
+      document.querySelectorAll('.pageless-section').forEach(sec => {
+        const r = sec.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const top = Math.max(r.top, 0);
+        const bot = Math.min(r.bottom, vh);
+        const vis = Math.max(0, bot - top);
+        if (vis > best) { best = vis; bestP = +sec.dataset.page; }
+      });
+      if (best > 60 && bestP !== pagelessVisiblePage) {
+        pagelessVisiblePage = bestP;
+        $('page-title').textContent = `Page ${bestP}`;
+        localStorage.setItem('qk_last_page', String(bestP));
+        const pd = pagelessCache.get(bestP);
+        if (pd) {
+          updateToolbarForPageData(pd.items, pd.surahs, bestP, pd.playlist);
+          PAGE_PLAYLIST = pd.playlist;
+          PAGE_ITEMS = pd.items;
+          PAGE_INDOPAK_LINES = pd.indopak13 ? pd.indopakLines : null;
+        }
+        if (typeof setupNav === 'function') setupNav();
+        const sh = document.getElementById('btn-share-link');
+        if (sh) {
+          try {
+            const bk = JSON.parse(localStorage.getItem('qk_bookmark') || 'null');
+            sh.classList.toggle('visible', !!(bk && Number(bk.page) === bestP));
+          } catch (_) {}
+        }
+      }
+    }
+
+    async function pagelessNavigateBy(delta) {
+      const t = pagelessVisiblePage + delta;
+      if (t < 1 || t > getMaxPage()) return;
+      try {
+        await ensurePagelessPageLoaded(t, t > pagelessMaxLoaded ? 'append' : (t < pagelessMinLoaded ? 'prepend' : 'append'));
+      } catch (_) { return; }
+      const sec = document.querySelector(`.pageless-section[data-page="${t}"]`);
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      pagelessVisiblePage = t;
+      $('page-title').textContent = `Page ${t}`;
+      localStorage.setItem('qk_last_page', String(t));
+      const pd = pagelessCache.get(t);
+      if (pd) {
+        updateToolbarForPageData(pd.items, pd.surahs, t, pd.playlist);
+        PAGE_PLAYLIST = pd.playlist;
+        PAGE_ITEMS = pd.items;
+        PAGE_INDOPAK_LINES = pd.indopak13 ? pd.indopakLines : null;
+      }
+      setupNav();
+      document.querySelector('.page-toolbar')?.classList.remove('pageless-toolbar-hidden');
+      document.getElementById('page-view')?.classList.remove('qk-pageless-toolbar-hidden');
+    }
+
+    let pagelessToolbarScrollY = 0;
+    function setupPagelessToolbarAutohide() {
+      const pv = document.getElementById('page-view');
+      const tb = document.querySelector('.page-toolbar');
+      if (!pv || !tb) return;
+      pagelessToolbarScrollY = window.scrollY;
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!isPagelessMode() || !pv.classList.contains('qk-pageless')) return;
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          const dy = y - pagelessToolbarScrollY;
+          if (y < 28) {
+            tb.classList.remove('pageless-toolbar-hidden');
+            pv.classList.remove('qk-pageless-toolbar-hidden');
+          } else if (dy > 12) {
+            tb.classList.add('pageless-toolbar-hidden');
+            pv.classList.add('qk-pageless-toolbar-hidden');
+          } else if (dy < -12) {
+            tb.classList.remove('pageless-toolbar-hidden');
+            pv.classList.remove('qk-pageless-toolbar-hidden');
+          }
+          pagelessToolbarScrollY = y;
+          ticking = false;
+        });
+      }, { passive: true });
+    }
+
+    let pagelessScrollYForPageLoad = 0;
+    function setupPagelessScrollLoad() {
+      pagelessScrollYForPageLoad = window.scrollY;
+      window.addEventListener('scroll', () => {
+        if (!isPagelessMode()) return;
+        updatePagelessVisibleFromScroll();
+        if (pagelessScrollTimer) return;
+        pagelessScrollTimer = setTimeout(async () => {
+          pagelessScrollTimer = null;
+          if (!isPagelessMode() || pagelessScrollBusy) return;
+          const y = window.scrollY;
+          const vh = window.innerHeight;
+          const sh = document.documentElement.scrollHeight;
+          const prevY = pagelessScrollYForPageLoad;
+          pagelessScrollYForPageLoad = y;
+          const userScrolledUp = y < prevY - 20;
+          if (sh - y - vh < 800 && pagelessMaxLoaded < getMaxPage()) {
+            pagelessScrollBusy = true;
+            try { await ensurePagelessPageLoaded(pagelessMaxLoaded + 1, 'append'); } catch (_) {}
+            pagelessScrollBusy = false;
+          } else if (userScrolledUp && y < 520 && pagelessMinLoaded > 1) {
+            pagelessScrollBusy = true;
+            try { await ensurePagelessPageLoaded(pagelessMinLoaded - 1, 'prepend'); } catch (_) {}
+            pagelessScrollBusy = false;
+          }
+        }, 200);
+      }, { passive: true });
+    }
+
+    function getBookmark() {
+      try { return JSON.parse(localStorage.getItem('qk_bookmark')); } catch { return null; }
+    }
+    function setBookmark(verseKey, page) {
+      const existing = getBookmark();
+      let msg;
+      if (existing && existing.verse === verseKey) {
+        localStorage.removeItem('qk_bookmark');
+        msg = 'Bookmark removed';
+      } else {
+        localStorage.setItem('qk_bookmark', JSON.stringify({ verse: verseKey, page, font: localStorage.getItem('qk_mushaf_font') || 'uthmani' }));
+        const [ch, v] = verseKey.split(':');
+        const surahInfo = SURAHS.find(s => s.n === Number(ch));
+        const name = surahInfo ? surahInfo.name : `Surah ${ch}`;
+        msg = `Bookmarked ${name} verse ${v}`;
+      }
+      applyBookmarkHighlight();
+      const shareBtn = document.getElementById('btn-share-link');
+      if (shareBtn) {
+        const bk = getBookmark();
+        shareBtn.classList.toggle('visible', !!(bk && Number(bk.page) === (isPagelessMode() ? pagelessVisiblePage : CURRENT_PAGE)));
+      }
+      showBookmarkToast(msg);
+    }
+    let _toastTimer = null;
+    function showBookmarkToast(msg) {
+      let el = document.querySelector('.bookmark-toast');
+      if (el) { clearTimeout(_toastTimer); el.remove(); }
+      el = document.createElement('div');
+      el.className = 'bookmark-toast';
+      el.textContent = msg;
+      document.body.appendChild(el);
+      _toastTimer = setTimeout(() => { el.classList.add('fade-out'); setTimeout(() => el.remove(), 500); }, 2500);
+    }
+    function applyBookmarkHighlight() {
+      document.querySelectorAll('.verse-num.bookmarked').forEach(el => el.classList.remove('bookmarked'));
+      const bk = getBookmark();
+      if (bk) {
+        const el = document.querySelector(`.verse-num[data-verse-key="${bk.verse}"]`);
+        if (el) el.classList.add('bookmarked');
+      }
+    }
+
+    function playSurahFull(surah, signal) {
+      const audio = getSurahAudio(surah);
+      if (!audio) return Promise.resolve();
+      return new Promise(resolve => {
+        let done = false;
+        const finish = () => { if (done) return; done = true; audio.pause(); currentAudio = null; resolve(); };
+        const onEnd = () => finish();
+        const onAbort = () => finish();
+        signal.addEventListener('abort', onAbort, { once: true });
+        audio.addEventListener('ended', onEnd, { once: true });
+        audio.currentTime = 0;
+        currentAudio = audio;
+        applyPlaybackRate(audio);
+        audio.play().catch(finish);
+      });
+    }
+
+    function playSurahSegment(surah, startMs, endMs, keepPlaying) {
+      if (endMs <= startMs) return Promise.resolve();
+      const audio = getSurahAudio(surah);
+      if (!audio) return Promise.resolve();
+      return new Promise(resolve => {
+        let done = false, rafId, timer;
+        const finish = () => {
+          if (done) return;
+          done = true;
+          cancelAnimationFrame(rafId);
+          clearTimeout(timer);
+          if (!keepPlaying) {
+            audio.pause();
+            currentAudio = null;
+          }
+          resolve();
+        };
+        const check = () => {
+          if (done) return;
+          if (audio.currentTime >= endMs / 1000) { finish(); return; }
+          rafId = requestAnimationFrame(check);
+        };
+        timer = setTimeout(finish, recordingMsToRealMs(endMs - startMs) + 500);
+        // If paused, or playing but at wrong position (e.g. iOS unlock trick called play()
+        // at position 0 before playSurahSegment ran): pause, seek, then play.
+        // If already playing near startMs (keepPlaying consecutive-verse case): just check.
+        const needsSeek = audio.paused || Math.abs(audio.currentTime * 1000 - startMs) > 500;
+        if (needsSeek) {
+          if (!audio.paused) audio.pause();
+          currentAudio = audio;
+          applyPlaybackRate(audio);
+          const doPlay = () => {
+            if (done) return;
+            audio.play().then(() => { rafId = requestAnimationFrame(check); }).catch(finish);
+          };
+          const seekAndPlay = () => {
+            if (done) return;
+            audio.currentTime = startMs / 1000;
+            if (audio.seeking) {
+              audio.addEventListener('seeked', doPlay, { once: true });
+            } else {
+              doPlay();
+            }
+          };
+          if (audio.readyState === 0) {
+            audio.addEventListener('loadedmetadata', seekAndPlay, { once: true });
+          } else {
+            seekAndPlay();
+          }
+        } else {
+          currentAudio = audio;
+          rafId = requestAnimationFrame(check);
+        }
+      });
+    }
+
+    function playReciteContinuous(startIdx, signal, hint) {
+      const versePlans = [];
+      let idx = 0;
+      while (idx < PAGE_PLAYLIST.length) {
+        const vk = PAGE_PLAYLIST[idx].verse_key;
+        const wis = [];
+        while (idx < PAGE_PLAYLIST.length && PAGE_PLAYLIST[idx].verse_key === vk) { wis.push(idx); idx++; }
+        const ts = getVerseTimestamp(vk);
+        const [surah] = (vk || '').split(':').map(Number);
+        if (ts && surah) versePlans.push({ vk, wis, ts, surah });
+      }
+      let planStart = versePlans.findIndex(p => p.wis.some(w => w >= startIdx));
+      if (planStart < 0) return Promise.resolve(false);
+
+      return (async () => {
+        let didPlay = false;
+        let pi = planStart;
+        while (pi < versePlans.length && !signal.aborted) {
+          const curSurah = versePlans[pi].surah;
+          const audio = getSurahAudio(curSurah);
+          if (!audio) { pi++; continue; }
+          const group = [];
+          while (pi < versePlans.length && versePlans[pi].surah === curSurah) { group.push(versePlans[pi]); pi++; }
+
+          const timeline = [];
+          const verseBounds = [];
+          for (const plan of group) {
+            const segs = plan.ts.segments || [];
+            segs.forEach((seg, si) => {
+              if (si < plan.wis.length) timeline.push({ s: seg[1], e: seg[2], pi: plan.wis[si], vk: plan.vk });
+            });
+            verseBounds.push({ endMs: plan.ts.timestamp_to, vk: plan.vk });
+          }
+          if (!timeline.length) continue;
+
+          const firstMs = group[0].ts.timestamp_from;
+          const lastMs = group[group.length - 1].ts.timestamp_to;
+          const pauseMs = getVerseEndPauseMs();
+          didPlay = true;
+
+          await new Promise(resolve => {
+            let done = false, rafId;
+            let hlIdx = -1, curVk = null, vbIdx = 0;
+            const finish = () => { if (done) return; done = true; cancelAnimationFrame(rafId); audio.pause(); currentAudio = null; clearAllHighlights(); resolve(); };
+            signal.addEventListener('abort', finish, { once: true });
+
+            const check = () => {
+              if (done || signal.aborted) return;
+              const ct = audio.currentTime * 1000;
+              if (ct >= lastMs) { finish(); return; }
+
+              if (pauseMs > 0 && vbIdx < verseBounds.length - 1 && ct >= verseBounds[vbIdx].endMs) {
+                vbIdx++;
+                audio.pause();
+                clearAllHighlights(); hlIdx = -1;
+                setTimeout(() => {
+                  if (done || signal.aborted) return;
+                  audio.play().then(() => { rafId = requestAnimationFrame(check); }).catch(finish);
+                }, pauseMs);
+                return;
+              }
+
+              for (let t = timeline.length - 1; t >= 0; t--) {
+                if (ct >= timeline[t].s) {
+                  if (hlIdx !== t) {
+                    if (hlIdx >= 0) highlightByPlayIndex(timeline[hlIdx].pi, false);
+                    highlightByPlayIndex(timeline[t].pi, true);
+                    hlIdx = t;
+                    if (timeline[t].vk !== curVk) { curVk = timeline[t].vk; if (hint) hint.textContent = curVk; }
+                  }
+                  break;
+                }
+              }
+              rafId = requestAnimationFrame(check);
+            };
+
+            audio.currentTime = firstMs / 1000;
+            currentAudio = audio;
+            applyPlaybackRate(audio);
+            audio.play().then(() => { rafId = requestAnimationFrame(check); }).catch(finish);
+          });
+
+          if (pi < versePlans.length && !signal.aborted) await delay(300);
+        }
+        return didPlay;
+      })();
+    }
+
+    let verseRepeat = 0; // global verse-repeat: 0=off, 1/2/3
+
+    function getOrderedVerseKeys() {
+      const seen = new Set(), out = [];
+      if (PAGE_ITEMS) {
+        for (const it of PAGE_ITEMS) {
+          if (it.type === 'verse_num' && !seen.has(it.verseKey)) {
+            seen.add(it.verseKey);
+            out.push(it.verseKey);
+          }
+        }
+      } else if (PAGE_PLAYLIST) {
+        for (const seg of PAGE_PLAYLIST) {
+          if (seg.verse_key && !seen.has(seg.verse_key)) {
+            seen.add(seg.verse_key);
+            out.push(seg.verse_key);
+          }
+        }
+      }
+      return out;
+    }
+
+    function getVerseNumEl(verseKey) {
+      return document.querySelector(`.verse-num[data-verse-key="${verseKey}"]`);
+    }
+
+    const SVG_PLAY = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+    const SVG_PAUSE = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6zm8-14v14h4V5z"/></svg>';
+    function updatePlayBtn() {
+      const btn = $('btn-play');
+      if (isPlaying) {
+        btn.innerHTML = SVG_PAUSE;
+        btn.title = 'Pause';
+      } else {
+        btn.innerHTML = SVG_PLAY;
+        btn.title = 'Play page';
+      }
+    }
+
+    // Tap verse number: cycles 1→2→3→cancel, then plays verse-by-verse (recite mode).
+    // Spelling mode: start spelling from the first word of that verse.
+    async function playVerseInline(verseKey, el) {
+      unlockAudioForIOS();
+      const sec = el && el.closest && el.closest('.pageless-section');
+      const verseInlinePage = sec ? Number(sec.dataset.page) : CURRENT_PAGE;
+      if (playMode === 'spelling') {
+        if (isPlaying) stopPlayback();
+        const d = isPagelessMode() ? pagelessCache.get(verseInlinePage) : null;
+        const pl = d ? d.playlist : PAGE_PLAYLIST;
+        const firstIdx = pl ? pl.findIndex(p => p.verse_key === verseKey) : -1;
+        if (firstIdx >= 0) {
+          if (d) {
+            PAGE_PLAYLIST = d.playlist;
+            PAGE_ITEMS = d.items;
+            PAGE_SURAHS = d.surahs;
+          }
+          playFromIndex(firstIdx, verseInlinePage);
+        }
+        return;
+      }
+      let savedPl, savedItems, savedSurahs;
+      if (isPagelessMode() && pagelessCache.has(verseInlinePage)) {
+        const d = pagelessCache.get(verseInlinePage);
+        savedPl = PAGE_PLAYLIST; savedItems = PAGE_ITEMS; savedSurahs = PAGE_SURAHS;
+        PAGE_PLAYLIST = d.playlist; PAGE_ITEMS = d.items; PAGE_SURAHS = d.surahs;
+        playbackHighlightPage = verseInlinePage;
+      }
+      let next;
+      if (isPlaying) {
+        const prev = verseRepeat;
+        next = prev >= 3 ? 0 : prev + 1;
+        stopPlayback();
+      } else {
+        const prev = verseRepeat;
+        next = prev >= 3 ? 0 : prev + 1;
+      }
+      verseRepeat = next;
+      updatePlayBtn();
+
+      // Show badge on tapped verse, fade it out
+      showVerseBadge(el, next);
+
+      if (next === 0) return; // cancelled
+
+      const allVerses = getOrderedVerseKeys();
+      const startIdx = allVerses.indexOf(verseKey);
+      if (startIdx === -1) return;
+
+      isPlaying = true;
+      abortController = new AbortController();
+      const myController = abortController;
+      const signal = abortController.signal;
+      updatePlayBtn();
+      const hint = $('pronunciation-hint');
+      let didPlay = false;
+
+      try {
+        for (let vi = startIdx; vi < allVerses.length; vi++) {
+          if (signal.aborted || verseRepeat === 0) break;
+          const vk = allVerses[vi];
+          const [surah] = (vk||'').split(':').map(Number);
+          const ts = getVerseTimestamp(vk);
+          const audio = getSurahAudio(surah);
+          if (!audio) continue;
+
+          if (!ts) {
+            // No timestamps — play full surah for this surah, then skip remaining verses of the same surah
+            didPlay = true;
+            const wis = [];
+            PAGE_PLAYLIST.forEach((p, idx) => { const [s] = (p.verse_key||'').split(':').map(Number); if (s === surah) { wis.push(idx); highlightByPlayIndex(idx, true); } });
+            hint.textContent = vk;
+            await playSurahFull(surah, signal);
+            clearAllHighlights();
+            while (vi + 1 < allVerses.length) { const [ns] = (allVerses[vi+1]||'').split(':').map(Number); if (ns === surah) vi++; else break; }
+            if (vi < allVerses.length - 1 && !signal.aborted) await delay(300);
+            continue;
+          }
+
+          didPlay = true;
+
+          const vel = getVerseNumEl(vk);
+          document.querySelectorAll('.verse-num.playing-verse').forEach(v => v.classList.remove('playing-verse'));
+          if (vel) {
+            vel.classList.add('playing-verse');
+            if (verseRepeat > 1) showVerseBadge(vel, verseRepeat);
+          }
+
+          const startMs = ts.timestamp_from;
+          const endMs = ts.timestamp_to;
+          const wis = [];
+          if (PAGE_PLAYLIST) PAGE_PLAYLIST.forEach((p, i) => { if (p.verse_key === vk) wis.push(i); });
+          const segs = ts.segments || [];
+
+          const nextVk = (vi < allVerses.length - 1) ? allVerses[vi + 1] : null;
+          const [nextSurah] = nextVk ? nextVk.split(':').map(Number) : [null];
+          const canKeepPlaying = nextVk !== null && nextSurah === surah && verseRepeat === 1 && getVerseEndPauseMs() === 0;
+
+          let r = 0;
+          while (r < verseRepeat) {
+            if (signal.aborted || verseRepeat === 0) break;
+            hint.textContent = vk + (verseRepeat > 1 ? ` (${r+1}/${verseRepeat})` : '');
+            let timers = [];
+            segs.forEach((seg, i) => {
+              if (i >= wis.length) return;
+              timers.push(setTimeout(() => { if (!signal.aborted) highlightByPlayIndex(wis[i], true); }, recordingMsToRealMs(seg[1] - startMs)));
+              timers.push(setTimeout(() => { if (!signal.aborted) highlightByPlayIndex(wis[i], false); }, recordingMsToRealMs(seg[2] - startMs)));
+            });
+            const isLastRepeat = (r === verseRepeat - 1);
+            await playSurahSegment(surah, startMs, endMs, canKeepPlaying && isLastRepeat);
+            timers.forEach(clearTimeout);
+            clearAllHighlights();
+            r++;
+            if (r < verseRepeat && !signal.aborted) await delay(400);
+          }
+          if (vel) { vel.classList.remove('playing-verse'); hideVerseBadge(vel); }
+          if (!signal.aborted && getVerseEndPauseMs() > 0) await delay(getVerseEndPauseMs());
+          if (!canKeepPlaying && vi < allVerses.length - 1 && !signal.aborted && verseRepeat > 0) await delay(300);
+        }
+      } finally {
+        if (savedPl) {
+          PAGE_PLAYLIST = savedPl;
+          PAGE_ITEMS = savedItems;
+          PAGE_SURAHS = savedSurahs;
+        }
+        const wasAborted = signal.aborted;
+        if (abortController === myController) {
+          clearAllHighlights();
+          document.querySelectorAll('.verse-num.playing-verse').forEach(v => v.classList.remove('playing-verse'));
+          hint.textContent = '';
+          currentAudio = null;
+          isPlaying = false;
+          updatePlayBtn();
+          if (!wasAborted && didPlay && verseRepeat > 0 && verseInlinePage < getMaxPage()) {
+            if (isPagelessMode()) {
+              const nx = verseInlinePage + 1;
+              setTimeout(async () => {
+                try {
+                  await ensurePagelessPageLoaded(nx, 'append');
+                  const s = document.querySelector(`.pageless-section[data-page="${nx}"]`);
+                  if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  pagelessVisiblePage = nx;
+                  $('page-title').textContent = `Page ${nx}`;
+                  localStorage.setItem('qk_last_page', String(nx));
+                  const nd = pagelessCache.get(nx);
+                  if (nd) {
+                    PAGE_PLAYLIST = nd.playlist;
+                    PAGE_ITEMS = nd.items;
+                    PAGE_SURAHS = nd.surahs;
+                    playbackHighlightPage = nx;
+                    playFromIndex(0, nx);
+                  }
+                  setupNav();
+                } catch (_) {}
+              }, 400);
+            } else {
+              window.location.assign(`?page=${verseInlinePage + 1}&autoplay=1`);
+            }
+          }
+        }
+      }
+    }
+
+    function showVerseBadge(el, count) {
+      let badge = el.querySelector('.repeat-badge');
+      if (count <= 1) {
+        if (badge) hideVerseBadge(el);
+        return;
+      }
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'repeat-badge';
+        el.style.position = 'relative';
+        el.appendChild(badge);
+      }
+      badge.classList.remove('fade-out');
+      badge.textContent = count + 'x';
+    }
+
+    function hideVerseBadge(el) {
+      const badge = el && el.querySelector('.repeat-badge');
+      if (!badge) return;
+      badge.classList.add('fade-out');
+      setTimeout(() => { if (badge.parentNode) badge.remove(); }, 500);
+    }
+
+    // Tap a word — play once (repeat is for verses only)
+    async function onWordClick(playIndex, pageNum) {
+      const pg = pageNum != null ? pageNum : CURRENT_PAGE;
+      playbackHighlightPage = pg;
+      if (isPagelessMode()) {
+        const d = pagelessCache.get(pg);
+        if (d) {
+          PAGE_PLAYLIST = d.playlist;
+          PAGE_ITEMS = d.items;
+          PAGE_SURAHS = d.surahs;
+        }
+      }
+      unlockAudioForIOS();
+      if (playMode === 'spelling') {
+        if (isPlaying) stopPlayback();
+        playFromIndex(playIndex, pg);
+        return;
+      }
+      const wt = getWordTimestamp(playIndex);
+      if (!wt && !getVerseTimestamp(PAGE_PLAYLIST[playIndex]?.verse_key)) {
+        if (!isPlaying) playFromIndex(playIndex, pg);
+        return;
+      }
+
+      if (isPlaying) stopPlayback();
+      isPlaying = true;
+      abortController = new AbortController();
+      const myController = abortController;
+      const signal = abortController.signal;
+      updatePlayBtn();
+      const hint = $('pronunciation-hint');
+      const curItem = PAGE_PLAYLIST[playIndex];
+      const vk = curItem?.verse_key;
+      const verseTs = vk ? getVerseTimestamp(vk) : null;
+
+      try {
+        if (!wt) {
+          if (verseTs) {
+            hint.textContent = curItem?.wordSound || '';
+            showWordTranslation(playIndex);
+            highlightByPlayIndex(playIndex, true);
+            const [surah] = (vk || '').split(':').map(Number);
+            await playSurahSegment(surah, verseTs.timestamp_from, verseTs.timestamp_to);
+            highlightByPlayIndex(playIndex, false);
+          }
+        } else {
+          hint.textContent = curItem?.wordSound || '';
+          showWordTranslation(playIndex);
+          highlightByPlayIndex(playIndex, true);
+          await playSurahSegment(wt.surah, wt.startMs, wt.endMs);
+          highlightByPlayIndex(playIndex, false);
+        }
+      } finally {
+        if (abortController === myController) {
+          clearAllHighlights();
+          hideWordTranslation();
+          hint.textContent = '';
+          currentAudio = null;
+          isPlaying = false;
+          updatePlayBtn();
+        }
+      }
+    }
+
+    function highlightByPlayIndex(i, on) {
+      let el = document.querySelector(`.word[data-page="${playbackHighlightPage}"][data-play-index="${i}"]`);
+      if (!el) el = document.querySelector(`.word[data-play-index="${i}"]`);
+      if (el) {
+        el.classList.toggle('highlight', on);
+        if (on) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+    function clearSpellingLetterHighlights() {
+      document.querySelectorAll('.word-letter.spelling-active').forEach(el => el.classList.remove('spelling-active'));
+      document.querySelectorAll('.letter-breakdown .lb-part.spelling-active').forEach(el => el.classList.remove('spelling-active'));
+    }
+    function setSpellingLetterHighlight(playIndex, partIndex) {
+      clearSpellingLetterHighlights();
+      let w = document.querySelector(`.word[data-page="${playbackHighlightPage}"][data-play-index="${playIndex}"]`);
+      if (!w) w = document.querySelector(`.word[data-play-index="${playIndex}"]`);
+      if (w) {
+        const le = w.querySelector(`.word-letter[data-part-index="${partIndex}"]`);
+        if (le) le.classList.add('spelling-active');
+      }
+      if (breakdownEl) {
+        const bp = breakdownEl.querySelector(`.lb-part[data-part-index="${partIndex}"]`);
+        if (bp) bp.classList.add('spelling-active');
+      }
+    }
+    function clearAllHighlights() {
+      document.querySelectorAll('.word.highlight').forEach(el => el.classList.remove('highlight'));
+      clearSpellingLetterHighlights();
+      hideWordTranslation();
+    }
+
+    // --- Full page recite playback (uses preloaded surah audio + real timestamps) ---
+    async function playReciterVerse(verseKey, wordIndices, signal) {
+      if (signal.aborted) return;
+      const [surah] = (verseKey||'').split(':').map(Number);
+      const ts = getVerseTimestamp(verseKey);
+      if (!ts) return;
+
+      const audio = getSurahAudio(surah);
+      if (!audio) return;
+
+      return new Promise(resolve => {
+        let timers = [];
+        let resolved = false;
+        const cleanup = () => {
+          if (resolved) return;
+          resolved = true;
+          timers.forEach(clearTimeout);
+          timers = [];
+          audio.pause();
+          currentAudio = null;
+          clearAllHighlights();
+          resolve();
+        };
+        signal.addEventListener('abort', cleanup, { once: true });
+
+        const startMs = ts.timestamp_from;
+        const endMs = ts.timestamp_to;
+        const segments = ts.segments || [];
+        // If both timestamps are 0 there is no timing data — play to natural end.
+        const hasTimestamps = startMs > 0 || endMs > 0;
+
+        segments.forEach((seg, i) => {
+          if (i >= wordIndices.length) return;
+          const wi = wordIndices[i];
+          timers.push(setTimeout(() => { if (!signal.aborted) highlightByPlayIndex(wi, true); }, recordingMsToRealMs(seg[1] - startMs)));
+          timers.push(setTimeout(() => { if (!signal.aborted) highlightByPlayIndex(wi, false); }, recordingMsToRealMs(seg[2] - startMs)));
+        });
+        if (hasTimestamps) {
+          timers.push(setTimeout(() => { if (!resolved) cleanup(); }, recordingMsToRealMs(endMs - startMs) + 300));
+          const onTime = () => {
+            if (audio.currentTime >= endMs / 1000) {
+              audio.removeEventListener('timeupdate', onTime);
+              cleanup();
+            }
+          };
+          audio.addEventListener('timeupdate', onTime);
+        } else {
+          audio.addEventListener('ended', cleanup, { once: true });
+        }
+        audio.currentTime = startMs / 1000;
+        currentAudio = audio;
+        applyPlaybackRate(audio);
+        audio.play().catch(cleanup);
+      });
+    }
+
+    // --- Letter breakdown panel ---
+    let breakdownEl = null;
+
+    function showLetterBreakdown(playIndex) {
+      hideLetterBreakdown();
+      const seg = PAGE_PLAYLIST[playIndex];
+      if (!seg || !seg.pronunciation || !seg.pronunciation.length) return;
+      const el = document.createElement('div');
+      el.className = 'letter-breakdown';
+      seg.pronunciation.forEach((part, i) => {
+        if (i > 0) {
+          const dot = document.createElement('span');
+          dot.className = 'lb-dot';
+          dot.textContent = '\u00b7';
+          el.appendChild(dot);
+        }
+        const partEl = document.createElement('div');
+        partEl.className = 'lb-part';
+        partEl.dataset.partIndex = String(i);
+        partEl.innerHTML = `<span class="lb-letter">${part.char || part.letter}</span><span class="lb-haraka">${part.haraka || ''}</span>`;
+        partEl.addEventListener('click', async () => {
+          partEl.classList.add('active');
+          await playLetterAudio(part.letter);
+          if (part.haraka) { await delay(100); await playLetterAudio(part.haraka); }
+          partEl.classList.remove('active');
+        });
+        el.appendChild(partEl);
+      });
+      document.body.appendChild(el);
+      breakdownEl = el;
+    }
+
+    function hideLetterBreakdown() {
+      if (breakdownEl) { breakdownEl.remove(); breakdownEl = null; }
+    }
+
+    // --- Word translation panel (recite mode) ---
+    let wordTranslationEl = null;
+    const ip13TranslationCache = new Map(); // verse_key → string[] (indexed by word_in_ayah)
+    let surahToStdPages = null; // surah number → sorted standard page numbers (built from full_quran.json)
+
+    async function ensureSurahToStdPages() {
+      if (surahToStdPages) return;
+      try {
+        const data = await fetch('data/full_quran.json').then(r => r.json());
+        surahToStdPages = {};
+        for (const [pg, val] of Object.entries(data)) {
+          for (const s of (val.surahs || [])) {
+            if (!surahToStdPages[s]) surahToStdPages[s] = [];
+            surahToStdPages[s].push(Number(pg));
+          }
+        }
+        for (const s of Object.keys(surahToStdPages)) surahToStdPages[s].sort((a, b) => a - b);
+      } catch { surahToStdPages = {}; }
+    }
+
+    async function fetchIp13Translation(verseKey, wordInAyah) {
+      if (ip13TranslationCache.has(verseKey)) return ip13TranslationCache.get(verseKey)[wordInAyah] || '';
+      await ensureSurahToStdPages();
+      const [surah] = verseKey.split(':').map(Number);
+      for (const pg of (surahToStdPages[surah] || [])) {
+        try {
+          const json = await fetch(`data/pages/${pg}.json`).then(r => r.ok ? r.json() : null);
+          if (!json) continue;
+          for (const v of json.verses || []) {
+            if (!ip13TranslationCache.has(v.verse_key))
+              ip13TranslationCache.set(v.verse_key, (v.words || []).map(w => w.translation?.text || ''));
+          }
+          if (ip13TranslationCache.has(verseKey)) break;
+        } catch {}
+      }
+      return (ip13TranslationCache.get(verseKey) || [])[wordInAyah] || '';
+    }
+
+    function hideWordTranslation() {
+      if (wordTranslationEl) { wordTranslationEl.remove(); wordTranslationEl = null; }
+    }
+
+    async function showWordTranslation(playIndex) {
+      hideWordTranslation();
+      const seg = PAGE_PLAYLIST[playIndex];
+      if (!seg) return;
+
+      // Standard mode: translation already stored in playlist item
+      if (seg.translation) {
+        const el = document.createElement('div');
+        el.className = 'word-translation-panel';
+        el.innerHTML = `<span class="wt-arabic">${seg.text}</span><span class="wt-translation">${seg.translation}</span>`;
+        document.body.appendChild(el);
+        wordTranslationEl = el;
+        return;
+      }
+
+      // IndoPak13 mode: look up from standard page data (same page number, different folder)
+      if (seg.word_in_ayah == null || !seg.verse_key) return;
+      const el = document.createElement('div');
+      el.className = 'word-translation-panel';
+      el.innerHTML = `<span class="wt-arabic">${seg.text}</span><span class="wt-translation">…</span>`;
+      document.body.appendChild(el);
+      wordTranslationEl = el;
+
+      const translation = await fetchIp13Translation(seg.verse_key, seg.word_in_ayah);
+      if (wordTranslationEl !== el) return;
+      el.querySelector('.wt-translation').textContent = translation || '—';
+    }
+
+    async function playSpellWord(idx) {
+      if (!PAGE_PLAYLIST || idx >= PAGE_PLAYLIST.length) return;
+      isPlaying = true;
+      abortController = new AbortController();
+      const myController = abortController;
+      const signal = abortController.signal;
+      const hint = $('pronunciation-hint');
+      updatePlayBtn();
+      try {
+        const seg = PAGE_PLAYLIST[idx];
+        highlightByPlayIndex(idx, true);
+        showLetterBreakdown(idx);
+        if (seg.pronunciation && seg.pronunciation.length) {
+          for (let pi = 0; pi < seg.pronunciation.length; pi++) {
+            if (signal.aborted) break;
+            const part = seg.pronunciation[pi];
+            setSpellingLetterHighlight(idx, pi);
+            hint.textContent = part.letter + (part.haraka ? ' ' + part.haraka : '');
+            await playLetterAudio(part.letter);
+            if (signal.aborted) break;
+            if (part.haraka) { await delay(150); await playLetterAudio(part.haraka); }
+            if (signal.aborted) break;
+            await delay(200);
+          }
+          clearSpellingLetterHighlights();
+        }
+        if (!signal.aborted) {
+          const wt = getWordTimestamp(idx);
+          if (wt) {
+            hint.textContent = seg.wordSound || seg.text;
+            await delay(250);
+            await playSurahSegment(wt.surah, wt.startMs, wt.endMs);
+          }
+        }
+        highlightByPlayIndex(idx, false);
+        hideLetterBreakdown();
+      } finally {
+        if (abortController === myController) {
+          clearAllHighlights();
+          hideLetterBreakdown();
+          hint.textContent = '';
+          currentAudio = null;
+          isPlaying = false;
+          updatePlayBtn();
+        }
+      }
+    }
+
+    async function playFromIndex(startIdx, pageNum) {
+      const pg = pageNum != null ? pageNum : CURRENT_PAGE;
+      playbackHighlightPage = pg;
+      if (isPagelessMode()) {
+        const d = pagelessCache.get(pg);
+        if (d) {
+          PAGE_PLAYLIST = d.playlist;
+          PAGE_ITEMS = d.items;
+          PAGE_SURAHS = d.surahs;
+        }
+      }
+      if (isPlaying) stopPlayback();
+      if (!PAGE_PLAYLIST || startIdx >= PAGE_PLAYLIST.length) return;
+      isPlaying = true;
+      abortController = new AbortController();
+      const myController = abortController;
+      const signal = abortController.signal;
+      const hint = $('pronunciation-hint');
+      updatePlayBtn();
+      clearAllHighlights();
+      let didPlay = false;
+
+      try {
+        if (playMode === 'recite') {
+          const hasUsableTimestamps = PAGE_SURAHS.some(ch => {
+            const data = SURAH_AUDIO[ch];
+            if (!data || !data.timestamps || !data.timestamps.length) return false;
+            return data.timestamps.some(t => (t.timestamp_to > t.timestamp_from) || (t.segments && t.segments.length > 0));
+          });
+          if (hasUsableTimestamps) {
+            didPlay = await playReciteContinuous(startIdx, signal, hint);
+          } else {
+            for (const ch of PAGE_SURAHS) {
+              if (signal.aborted) break;
+              const audio = getSurahAudio(ch);
+              if (!audio) continue;
+              const surahInfo = SURAHS.find(s => s.n === ch);
+              hint.textContent = surahInfo ? `Playing ${surahInfo.name}` : `Playing Surah ${ch}`;
+              PAGE_PLAYLIST.forEach((seg, idx) => {
+                const [s] = (seg.verse_key || '').split(':').map(Number);
+                if (s === ch) highlightByPlayIndex(idx, true);
+              });
+              didPlay = true;
+              await playSurahFull(ch, signal);
+              clearAllHighlights();
+            }
+          }
+        } else {
+          let currentVerse = null;
+          let verseStartIdx = startIdx;
+
+          for (let i = startIdx; i < PAGE_PLAYLIST.length; i++) {
+            if (signal.aborted) break;
+            const seg = PAGE_PLAYLIST[i];
+
+            // When the verse changes, recite the completed verse first
+            if (currentVerse && seg.verse_key !== currentVerse) {
+              const ts = getVerseTimestamp(currentVerse);
+              if (ts && !signal.aborted) {
+                const verseWords = [];
+                for (let v = verseStartIdx; v < i; v++) verseWords.push(v);
+                clearAllHighlights();
+                hideLetterBreakdown();
+                hint.textContent = currentVerse;
+                didPlay = true;
+                await playReciterVerse(currentVerse, verseWords, signal);
+                if (!signal.aborted && getVerseEndPauseMs() > 0) await delay(getVerseEndPauseMs());
+                if (!signal.aborted) await delay(500);
+              }
+              verseStartIdx = i;
+            }
+            currentVerse = seg.verse_key;
+
+            if (signal.aborted) break;
+            highlightByPlayIndex(i, true);
+            showLetterBreakdown(i);
+            if (seg.pronunciation && seg.pronunciation.length) {
+              didPlay = true;
+              for (let pi = 0; pi < seg.pronunciation.length; pi++) {
+                if (signal.aborted) break;
+                const part = seg.pronunciation[pi];
+                setSpellingLetterHighlight(i, pi);
+                hint.textContent = part.letter + (part.haraka ? ' ' + part.haraka : '');
+                await playLetterAudio(part.letter);
+                if (signal.aborted) break;
+                if (part.haraka) { await delay(150); await playLetterAudio(part.haraka); }
+                if (signal.aborted) break;
+                await delay(200);
+              }
+              clearSpellingLetterHighlights();
+            }
+            if (signal.aborted) break;
+            const wt = getWordTimestamp(i);
+            const verseTs = seg.verse_key ? getVerseTimestamp(seg.verse_key) : null;
+            if (wt) {
+              didPlay = true;
+              hint.textContent = seg.wordSound || seg.text;
+              await delay(250);
+              await playSurahSegment(wt.surah, wt.startMs, wt.endMs);
+            } else if (verseTs) {
+              didPlay = true;
+              hint.textContent = seg.wordSound || seg.text;
+              await delay(250);
+              const [surah] = (seg.verse_key || '').split(':').map(Number);
+              await playSurahSegment(surah, verseTs.timestamp_from, verseTs.timestamp_to);
+            }
+            highlightByPlayIndex(i, false);
+            hideLetterBreakdown();
+            if (!signal.aborted) await delay(400);
+          }
+
+          // Recite the final verse after all its words are spelled
+          if (currentVerse && !signal.aborted) {
+            const ts = getVerseTimestamp(currentVerse);
+            if (ts) {
+              const verseWords = [];
+              for (let v = verseStartIdx; v < PAGE_PLAYLIST.length; v++) {
+                if (PAGE_PLAYLIST[v].verse_key === currentVerse) verseWords.push(v);
+              }
+              clearAllHighlights();
+              hideLetterBreakdown();
+              hint.textContent = currentVerse;
+              didPlay = true;
+              await playReciterVerse(currentVerse, verseWords, signal);
+              if (!signal.aborted && getVerseEndPauseMs() > 0) await delay(getVerseEndPauseMs());
+            }
+          }
+        }
+      } finally {
+        if (abortController === myController) {
+          const wasAborted = signal.aborted;
+          currentAudio = null;
+          hint.textContent = '';
+          isPlaying = false;
+          updatePlayBtn();
+          const endPage = playbackHighlightPage;
+          if (!wasAborted && didPlay && endPage < getMaxPage()) {
+            if (isPagelessMode()) {
+              const next = endPage + 1;
+              setTimeout(async () => {
+                try {
+                  await ensurePagelessPageLoaded(next, 'append');
+                  const sec = document.querySelector(`.pageless-section[data-page="${next}"]`);
+                  if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  pagelessVisiblePage = next;
+                  $('page-title').textContent = `Page ${next}`;
+                  localStorage.setItem('qk_last_page', String(next));
+                  const nd = pagelessCache.get(next);
+                  if (nd) {
+                    PAGE_PLAYLIST = nd.playlist;
+                    PAGE_ITEMS = nd.items;
+                    PAGE_SURAHS = nd.surahs;
+                    playbackHighlightPage = next;
+                    playFromIndex(0, next);
+                  }
+                } catch (e) { console.error(e); }
+              }, 400);
+            } else {
+              window.location.assign(`?page=${endPage + 1}&autoplay=1`);
+            }
+          }
+        }
+      }
+    }
+
+    function stopPlayback() {
+      if (abortController) abortController.abort();
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      clearAllHighlights();
+      hideLetterBreakdown();
+      document.querySelectorAll('.verse-num.playing-verse').forEach(v => v.classList.remove('playing-verse'));
+      $('pronunciation-hint').textContent = '';
+      isPlaying = false;
+      verseRepeat = 0;
+      updatePlayBtn();
+    }
+
+    // --- UI wiring ---
+    $('btn-play').addEventListener('click', () => {
+      unlockAudioForIOS();
+      if (isPlaying) stopPlayback();
+      else if (isPagelessMode()) playFromIndex(0, pagelessVisiblePage);
+      else playFromIndex(0);
+    });
+
+    $('mode-spelling').addEventListener('click', () => setMode('spelling'));
+    $('mode-recite').addEventListener('click', () => setMode('recite'));
+    setMode(playMode);
+
+    (function setupShareLink() {
+      const btn = document.getElementById('btn-share-link');
+      if (!btn) return;
+      function updateVisibility() {
+        const bk = getBookmark();
+        const pg = isPagelessMode() ? pagelessVisiblePage : CURRENT_PAGE;
+        btn.classList.toggle('visible', !!(bk && Number(bk.page) === pg));
+      }
+      updateVisibility();
+      btn.addEventListener('click', () => {
+        const bk = getBookmark();
+        const surahParam = new URLSearchParams(location.search).get('surah') || (PAGE_SURAHS && PAGE_SURAHS[0]);
+        let qs = '?page=' + (isPagelessMode() ? pagelessVisiblePage : CURRENT_PAGE);
+        if (isPagelessMode()) qs += '&pageless=1';
+        if (surahParam) qs += '&surah=' + surahParam;
+        if (bk && bk.verse) {
+          const vNum = bk.verse.includes(':') ? bk.verse.split(':')[1] : bk.verse;
+          qs += '&verse=' + vNum;
+        }
+        const url = location.origin + (location.pathname || '/') + qs;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(() => showBookmarkToast('Link copied!')).catch(() => showBookmarkToast('Could not copy'));
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = url;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          try {
+            document.execCommand('copy');
+            showBookmarkToast('Link copied!');
+          } catch (e) { showBookmarkToast('Could not copy'); }
+          document.body.removeChild(ta);
+        }
+      });
+    })();
+
+    // Font size scaling
+    const FONT_STEPS = [1, 1.1, 1.22, 1.35, 1.5, 1.7];
+    let fontStep = FONT_STEPS.indexOf(1);
+    const saved = parseFloat(localStorage.getItem('qk_font_scale'));
+    if (saved && FONT_STEPS.includes(saved)) fontStep = FONT_STEPS.indexOf(saved);
+
+    function syncFontBtnVisibility() {
+      // When mushaf match is active, force font scale to 1 (lines are scaleX-justified at scale 1).
+      const inMushaf = (useIndopak13() && ip13MushafMatchOn()) || (!useIndopak13() && hafsMusharMatchOn());
+      if (inMushaf && fontStep !== 0) {
+        fontStep = 0;
+        document.documentElement.style.setProperty('--qk-font-scale', '1');
+        localStorage.removeItem('qk_font_scale');
+      }
+    }
+
+    function applyFontScale() {
+      const s = FONT_STEPS[fontStep];
+      document.documentElement.style.setProperty('--qk-font-scale', s);
+      localStorage.setItem('qk_font_scale', s);
+      // Double rAF: first lets CSS var propagate, second measures after reflow.
+      // The extra setTimeout(0) catches mobile browsers that need an extra tick.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        applyIp13Justification(document);
+        applyHafsJustification(document);
+      }));
+    }
+    applyFontScale();
+    syncFontBtnVisibility();
+    function setMushafMode(on) {
+      if (useIndopak13()) {
+        localStorage.setItem('qk_mushaf_match', on ? '1' : '0');
+        refreshIp13MushafMatchLayout();
+      } else {
+        localStorage.setItem('qk_hafs_match', on ? '1' : '0');
+        refreshHafsMatchLayout();
+      }
+    }
+    $('font-cycle').addEventListener('click', () => {
+      const inMushaf = (useIndopak13() && ip13MushafMatchOn()) || (!useIndopak13() && hafsMusharMatchOn());
+      if (inMushaf) {
+        // Exit mushaf mode and jump to font step 1.
+        fontStep = 1;
+        applyFontScale();
+        setMushafMode(false);
+      } else {
+        fontStep = (fontStep + 1) % FONT_STEPS.length;
+        if (fontStep === 0) {
+          // Wrapped past max — re-enter mushaf mode, reset scale.
+          document.documentElement.style.setProperty('--qk-font-scale', '1');
+          localStorage.removeItem('qk_font_scale');
+          setMushafMode(true);
+        } else {
+          applyFontScale();
+        }
+      }
+    });
+
+    const MIN_PAGE = 1;
+    function setupNav() {
+      const maxP = getMaxPage();
+      const prev = $('btn-prev'), next = $('btn-next');
+      $('btn-home').href = location.pathname;
+      const hideArrow = (btn, hide) => {
+        btn.style.visibility = '';
+        const svg = btn.querySelector('svg');
+        if (svg) svg.style.visibility = hide ? 'hidden' : '';
+      };
+      if (isPagelessMode()) {
+        hideArrow(prev, pagelessVisiblePage >= maxP);
+        hideArrow(next, pagelessVisiblePage <= MIN_PAGE);
+        prev.href = '#';
+        next.href = '#';
+        prev.onclick = e => { e.preventDefault(); void pagelessNavigateBy(1); };
+        next.onclick = e => { e.preventDefault(); void pagelessNavigateBy(-1); };
+        return;
+      }
+      prev.onclick = null;
+      next.onclick = null;
+      if (CURRENT_PAGE >= maxP) { hideArrow(prev, true); prev.style.pointerEvents = 'none'; }
+      else { hideArrow(prev, false); prev.style.pointerEvents = ''; prev.href = `?page=${CURRENT_PAGE + 1}`; }
+      if (CURRENT_PAGE <= MIN_PAGE) { hideArrow(next, true); next.style.pointerEvents = 'none'; }
+      else { hideArrow(next, false); next.style.pointerEvents = ''; next.href = `?page=${CURRENT_PAGE - 1}`; }
+    }
+
+    // Auto-hide header & controls on mobile scroll (unless sticky setting is on)
+    (function setupScrollHide() {
+      if (window.innerWidth > 720) return;
+      const controls = document.querySelector('.controls');
+      let lastY = window.scrollY;
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if ((localStorage.getItem('qk_sticky_bar') || '1') === '1') return;
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          const hide = y > lastY && y > 40;
+          if (controls) controls.classList.toggle('bar-hidden', hide);
+          lastY = y;
+          ticking = false;
+        });
+      }, { passive: true });
+    })();
+
+    // Desktop controls bar collapse toggle
+    (function setupControlsToggle() {
+      if (window.innerWidth <= 720) return;
+      const controls = document.querySelector('.controls');
+      const toggle = document.getElementById('controls-toggle');
+      if (!toggle || !controls) return;
+      const KEY = 'qk_bar_collapsed';
+      if (localStorage.getItem(KEY) === '1') controls.classList.add('bar-collapsed');
+      toggle.addEventListener('click', () => {
+        const collapsed = controls.classList.toggle('bar-collapsed');
+        localStorage.setItem(KEY, collapsed ? '1' : '0');
+      });
+    })();
+
+    // Swipe navigation for mobile
+    (function setupSwipe() {
+      let startX = 0, startY = 0, tracking = false;
+      const MIN_SWIPE = 60;
+      const content = $('mushaf-content');
+      if (!content) return;
+      content.addEventListener('touchstart', e => {
+        if (e.touches.length !== 1) return;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        tracking = true;
+      }, { passive: true });
+      content.addEventListener('touchend', e => {
+        if (!tracking) return;
+        tracking = false;
+        const dx = e.changedTouches[0].clientX - startX;
+        const dy = e.changedTouches[0].clientY - startY;
+        if (Math.abs(dx) < MIN_SWIPE || Math.abs(dy) > Math.abs(dx)) return;
+        const mp = getMaxPage();
+        if (isPagelessMode()) {
+          if (dx > 0 && pagelessVisiblePage < mp) void pagelessNavigateBy(1);
+          else if (dx < 0 && pagelessVisiblePage > MIN_PAGE) void pagelessNavigateBy(-1);
+        } else if (dx > 0 && CURRENT_PAGE < mp) {
+          window.location.assign(`?page=${CURRENT_PAGE + 1}`);
+        } else if (dx < 0 && CURRENT_PAGE > MIN_PAGE) {
+          window.location.assign(`?page=${CURRENT_PAGE - 1}`);
+        }
+      }, { passive: true });
+    })();
+
+    const AUTO_PLAY = new URLSearchParams(location.search).get('autoplay') === '1';
+
+    async function init() {
+      localStorage.setItem('qk_last_page', String(CURRENT_PAGE));
+      setupNav();
+      $('page-title').textContent = `Page ${CURRENT_PAGE}`;
+      $('mushaf-content').innerHTML = '<div class="page-loading">Loading page\u2026</div>';
+      try {
+        if (isPagelessMode()) {
+          document.getElementById('page-view').classList.add('qk-pageless');
+          await initPagelessView(CURRENT_PAGE);
+          setupPagelessToolbarAutohide();
+          setupPagelessScrollLoad();
+          updatePagelessVisibleFromScroll();
+          setupNav();
+        } else {
+          document.getElementById('page-view').classList.remove('qk-pageless', 'qk-pageless-toolbar-hidden');
+          document.querySelector('.page-toolbar')?.classList.remove('pageless-toolbar-hidden');
+          await fetchPageData();
+          await fetchSurahAudio();
+          preloadSurahAudio();
+          renderMushafPage();
+        }
+        const bookmark = getBookmark();
+        const params = new URLSearchParams(location.search);
+        const scrollToVerseNum = params.get('verse');
+        const scrollToSurah = params.get('surah');
+        const scrollToVerse = scrollToVerseNum && scrollToSurah ? scrollToSurah + ':' + scrollToVerseNum : null;
+        function scrollToVerseKey(verseKey, { toastLabel } = {}) {
+          let tries = 0;
+          const maxTries = isPagelessMode() ? 20 : 6;
+          const delay = isPagelessMode() ? 100 : 50;
+          const tick = () => {
+            const el = getVerseNumEl(verseKey);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              document.querySelectorAll('.verse-num.shared-verse').forEach(n => n.classList.remove('shared-verse'));
+              el.classList.add('shared-verse');
+              setTimeout(() => el.classList.remove('shared-verse'), 5000);
+              if (isPagelessMode()) pagelessScrollYForPageLoad = window.scrollY;
+              if (toastLabel) showBookmarkToast(toastLabel);
+              return;
+            }
+            if (++tries < maxTries) setTimeout(tick, delay);
+          };
+          setTimeout(tick, isPagelessMode() ? 80 : 0);
+        }
+        if (scrollToVerse) {
+          const [surahNum, verseNum] = scrollToVerse.split(':');
+          const surahInfo = SURAHS.find(s => s.n === Number(surahNum));
+          const label = surahInfo ? surahInfo.name + ' ' + scrollToVerse : 'Verse ' + scrollToVerse;
+          scrollToVerseKey(scrollToVerse, { toastLabel: 'Shared verse: ' + label });
+        } else if (scrollToSurah) {
+          let st = 0;
+          const trySurah = () => {
+            const el = document.querySelector('.surah-name[data-surah="' + scrollToSurah + '"]');
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              if (isPagelessMode()) pagelessScrollYForPageLoad = window.scrollY;
+            } else if (++st < 15 && isPagelessMode()) setTimeout(trySurah, 100);
+          };
+          setTimeout(trySurah, isPagelessMode() ? 80 : 0);
+        } else if (bookmark && bookmark.verse) {
+          const _bkFont = bookmark.font || 'uthmani';
+          const _curFont = localStorage.getItem('qk_mushaf_font') || 'uthmani';
+          const _fontSame = (_bkFont === 'indopak13') === (_curFont === 'indopak13');
+          if (_fontSame && Number(bookmark.page) === CURRENT_PAGE) {
+            scrollToVerseKey(bookmark.verse, {});
+          }
+        }
+        if (AUTO_PLAY) {
+          if (isPagelessMode()) playFromIndex(0, pagelessVisiblePage);
+          else playFromIndex(0);
+        }
+      } catch(e) {
+        console.error(e);
+        $('mushaf-content').innerHTML = '<div class="page-loading error">Could not load page. Check that data files exist.</div>';
+      }
+    }
+    init();
+
+    // Keep screen on while reading (Screen Wake Lock API)
+    (function setupWakeLock() {
+      if (!navigator.wakeLock) return;
+      let sentinel = null;
+      const requestLock = async () => {
+        if (document.visibilityState !== 'visible') return;
+        try {
+          sentinel = await navigator.wakeLock.request('screen');
+        } catch (_) { /* e.g. low battery, power save */ }
+      };
+      const releaseLock = () => {
+        if (sentinel) {
+          sentinel.release().catch(() => {});
+          sentinel = null;
+        }
+      };
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') requestLock();
+        else releaseLock();
+      });
+      // Request once the page view is showing (after init/render)
+      if (document.visibilityState === 'visible') setTimeout(requestLock, 100);
+    })();
+    } // end page-view guard
+
+    /* ── Settings Menu ── */
+    (function() {
+      let deferredInstallPrompt = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        const btn = document.getElementById('btn-install-app');
+        if (btn) btn.style.display = '';
+        const quickBtn = document.getElementById('btn-quick-install');
+        if (quickBtn) quickBtn.style.display = '';
+      });
+
+      function triggerInstallPrompt() {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        deferredInstallPrompt.userChoice.then((choice) => {
+          deferredInstallPrompt = null;
+          const btn = document.getElementById('btn-install-app');
+          if (btn) btn.style.display = 'none';
+          const quickBtn = document.getElementById('btn-quick-install');
+          if (quickBtn) quickBtn.style.display = 'none';
+          if (choice.outcome === 'accepted') {
+            const toast = document.createElement('div');
+            toast.className = 'bookmark-toast';
+            toast.innerHTML = 'Added! Open <strong>Quran for Yunus</strong> from your home screen or app drawer.';
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.classList.add('fade-out'); setTimeout(() => toast.remove(), 500); }, 4500);
+          }
+        });
+      }
+
+      const overlay = document.createElement('div');
+      overlay.className = 'settings-overlay';
+      overlay.innerHTML = `
+        <div class="settings-panel">
+          <div class="settings-header">
+            <h3>Settings</h3>
+            <button class="night-mode-toggle" id="toggle-night-mode" aria-label="Toggle night mode" title="Night mode">
+              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+          </div>
+          <div class="settings-row">
+            <label>Reciter</label>
+            <select class="settings-select" id="reciter-select" aria-label="Reciter">
+              <option value="minshawi">Muhammad Siddiq Al-Minshawi</option>
+              <option value="alafasy">Mishary Alafasy</option>
+              <option value="maher">Maher Al-Muaiqly</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <label>Quran script</label>
+            <select class="settings-select" id="mushaf-font" aria-label="Mushaf font">
+              <optgroup label="604 Pages">
+                <option value="uthmani">Uthmani (Hafs)</option>
+                <option value="indopak">IndoPak</option>
+                <option value="tajweed">IndoPak Tajweed</option>
+              </optgroup>
+              <optgroup label="849 Pages">
+                <option value="indopak13">IndoPak 13-line Qudratullah</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="settings-row">
+            <label>Verse numbers in English</label>
+            <button class="settings-toggle" id="toggle-english-nums" aria-label="Toggle verse number format"></button>
+          </div>
+          <div class="settings-row">
+            <label>Continuous scroll (whole Quran)</label>
+            <button class="settings-toggle" id="toggle-pageless" aria-label="Continuous scroll mode"></button>
+          </div>
+          <div class="settings-row">
+            <label>Always show bottom bar</label>
+            <button class="settings-toggle" id="toggle-sticky-bar" aria-label="Toggle always show bottom bar"></button>
+          </div>
+          <div class="settings-row">
+            <label>Pause at end of verse</label>
+            <select class="settings-select" id="verse-pause-seconds" aria-label="Pause at end of verse">
+              <option value="0">0 sec</option>
+              <option value="1">1 sec</option>
+              <option value="2">2 sec</option>
+              <option value="3">3 sec</option>
+              <option value="5">5 sec</option>
+            </select>
+          </div>
+          <div class="settings-row">
+            <label>Recitation speed</label>
+            <select class="settings-select" id="playback-speed" aria-label="Recitation speed">
+              <option value="0.5">-50%</option>
+              <option value="0.7">-30%</option>
+              <option value="0.9">-10%</option>
+              <option value="1">Normal</option>
+              <option value="1.1">+10%</option>
+              <option value="1.3">+30%</option>
+              <option value="1.5">+50%</option>
+            </select>
+          </div>
+          <div class="settings-row settings-install-row">
+            <label>Add to Home Screen</label>
+            <button type="button" class="install-btn" id="btn-install-app">Add to Home screen</button>
+            <div class="install-hint" id="install-hint"></div>
+          </div>
+          <div class="settings-info">
+            <div class="dedication">This is dedicated to Yunus.</div>
+            <div>For errors or support contact via WhatsApp<br>
+              <a href="https://wa.me/447932871227" target="_blank" rel="noopener">+44 7932 871227</a>
+            </div>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+
+      (function initNightMode() {
+        const night = localStorage.getItem('qk_night_mode') === '1';
+        if (night) document.body.classList.add('night-mode');
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) metaTheme.setAttribute('content', night ? '#1a1a1a' : '#115e59');
+      })();
+
+      const reciterSelect = document.getElementById('reciter-select');
+      if (reciterSelect) {
+        reciterSelect.value = localStorage.getItem('qk_reciter') || 'minshawi';
+        reciterSelect.addEventListener('change', () => {
+          const val = reciterSelect.value;
+          localStorage.setItem('qk_reciter', val);
+          overlay.classList.remove('open');
+          document.dispatchEvent(new CustomEvent('reciterchange'));
+          const reciterName = { minshawi: 'Muhammad Siddiq Al-Minshawi', alafasy: 'Mishary Alafasy' }[val] || val;
+          const toast = document.createElement('div');
+          toast.className = 'bookmark-toast';
+          toast.textContent = 'Reciter: ' + reciterName;
+          document.body.appendChild(toast);
+          setTimeout(() => { toast.classList.add('fade-out'); setTimeout(() => toast.remove(), 500); }, 2500);
+        });
+      }
+
+      const mushafFontSelect = document.getElementById('mushaf-font');
+      if (mushafFontSelect) {
+        const savedFont = localStorage.getItem('qk_mushaf_font') || 'uthmani';
+        mushafFontSelect.value = ['uthmani', 'indopak', 'indopak13', 'tajweed'].includes(savedFont) ? savedFont : 'uthmani';
+        mushafFontSelect.addEventListener('change', () => {
+          const val = mushafFontSelect.value;
+          const prevFont = localStorage.getItem('qk_mushaf_font');
+          localStorage.setItem('qk_mushaf_font', val);
+          const fam = (val === 'indopak' || val === 'indopak13') ? 'IndoPak' : val === 'tajweed' ? 'Tajweed' : 'UthmanicHafs';
+          document.documentElement.style.setProperty('--qk-mushaf-font', fam);
+          if ((prevFont === 'indopak13') !== (val === 'indopak13')) {
+            if (val !== 'indopak13') {
+              const lp = parseInt(localStorage.getItem('qk_last_page') || '1', 10);
+              if (lp > 604) localStorage.setItem('qk_last_page', '604');
+              try {
+                const u = new URL(location.href);
+                const p = parseInt(u.searchParams.get('page') || '0', 10);
+                if (p > 604) {
+                  u.searchParams.set('page', '604');
+                  history.replaceState(null, '', u.pathname + u.search + (u.hash || ''));
+                }
+              } catch (_) {}
+            }
+            location.reload();
+            return;
+          }
+          // Same page count (604↔604): re-render so justification is recalculated for the new font.
+          if (isPagelessMode()) {
+            refreshHafsMatchLayout();
+          } else {
+            renderMushafPage();
+          }
+        });
+      }
+
+      const nightToggle = document.getElementById('toggle-night-mode');
+      if (nightToggle) {
+        nightToggle.addEventListener('click', () => {
+          const on = document.body.classList.toggle('night-mode');
+          localStorage.setItem('qk_night_mode', on ? '1' : '0');
+          const metaTheme = document.querySelector('meta[name="theme-color"]');
+          if (metaTheme) metaTheme.setAttribute('content', on ? '#1a1a1a' : '#115e59');
+        });
+      }
+
+      (function setInstallHint() {
+        const hint = document.getElementById('install-hint');
+        if (!hint) return;
+        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+        const isAndroid = /Android/.test(navigator.userAgent);
+        const after = ' After installing, open <strong>Quran for Yunus</strong> from your home screen.';
+        if (isIOS) hint.innerHTML = 'Share (□↑) → Add to Home Screen.' + after;
+        else if (isAndroid) hint.innerHTML = 'Menu (⋮) → Install app or Add to Home screen.' + after;
+        else hint.innerHTML = after;
+      })();
+
+      const toggle = document.getElementById('toggle-english-nums');
+      const useEnglish = localStorage.getItem('qk_english_nums') === '1';
+      if (useEnglish) toggle.classList.add('on');
+
+      const pagelessToggle = document.getElementById('toggle-pageless');
+      if (pagelessToggle) {
+        if (localStorage.getItem('qk_pageless') === '1') pagelessToggle.classList.add('on');
+        pagelessToggle.addEventListener('click', () => {
+          const on = !pagelessToggle.classList.contains('on');
+          pagelessToggle.classList.toggle('on', on);
+          if (on) localStorage.setItem('qk_pageless', '1');
+          else localStorage.removeItem('qk_pageless');
+          const lp = localStorage.getItem('qk_last_page') || '1';
+          window.location.href = location.pathname + '?page=' + lp + (on ? '&pageless=1' : '&pageless=0');
+        });
+      }
+
+      toggle.addEventListener('click', () => {
+        toggle.classList.toggle('on');
+        const on = toggle.classList.contains('on');
+        localStorage.setItem('qk_english_nums', on ? '1' : '0');
+        document.querySelectorAll('.verse-num').forEach(el => {
+          const num = el.dataset.num;
+          if (num) el.textContent = on ? num : toArabicNum(num);
+        });
+      });
+
+      const stickyToggle = document.getElementById('toggle-sticky-bar');
+      if ((localStorage.getItem('qk_sticky_bar') || '1') === '1') stickyToggle.classList.add('on');
+      stickyToggle.addEventListener('click', () => {
+        stickyToggle.classList.toggle('on');
+        const on = stickyToggle.classList.contains('on');
+        localStorage.setItem('qk_sticky_bar', on ? '1' : '0');
+        const controls = document.querySelector('.controls');
+        if (controls && on) controls.classList.remove('bar-hidden');
+      });
+
+      const versePauseSelect = document.getElementById('verse-pause-seconds');
+      const savedPause = localStorage.getItem('qk_verse_end_pause') || '0';
+      if (versePauseSelect) {
+        versePauseSelect.value = ['0','1','2','3','5'].includes(savedPause) ? savedPause : '0';
+        versePauseSelect.addEventListener('change', () => localStorage.setItem('qk_verse_end_pause', versePauseSelect.value));
+      }
+
+      const playbackSpeedSelect = document.getElementById('playback-speed');
+      const savedRate = localStorage.getItem('qk_playback_rate') || '1';
+      if (playbackSpeedSelect) {
+        playbackSpeedSelect.value = ['0.5','0.7','0.9','1','1.1','1.3','1.5'].includes(savedRate) ? savedRate : '1';
+        playbackSpeedSelect.addEventListener('change', () => {
+          localStorage.setItem('qk_playback_rate', playbackSpeedSelect.value);
+          document.dispatchEvent(new CustomEvent('playbackratechange'));
+        });
+      }
+
+      const installBtn = document.getElementById('btn-install-app');
+      if (installBtn) {
+        installBtn.addEventListener('click', () => {
+          if (deferredInstallPrompt) triggerInstallPrompt();
+          else {
+            const hint = document.getElementById('install-hint');
+            const msg = hint && hint.textContent ? hint.textContent.replace(/\s+/g, ' ').trim() : 'Use your browser menu: Android — Menu (⋮) → Install app. iPhone — Share → Add to Home Screen.';
+            alert(msg);
+          }
+        });
+      }
+      const quickInstallBtn = document.getElementById('btn-quick-install');
+      if (quickInstallBtn) {
+        if (deferredInstallPrompt) quickInstallBtn.style.display = '';
+        quickInstallBtn.addEventListener('click', triggerInstallPrompt);
+      }
+
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) overlay.classList.remove('open');
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) overlay.classList.remove('open');
+      });
+
+      document.querySelectorAll('#btn-settings').forEach(btn => {
+        btn.addEventListener('click', () => {
+          overlay.classList.add('open');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

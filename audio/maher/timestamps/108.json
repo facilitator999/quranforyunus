@@ -1,0 +1,85 @@
+{
+  "audio_file": {
+    "id": 0,
+    "chapter_id": 108,
+    "audio_url": "audio/maher/recitation/108.mp3",
+    "timestamps": [
+      {
+        "verse_key": "108:1",
+        "timestamp_from": 0,
+        "timestamp_to": 4324,
+        "duration": 4324,
+        "segments": [
+          [
+            1,
+            0,
+            2190
+          ],
+          [
+            2,
+            2240,
+            3470
+          ],
+          [
+            3,
+            3520,
+            4324
+          ]
+        ]
+      },
+      {
+        "verse_key": "108:2",
+        "timestamp_from": 4524,
+        "timestamp_to": 6824,
+        "duration": 2300,
+        "segments": [
+          [
+            1,
+            4720,
+            5390
+          ],
+          [
+            2,
+            5440,
+            6190
+          ],
+          [
+            3,
+            6240,
+            6824
+          ]
+        ]
+      },
+      {
+        "verse_key": "108:3",
+        "timestamp_from": 7024,
+        "timestamp_to": 10893,
+        "duration": 3869,
+        "segments": [
+          [
+            1,
+            7360,
+            8430
+          ],
+          [
+            2,
+            8480,
+            9390
+          ],
+          [
+            3,
+            9440,
+            9630
+          ],
+          [
+            4,
+            9680,
+            10893
+          ]
+        ]
+      }
+    ],
+    "file_size": 0,
+    "format": "mp3"
+  }
+}

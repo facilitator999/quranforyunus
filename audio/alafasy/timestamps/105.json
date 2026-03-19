@@ -1,0 +1,118 @@
+﻿{
+    "audio_file":  {
+                       "id":  0,
+                       "chapter_id":  105,
+                       "audio_url":  "audio/alafasy/recitation/105.mp3",
+                       "timestamps":  [
+                                          {
+                                              "verse_key":  "105:1",
+                                              "timestamp_from":  0,
+                                              "timestamp_to":  6980,
+                                              "duration":  6980,
+                                              "segments":  [
+                                                               1,
+                                                               50,
+                                                               560,
+                                                               2,
+                                                               570,
+                                                               1030,
+                                                               3,
+                                                               1040,
+                                                               1650,
+                                                               4,
+                                                               1660,
+                                                               2380,
+                                                               5,
+                                                               2390,
+                                                               3250,
+                                                               6,
+                                                               3260,
+                                                               4520,
+                                                               7,
+                                                               4530,
+                                                               6980
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "105:2",
+                                              "timestamp_from":  6980,
+                                              "timestamp_to":  12400,
+                                              "duration":  5420,
+                                              "segments":  [
+                                                               1,
+                                                               7130,
+                                                               7590,
+                                                               2,
+                                                               7600,
+                                                               8400,
+                                                               3,
+                                                               8410,
+                                                               9500,
+                                                               4,
+                                                               9510,
+                                                               9930,
+                                                               5,
+                                                               9940,
+                                                               12400
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "105:3",
+                                              "timestamp_from":  12400,
+                                              "timestamp_to":  18590,
+                                              "duration":  6190,
+                                              "segments":  [
+                                                               1,
+                                                               12450,
+                                                               13470,
+                                                               2,
+                                                               13480,
+                                                               14500,
+                                                               3,
+                                                               14510,
+                                                               15330,
+                                                               4,
+                                                               15340,
+                                                               18590
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "105:4",
+                                              "timestamp_from":  18590,
+                                              "timestamp_to":  27210,
+                                              "duration":  8620,
+                                              "segments":  [
+                                                               1,
+                                                               18620,
+                                                               20670,
+                                                               2,
+                                                               20680,
+                                                               23210,
+                                                               3,
+                                                               23220,
+                                                               24190,
+                                                               4,
+                                                               24200,
+                                                               27210
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "105:5",
+                                              "timestamp_from":  27210,
+                                              "timestamp_to":  34230,
+                                              "duration":  7020,
+                                              "segments":  [
+                                                               1,
+                                                               27240,
+                                                               28410,
+                                                               2,
+                                                               28420,
+                                                               30730,
+                                                               3,
+                                                               30740,
+                                                               34230
+                                                           ]
+                                          }
+                                      ]
+                   }
+}

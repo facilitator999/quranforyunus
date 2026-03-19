@@ -1,0 +1,85 @@
+{
+  "audio_file": {
+    "id": 0,
+    "chapter_id": 108,
+    "audio_url": "audio/minshawi/recitation/108.mp3",
+    "timestamps": [
+      {
+        "verse_key": "108:1",
+        "timestamp_from": 0,
+        "timestamp_to": 6970,
+        "duration": 6970,
+        "segments": [
+          [
+            1,
+            0,
+            3336
+          ],
+          [
+            2,
+            3336,
+            5210
+          ],
+          [
+            3,
+            5210,
+            6455
+          ]
+        ]
+      },
+      {
+        "verse_key": "108:2",
+        "timestamp_from": 6970,
+        "timestamp_to": 10940,
+        "duration": 3970,
+        "segments": [
+          [
+            1,
+            6970,
+            8170
+          ],
+          [
+            2,
+            8170,
+            9540
+          ],
+          [
+            3,
+            9540,
+            10475
+          ]
+        ]
+      },
+      {
+        "verse_key": "108:3",
+        "timestamp_from": 10940,
+        "timestamp_to": 16270,
+        "duration": 5330,
+        "segments": [
+          [
+            1,
+            10940,
+            12380
+          ],
+          [
+            2,
+            12380,
+            13740
+          ],
+          [
+            3,
+            13740,
+            14320
+          ],
+          [
+            4,
+            14320,
+            15485
+          ]
+        ]
+      }
+    ],
+    "file_size": 0,
+    "format": "mp3"
+  }
+}

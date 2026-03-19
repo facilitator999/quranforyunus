@@ -1,0 +1,75 @@
+﻿{
+    "audio_file":  {
+                       "id":  0,
+                       "chapter_id":  103,
+                       "audio_url":  "audio/alafasy/recitation/103.mp3",
+                       "timestamps":  [
+                                          {
+                                              "verse_key":  "103:1",
+                                              "timestamp_from":  0,
+                                              "timestamp_to":  1230,
+                                              "duration":  1230,
+                                              "segments":  [
+                                                               1,
+                                                               30,
+                                                               1230
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "103:2",
+                                              "timestamp_from":  1230,
+                                              "timestamp_to":  6130,
+                                              "duration":  4900,
+                                              "segments":  [
+                                                               1,
+                                                               1260,
+                                                               2490,
+                                                               2,
+                                                               2500,
+                                                               5060,
+                                                               3,
+                                                               5070,
+                                                               5660,
+                                                               4,
+                                                               5670,
+                                                               6130
+                                                           ]
+                                          },
+                                          {
+                                              "verse_key":  "103:3",
+                                              "timestamp_from":  6130,
+                                              "timestamp_to":  16210,
+                                              "duration":  10080,
+                                              "segments":  [
+                                                               1,
+                                                               6180,
+                                                               6730,
+                                                               2,
+                                                               6740,
+                                                               7880,
+                                                               3,
+                                                               7890,
+                                                               9040,
+                                                               4,
+                                                               9050,
+                                                               9870,
+                                                               5,
+                                                               9880,
+                                                               11460,
+                                                               6,
+                                                               11470,
+                                                               12740,
+                                                               7,
+                                                               12750,
+                                                               13830,
+                                                               8,
+                                                               13840,
+                                                               15190,
+                                                               9,
+                                                               15200,
+                                                               16210
+                                                           ]
+                                          }
+                                      ]
+                   }
+}

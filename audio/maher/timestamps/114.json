@@ -1,0 +1,159 @@
+{
+  "audio_file": {
+    "id": 0,
+    "chapter_id": 114,
+    "audio_url": "audio/maher/recitation/114.mp3",
+    "timestamps": [
+      {
+        "verse_key": "114:1",
+        "timestamp_from": 0,
+        "timestamp_to": 3551,
+        "duration": 3551,
+        "segments": [
+          [
+            1,
+            0,
+            430
+          ],
+          [
+            2,
+            480,
+            1150
+          ],
+          [
+            3,
+            1200,
+            1950
+          ],
+          [
+            4,
+            2000,
+            3551
+          ]
+        ]
+      },
+      {
+        "verse_key": "114:2",
+        "timestamp_from": 3751,
+        "timestamp_to": 6255,
+        "duration": 2504,
+        "segments": [
+          [
+            1,
+            3920,
+            4670
+          ],
+          [
+            2,
+            4720,
+            6255
+          ]
+        ]
+      },
+      {
+        "verse_key": "114:3",
+        "timestamp_from": 6455,
+        "timestamp_to": 8603,
+        "duration": 2148,
+        "segments": [
+          [
+            1,
+            6640,
+            7390
+          ],
+          [
+            2,
+            7440,
+            8603
+          ]
+        ]
+      },
+      {
+        "verse_key": "114:4",
+        "timestamp_from": 8803,
+        "timestamp_to": 13134,
+        "duration": 4331,
+        "segments": [
+          [
+            1,
+            9040,
+            9630
+          ],
+          [
+            2,
+            9680,
+            10270
+          ],
+          [
+            3,
+            10320,
+            11310
+          ],
+          [
+            4,
+            11360,
+            13134
+          ]
+        ]
+      },
+      {
+        "verse_key": "114:5",
+        "timestamp_from": 13334,
+        "timestamp_to": 17419,
+        "duration": 4085,
+        "segments": [
+          [
+            1,
+            13760,
+            14270
+          ],
+          [
+            2,
+            14320,
+            15230
+          ],
+          [
+            3,
+            15280,
+            15630
+          ],
+          [
+            4,
+            15680,
+            16430
+          ],
+          [
+            5,
+            16480,
+            17419
+          ]
+        ]
+      },
+      {
+        "verse_key": "114:6",
+        "timestamp_from": 17619,
+        "timestamp_to": 22256,
+        "duration": 4637,
+        "segments": [
+          [
+            1,
+            17920,
+            18270
+          ],
+          [
+            2,
+            18320,
+            19390
+          ],
+          [
+            3,
+            19440,
+            22256
+          ]
+        ]
+      }
+    ],
+    "file_size": 0,
+    "format": "mp3"
+  }
+}

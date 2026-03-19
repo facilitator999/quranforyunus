@@ -1,0 +1,118 @@
+{
+  "audio_file": {
+    "id": 0,
+    "chapter_id": 112,
+    "audio_url": "audio/maher/recitation/112.mp3",
+    "timestamps": [
+      {
+        "verse_key": "112:1",
+        "timestamp_from": 0,
+        "timestamp_to": 2010,
+        "duration": 2010,
+        "segments": [
+          [
+            1,
+            0,
+            510
+          ],
+          [
+            2,
+            560,
+            830
+          ],
+          [
+            3,
+            880,
+            1390
+          ],
+          [
+            4,
+            1440,
+            2010
+          ]
+        ]
+      },
+      {
+        "verse_key": "112:2",
+        "timestamp_from": 2210,
+        "timestamp_to": 3955,
+        "duration": 1745,
+        "segments": [
+          [
+            1,
+            2640,
+            3310
+          ],
+          [
+            2,
+            3360,
+            3955
+          ]
+        ]
+      },
+      {
+        "verse_key": "112:3",
+        "timestamp_from": 4155,
+        "timestamp_to": 6500,
+        "duration": 2345,
+        "segments": [
+          [
+            1,
+            4320,
+            4590
+          ],
+          [
+            2,
+            4640,
+            5150
+          ],
+          [
+            3,
+            5200,
+            5630
+          ],
+          [
+            4,
+            5680,
+            6500
+          ]
+        ]
+      },
+      {
+        "verse_key": "112:4",
+        "timestamp_from": 6700,
+        "timestamp_to": 10213,
+        "duration": 3513,
+        "segments": [
+          [
+            1,
+            6800,
+            7230
+          ],
+          [
+            2,
+            7280,
+            7710
+          ],
+          [
+            3,
+            7760,
+            8270
+          ],
+          [
+            4,
+            8320,
+            8990
+          ],
+          [
+            5,
+            9040,
+            10213
+          ]
+        ]
+      }
+    ],
+    "file_size": 0,
+    "format": "mp3"
+  }
+}

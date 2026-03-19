@@ -1,0 +1,210 @@
+{
+  "audio_file": {
+    "id": 0,
+    "chapter_id": 94,
+    "audio_url": "audio/maher/recitation/94.mp3",
+    "timestamps": [
+      {
+        "verse_key": "94:1",
+        "timestamp_from": 0,
+        "timestamp_to": 2156,
+        "duration": 2156,
+        "segments": [
+          [
+            1,
+            0,
+            590
+          ],
+          [
+            2,
+            640,
+            1280
+          ],
+          [
+            3,
+            1280,
+            1630
+          ],
+          [
+            4,
+            1680,
+            2156
+          ]
+        ]
+      },
+      {
+        "verse_key": "94:2",
+        "timestamp_from": 2356,
+        "timestamp_to": 5465,
+        "duration": 3109,
+        "segments": [
+          [
+            1,
+            2640,
+            3630
+          ],
+          [
+            2,
+            3680,
+            4910
+          ],
+          [
+            3,
+            4960,
+            5465
+          ]
+        ]
+      },
+      {
+        "verse_key": "94:3",
+        "timestamp_from": 5665,
+        "timestamp_to": 9689,
+        "duration": 4024,
+        "segments": [
+          [
+            1,
+            6160,
+            7790
+          ],
+          [
+            2,
+            7840,
+            9230
+          ],
+          [
+            3,
+            9280,
+            9689
+          ]
+        ]
+      },
+      {
+        "verse_key": "94:4",
+        "timestamp_from": 9889,
+        "timestamp_to": 12069,
+        "duration": 2180,
+        "segments": [
+          [
+            1,
+            10160,
+            11150
+          ],
+          [
+            2,
+            11200,
+            11790
+          ],
+          [
+            3,
+            11840,
+            12069
+          ]
+        ]
+      },
+      {
+        "verse_key": "94:5",
+        "timestamp_from": 12269,
+        "timestamp_to": 14947,
+        "duration": 2678,
+        "segments": [
+          [
+            1,
+            12560,
+            13390
+          ],
+          [
+            2,
+            13440,
+            13790
+          ],
+          [
+            3,
+            13840,
+            14510
+          ],
+          [
+            4,
+            14560,
+            14947
+          ]
+        ]
+      },
+      {
+        "verse_key": "94:6",
+        "timestamp_from": 15147,
+        "timestamp_to": 17843,
+        "duration": 2696,
+        "segments": [
+          [
+            1,
+            15280,
+            15950
+          ],
+          [
+            2,
+            16000,
+            16270
+          ],
+          [
+            3,
+            16320,
+            16990
+          ],
+          [
+            4,
+            17040,
+            17843
+          ]
+        ]
+      },
+      {
+        "verse_key": "94:7",
+        "timestamp_from": 18043,
+        "timestamp_to": 21065,
+        "duration": 3022,
+        "segments": [
+          [
+            1,
+            18320,
+            18910
+          ],
+          [
+            2,
+            18960,
+            19710
+          ],
+          [
+            3,
+            19760,
+            21065
+          ]
+        ]
+      },
+      {
+        "verse_key": "94:8",
+        "timestamp_from": 21265,
+        "timestamp_to": 24137,
+        "duration": 2872,
+        "segments": [
+          [
+            1,
+            21520,
+            22190
+          ],
+          [
+            2,
+            22240,
+            22910
+          ],
+          [
+            3,
+            22960,
+            24137
+          ]
+        ]
+      }
+    ],
+    "file_size": 0,
+    "format": "mp3"
+  }
+}

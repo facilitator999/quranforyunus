@@ -1,0 +1,279 @@
+{
+  "audio_file": {
+    "id": 0,
+    "chapter_id": 101,
+    "audio_url": "audio/maher/recitation/101.mp3",
+    "timestamps": [
+      {
+        "verse_key": "101:1",
+        "timestamp_from": 0,
+        "timestamp_to": 1436,
+        "duration": 1436,
+        "segments": [
+          [
+            1,
+            0,
+            1325
+          ]
+        ]
+      },
+      {
+        "verse_key": "101:2",
+        "timestamp_from": 1525,
+        "timestamp_to": 2781,
+        "duration": 1256,
+        "segments": [
+          [
+            1,
+            1680,
+            1870
+          ],
+          [
+            2,
+            1920,
+            2781
+          ]
+        ]
+      },
+      {
+        "verse_key": "101:3",
+        "timestamp_from": 2981,
+        "timestamp_to": 7396,
+        "duration": 4415,
+        "segments": [
+          [
+            1,
+            3200,
+            5310
+          ],
+          [
+            2,
+            5360,
+            6190
+          ],
+          [
+            3,
+            6240,
+            6430
+          ],
+          [
+            4,
+            6480,
+            7396
+          ]
+        ]
+      },
+      {
+        "verse_key": "101:4",
+        "timestamp_from": 7596,
+        "timestamp_to": 12586,
+        "duration": 4990,
+        "segments": [
+          [
+            1,
+            7840,
+            8270
+          ],
+          [
+            2,
+            8320,
+            8990
+          ],
+          [
+            3,
+            9040,
+            9870
+          ],
+          [
+            4,
+            9920,
+            10990
+          ],
+          [
+            5,
+            11040,
+            12586
+          ]
+        ]
+      },
+      {
+        "verse_key": "101:5",
+        "timestamp_from": 12786,
+        "timestamp_to": 17394,
+        "duration": 4608,
+        "segments": [
+          [
+            1,
+            13040,
+            13870
+          ],
+          [
+            2,
+            13920,
+            14670
+          ],
+          [
+            3,
+            14720,
+            15630
+          ],
+          [
+            4,
+            15680,
+            17394
+          ]
+        ]
+      },
+      {
+        "verse_key": "101:6",
+        "timestamp_from": 17594,
+        "timestamp_to": 21672,
+        "duration": 4078,
+        "segments": [
+          [
+            1,
+            17840,
+            18830
+          ],
+          [
+            2,
+            18880,
+            19790
+          ],
+          [
+            3,
+            19840,
+            20510
+          ],
+          [
+            4,
+            20560,
+            21734
+          ]
+        ]
+      },
+      {
+        "verse_key": "101:7",
+        "timestamp_from": 21934,
+        "timestamp_to": 24556,
+        "duration": 2622,
+        "segments": [
+          [
+            1,
+            22000,
+            22510
+          ],
+          [
+            2,
+            22560,
+            22830
+          ],
+          [
+            3,
+            22880,
+            23710
+          ],
+          [
+            4,
+            23760,
+            24556
+          ]
+        ]
+      },
+      {
+        "verse_key": "101:8",
+        "timestamp_from": 24756,
+        "timestamp_to": 28088,
+        "duration": 3332,
+        "segments": [
+          [
+            1,
+            25040,
+            25950
+          ],
+          [
+            2,
+            26000,
+            26350
+          ],
+          [
+            3,
+            26400,
+            27070
+          ],
+          [
+            4,
+            27120,
+            28181
+          ]
+        ]
+      },
+      {
+        "verse_key": "101:9",
+        "timestamp_from": 28381,
+        "timestamp_to": 30477,
+        "duration": 2096,
+        "segments": [
+          [
+            1,
+            28480,
+            29710
+          ],
+          [
+            2,
+            29760,
+            30477
+          ]
+        ]
+      },
+      {
+        "verse_key": "101:10",
+        "timestamp_from": 30677,
+        "timestamp_to": 35114,
+        "duration": 4437,
+        "segments": [
+          [
+            1,
+            30880,
+            33230
+          ],
+          [
+            2,
+            33280,
+            34190
+          ],
+          [
+            3,
+            34240,
+            34590
+          ],
+          [
+            4,
+            34640,
+            35114
+          ]
+        ]
+      },
+      {
+        "verse_key": "101:11",
+        "timestamp_from": 35314,
+        "timestamp_to": 38138,
+        "duration": 2824,
+        "segments": [
+          [
+            1,
+            35680,
+            36430
+          ],
+          [
+            2,
+            36480,
+            38138
+          ]
+        ]
+      }
+    ],
+    "file_size": 0,
+    "format": "mp3"
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "audio_file": {
+    "id": 0,
+    "chapter_id": 107,
+    "audio_url": "audio/minshawi/recitation/107.mp3",
+    "timestamps": [
+      {
+        "verse_key": "107:1",
+        "timestamp_from": 0,
+        "timestamp_to": 5620,
+        "duration": 5620,
+        "segments": [
+          [
+            1,
+            0,
+            1430
+          ],
+          [
+            2,
+            1430,
+            2520
+          ],
+          [
+            3,
+            2520,
+            3760
+          ],
+          [
+            4,
+            3760,
+            5025
+          ]
+        ]
+      },
+      {
+        "verse_key": "107:2",
+        "timestamp_from": 5620,
+        "timestamp_to": 10770,
+        "duration": 5150,
+        "segments": [
+          [
+            1,
+            5620,
+            6960
+          ],
+          [
+            2,
+            6960,
+            8090
+          ],
+          [
+            3,
+            8090,
+            8990
+          ],
+          [
+            4,
+            8990,
+            10225
+          ]
+        ]
+      },
+      {
+        "verse_key": "107:3",
+        "timestamp_from": 10770,
+        "timestamp_to": 16650,
+        "duration": 5880,
+        "segments": [
+          [
+            1,
+            10770,
+            11780
+          ],
+          [
+            2,
+            11780,
+            12860
+          ],
+          [
+            3,
+            12860,
+            13590
+          ],
+          [
+            4,
+            13590,
+            14720
+          ],
+          [
+            5,
+            14720,
+            16595
+          ]
+        ]
+      },
+      {
+        "verse_key": "107:4",
+        "timestamp_from": 16650,
+        "timestamp_to": 20700,
+        "duration": 4050,
+        "segments": [
+          [
+            1,
+            16650,
+            17978
+          ],
+          [
+            2,
+            17978,
+            20185
+          ]
+        ]
+      },
+      {
+        "verse_key": "107:5",
+        "timestamp_from": 20700,
+        "timestamp_to": 27600,
+        "duration": 6900,
+        "segments": [
+          [
+            1,
+            20700,
+            22460
+          ],
+          [
+            2,
+            22460,
+            23000
+          ],
+          [
+            3,
+            23000,
+            24058
+          ],
+          [
+            4,
+            24058,
+            25660
+          ],
+          [
+            5,
+            25660,
+            27015
+          ]
+        ]
+      },
+      {
+        "verse_key": "107:6",
+        "timestamp_from": 27600,
+        "timestamp_to": 33220,
+        "duration": 5620,
+        "segments": [
+          [
+            1,
+            27600,
+            29410
+          ],
+          [
+            2,
+            29410,
+            29870
+          ],
+          [
+            3,
+            29870,
+            32765
+          ]
+        ]
+      },
+      {
+        "verse_key": "107:7",
+        "timestamp_from": 33220,
+        "timestamp_to": 37350,
+        "duration": 4130,
+        "segments": [
+          [
+            1,
+            33220,
+            35380
+          ],
+          [
+            2,
+            35380,
+            36965
+          ]
+        ]
+      }
+    ],
+    "file_size": 0,
+    "format": "mp3"
+  }
+}
