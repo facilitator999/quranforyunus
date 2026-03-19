@@ -172,6 +172,23 @@ def align_verse(wav_path, words, clip_start_ms, model_a, metadata, device):
     return new_segments, len(aligned)
 
 
+def bridge_repetition_gaps(segs, gap_threshold_ms=2000):
+    """Extend each word's end time to the next word's start if the gap is large.
+
+    Handles verses where the reciter repeats a phrase — WhisperX leaves a silent
+    gap with no active segment, causing the highlighting to go blank. Extending
+    the previous word keeps it highlighted through the repeated section.
+    Only applies when the gap exceeds gap_threshold_ms (default 2 s).
+    """
+    bridged = 0
+    for i in range(len(segs) - 1):
+        gap = segs[i + 1][1] - segs[i][2]
+        if gap > gap_threshold_ms:
+            segs[i][2] = segs[i + 1][1]
+            bridged += 1
+    return bridged
+
+
 def save_json(ts_data, ts_path):
     with open(ts_path, 'w', encoding='utf-8') as f:
         json.dump(ts_data, f, ensure_ascii=False, indent=2)
@@ -308,6 +325,11 @@ def main():
                         flag = ' ⚠ partial'
                     else:
                         flag = ''
+
+                    # Bridge large gaps caused by reciter repeating a phrase
+                    n_bridged = bridge_repetition_gaps(new_segs)
+                    if n_bridged:
+                        flag += f' ↔ {n_bridged} gap(s) bridged'
 
                     done_count += 1
                     pct = done_count / total * 100
