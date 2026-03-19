@@ -1,0 +1,24 @@
+{
+  "name": "Quran for Yunus",
+  "short_name": "Quran for Yunus",
+  "description": "Read the full Quran with word-by-word recitation and spelling. quranforyunus.com",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf9f6",
+  "theme_color": "#115e59",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "logo-white.png?v=6",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "logo-white.png?v=6",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
