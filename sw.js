@@ -1,5 +1,5 @@
 /* Service Worker for Quran for Yunus - PWA install + offline Quran text */
-const CACHE = 'quranforyunus-v6';
+const CACHE = 'quranforyunus-v7';
 const PAGE_COUNT = 604;
 
 function assetUrls(scope) {
@@ -21,10 +21,7 @@ function assetUrls(scope) {
 
 const CDN_FONTS = [
   'https://static-cdn.tarteel.ai/qul/fonts/nastaleeq/Hanafi/normal-v4.2.2/with-waqf-lazmi/font.woff2',
-  'https://static-cdn.tarteel.ai/qul/fonts/nastaleeq/Hanafi/normal-v4.2.2/with-waqf-lazmi/font.ttf',
-  'https://cdn.jsdelivr.net/gh/AbuYusof/Quran-Fonts-HAFS-Uthmanic-Colored-By-Tajweed-Ruls@main/Fonts/KFGQPCHAFSColored-Bold.woff2',
-  'https://cdn.jsdelivr.net/gh/AbuYusof/Quran-Fonts-HAFS-Uthmanic-Colored-By-Tajweed-Ruls@main/Fonts/KFGQPCHAFSColored-Bold.woff',
-  'https://raw.githubusercontent.com/AbuYusof/Quran-Fonts-HAFS-Uthmanic-Colored-By-Tajweed-Ruls/main/Fonts/KFGQPCHAFSColored-Bold.ttf'
+  'https://static-cdn.tarteel.ai/qul/fonts/nastaleeq/Hanafi/normal-v4.2.2/with-waqf-lazmi/font.ttf'
 ];
 
 self.addEventListener('install', (event) => {

@@ -39,13 +39,6 @@
       font-display: block;
     }
     @font-face {
-      font-family: 'Tajweed';
-      src: url('https://cdn.jsdelivr.net/gh/AbuYusof/Quran-Fonts-HAFS-Uthmanic-Colored-By-Tajweed-Ruls@main/Fonts/KFGQPCHAFSColored-Bold.woff2') format('woff2'),
-           url('https://cdn.jsdelivr.net/gh/AbuYusof/Quran-Fonts-HAFS-Uthmanic-Colored-By-Tajweed-Ruls@main/Fonts/KFGQPCHAFSColored-Bold.woff') format('woff'),
-           url('https://raw.githubusercontent.com/AbuYusof/Quran-Fonts-HAFS-Uthmanic-Colored-By-Tajweed-Ruls/main/Fonts/KFGQPCHAFSColored-Bold.ttf') format('truetype');
-      font-display: block;
-    }
-    @font-face {
       font-family: 'surah-header';
       src: url('fonts/QCF_SurahHeader_COLOR-Regular.ttf') format('truetype');
       font-display: block;
@@ -763,6 +756,17 @@
       border-top: 1.5px solid #4a8c6a;
       padding-top: 2px;
     }
+    /* Tajweed colours (cpfair schema) */
+    .tj-silent        { color: #AAAAAA; } /* grey — matches */
+    .tj-madd_2        { color: #FF80AA; } /* light pink */
+    .tj-madd_246      { color: #FF8000; } /* orange */
+    .tj-madd_muttasil { color: #FF007F; } /* hot pink/magenta */
+    .tj-madd_6        { color: #CC0000; } /* red */
+    .tj-ghunnah       { color: #00AA00; } /* green */
+    .tj-ikhfa         { color: #00AA00; } /* green */
+    .tj-ikhfa_shafawi { color: #008000; } /* green */
+    .tj-qalqalah      { color: #008080; } /* cyan/teal */
+    .tj-lam_shamsiyyah{ color: #0055FF; } /* bright blue */
     /* Verse number markers (button to avoid iOS "Open in New Tab" on long-press) */
     .verse-num {
       display: inline-flex;
@@ -1149,7 +1153,7 @@
   </style>
 </head>
 <body>
-  <script>(function(){var on=localStorage.getItem('qk_night_mode')==='1';if(on){document.body.classList.add('night-mode');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#1a1a1a');}var f=localStorage.getItem('qk_mushaf_font')||'uthmani';var fam=(f==='indopak'||f==='indopak13')?'IndoPak':f==='tajweed'?'Tajweed':'UthmanicHafs';document.documentElement.style.setProperty('--qk-mushaf-font',fam);})();</script>
+  <script>(function(){var on=localStorage.getItem('qk_night_mode')==='1';if(on){document.body.classList.add('night-mode');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#1a1a1a');}var f=localStorage.getItem('qk_mushaf_font')||'uthmani';var fam=(f==='indopak'||f==='indopak13')?'IndoPak':'UthmanicHafs';document.documentElement.style.setProperty('--qk-mushaf-font',fam);})();</script>
   <script>if('serviceWorker'in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
   <!-- ===== INDEX VIEW ===== -->
   <div id="index-view">
@@ -1465,6 +1469,9 @@
       return String(n).split('').map(c => d[c] || c).join('');
     }
 
+    let TAJWEED_INDEX = null;
+    let TAJWEED_ON = localStorage.getItem('qk_tajweed') === '1';
+
     if (!document.getElementById('page-view').classList.contains('active')) {
       // Index view — nothing more to do
     } else {
@@ -1594,6 +1601,10 @@
       }
     }
     function getPageDataDir() { return useIndopak13() ? 'data/indopak13/pages/' : 'data/pages/'; }
+    function refreshTajweedLayout() {
+      pagelessCache.forEach(pd => recomputeTajweedOnPlaylist(pd.playlist));
+      refreshHafsMatchLayout();
+    }
     function getMaxPage() { return useIndopak13() ? 849 : 604; }
     const RECITERS = {
       minshawi: { name: 'Muhammad Siddiq Al-Minshawi', recitationDir: 'audio/minshawi/recitation', timestampsDir: 'audio/minshawi/timestamps', lettersDir: 'audio/minshawi/letters' },
@@ -1939,6 +1950,84 @@
       });
     }
 
+    // --- Tajweed ---
+    const TAJWEED_PRIORITY = {
+      'madd_6': 0, 'madd_muttasil': 1, 'madd_246': 2, 'madd_2': 3,
+      'ghunnah': 4, 'ikhfa': 4, 'ikhfa_shafawi': 4,
+      'qalqalah': 5, 'lam_shamsiyyah': 6, 'silent': 7
+    };
+    function escapeHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+    /**
+     * Given a verse key and word objects (char_type_name === 'word'), returns an
+     * array of HTML strings (one per word) with tj-* spans, or null if no annotations.
+     */
+    function tajweedWordHtmlArray(verseKey, wordObjects) {
+      if (!TAJWEED_INDEX) return null;
+      const anns = TAJWEED_INDEX[verseKey];
+      if (!anns || !anns.length) return null;
+      const TATWEEL = '\u0640';
+      const STRIP_MARKS = /[\u06DF\u06EB]/g;
+      let strippedFull = '';
+      const wordRanges = [];
+      for (let wi = 0; wi < wordObjects.length; wi++) {
+        const origRaw = wordObjects[wi].text_uthmani || wordObjects[wi].text || '';
+        const orig = origRaw.replace(STRIP_MARKS, '');
+        const stripped = orig.replace(/\u0640/g, '');
+        if (wi > 0) strippedFull += ' ';
+        wordRanges.push({ strippedStart: strippedFull.length, orig, stripped });
+        strippedFull += stripped;
+      }
+      const charRule = new Array(strippedFull.length).fill(null);
+      for (const ann of anns) {
+        const p = TAJWEED_PRIORITY[ann.rule] ?? 99;
+        for (let i = ann.start; i < ann.end && i < charRule.length; i++) {
+          if (charRule[i] === null || p < (TAJWEED_PRIORITY[charRule[i]] ?? 99)) charRule[i] = ann.rule;
+        }
+      }
+      const hasAny = wordRanges.some(r => {
+        for (let i = r.strippedStart; i < r.strippedStart + r.stripped.length; i++)
+          if (charRule[i] !== null) return true;
+        return false;
+      });
+      if (!hasAny) return null;
+      return wordRanges.map(({ strippedStart, orig, stripped }) => {
+        let html = '', runRule = undefined, runChars = '';
+        const flush = () => {
+          if (!runChars) return;
+          html += runRule ? `<span class="tj-${runRule}">${escapeHtml(runChars)}</span>` : escapeHtml(runChars);
+          runChars = '';
+        };
+        let si = 0;
+        for (let oi = 0; oi < orig.length; oi++) {
+          const ch = orig[oi];
+          if (ch === TATWEEL) { runChars += ch; continue; }
+          const rule = charRule[strippedStart + si] ?? null;
+          si++;
+          if (rule !== runRule) { flush(); runRule = rule; }
+          runChars += ch;
+        }
+        flush();
+        return html;
+      });
+    }
+    /** Updates tajweedHtml on all playlist entries in-place (groups by verse_key). */
+    function recomputeTajweedOnPlaylist(playlist) {
+      let i = 0;
+      while (i < playlist.length) {
+        const vk = playlist[i].verse_key;
+        if (!vk) { i++; continue; }
+        let j = i;
+        while (j < playlist.length && playlist[j].verse_key === vk) j++;
+        const entries = playlist.slice(i, j);
+        const wordObjs = entries.map(e => ({ text_uthmani: e.text, char_type_name: 'word' }));
+        const htmlArr = TAJWEED_ON ? tajweedWordHtmlArray(vk, wordObjs) : null;
+        for (let k = 0; k < entries.length; k++) entries[k].tajweedHtml = htmlArr ? (htmlArr[k] ?? null) : null;
+        i = j;
+      }
+    }
+
     // --- Fetch and render ---
     function parsePageJson(json) {
       const playlist = [], items = [];
@@ -1972,6 +2061,9 @@
           });
           if (sjdIdx >= 0) sajdahWordPi = playlist.length + sjdIdx;
         }
+        // Tajweed: pre-compute per-word HTML for this verse
+        const tajweedArr = (TAJWEED_INDEX && TAJWEED_ON) ? tajweedWordHtmlArray(v.verse_key, vWords) : null;
+        let wordIdxInVerse = 0;
 
         for (const w of v.words || []) {
           const lineNum = w.line_number || 0;
@@ -1983,8 +2075,10 @@
               pronunciation: getSegmentPronunciation(w.text_uthmani || w.text),
               wordSound: WORD_SOUNDS[w.text_uthmani||w.text] || w.transliteration?.text || '',
               translation: w.translation?.text || '',
-              hasSajdah: pi === sajdahWordPi
+              hasSajdah: pi === sajdahWordPi,
+              tajweedHtml: tajweedArr ? (tajweedArr[wordIdxInVerse] ?? null) : null
             });
+            wordIdxInVerse++;
             items.push({ type: 'word', playIndex: pi, text: playlist[pi].text });
             if (!pendingHafsLine.has(lineNum)) {
               const entry = { kind: 'line', lineNum, startPi: pi, count: 1, verseEnds: [] };
@@ -2357,20 +2451,24 @@
             sp.className = cur.hasSajdah ? 'word sajdah-word' : 'word';
             sp.dataset.page = String(pageNum);
             sp.dataset.playIndex = String(pi);
-            const parts = cur.pronunciation;
-            const assembled = parts && parts.length ? parts.map(p => p.char != null ? p.char : '').join('') : '';
-            const tNorm = (cur.text || '').normalize('NFC');
-            const aNorm = assembled.normalize('NFC');
-            if (parts && parts.length && aNorm === tNorm) {
-              parts.forEach((p, pi2) => {
-                const le = document.createElement('span');
-                le.className = 'word-letter';
-                le.dataset.partIndex = String(pi2);
-                le.textContent = stripHafsMarks(p.char != null ? p.char : '');
-                sp.appendChild(le);
-              });
+            if (TAJWEED_ON && cur.tajweedHtml) {
+              sp.innerHTML = cur.tajweedHtml;
             } else {
-              sp.textContent = stripHafsMarks(cur.text);
+              const parts = cur.pronunciation;
+              const assembled = parts && parts.length ? parts.map(p => p.char != null ? p.char : '').join('') : '';
+              const tNorm = (cur.text || '').normalize('NFC');
+              const aNorm = assembled.normalize('NFC');
+              if (parts && parts.length && aNorm === tNorm) {
+                parts.forEach((p, pi2) => {
+                  const le = document.createElement('span');
+                  le.className = 'word-letter';
+                  le.dataset.partIndex = String(pi2);
+                  le.textContent = stripHafsMarks(p.char != null ? p.char : '');
+                  sp.appendChild(le);
+                });
+              } else {
+                sp.textContent = stripHafsMarks(cur.text);
+              }
             }
             sp.addEventListener('click', () => onWordClick(pi, pageNum));
             inner.appendChild(sp);
@@ -4092,6 +4190,17 @@
           preloadSurahAudio();
           renderMushafPage();
         }
+        // Load tajweed index in the background; re-render when ready if tajweed is on
+        fetch('data/tajweed-index.json').then(r => r.json()).then(d => {
+          TAJWEED_INDEX = d;
+          if (TAJWEED_ON) {
+            if (isPagelessMode()) {
+              refreshTajweedLayout();
+            } else {
+              renderMushafPage();
+            }
+          }
+        }).catch(() => {});
         const bookmark = getBookmark();
         const params = new URLSearchParams(location.search);
         const scrollToVerseNum = params.get('verse');
@@ -4231,7 +4340,6 @@
               <optgroup label="604 Pages">
                 <option value="uthmani">Uthmani (Hafs)</option>
                 <option value="indopak">IndoPak</option>
-                <option value="tajweed">IndoPak Tajweed</option>
               </optgroup>
               <optgroup label="849 Pages">
                 <option value="indopak13">IndoPak 13-line Qudratullah</option>
@@ -4239,6 +4347,10 @@
             </select>
           </div>
 
+          <div class="settings-row">
+            <label>Tajweed colours</label>
+            <button class="settings-toggle" id="toggle-tajweed" aria-label="Toggle tajweed colours"></button>
+          </div>
           <div class="settings-row">
             <label>Verse numbers in English</label>
             <button class="settings-toggle" id="toggle-english-nums" aria-label="Toggle verse number format"></button>
@@ -4315,12 +4427,12 @@
       const mushafFontSelect = document.getElementById('mushaf-font');
       if (mushafFontSelect) {
         const savedFont = localStorage.getItem('qk_mushaf_font') || 'uthmani';
-        mushafFontSelect.value = ['uthmani', 'indopak', 'indopak13', 'tajweed'].includes(savedFont) ? savedFont : 'uthmani';
+        mushafFontSelect.value = ['uthmani', 'indopak', 'indopak13'].includes(savedFont) ? savedFont : 'uthmani';
         mushafFontSelect.addEventListener('change', () => {
           const val = mushafFontSelect.value;
           const prevFont = localStorage.getItem('qk_mushaf_font');
           localStorage.setItem('qk_mushaf_font', val);
-          const fam = (val === 'indopak' || val === 'indopak13') ? 'IndoPak' : val === 'tajweed' ? 'Tajweed' : 'UthmanicHafs';
+          const fam = (val === 'indopak' || val === 'indopak13') ? 'IndoPak' : 'UthmanicHafs';
           document.documentElement.style.setProperty('--qk-mushaf-font', fam);
           if ((prevFont === 'indopak13') !== (val === 'indopak13')) {
             if (val !== 'indopak13') {
@@ -4354,6 +4466,21 @@
           localStorage.setItem('qk_night_mode', on ? '1' : '0');
           const metaTheme = document.querySelector('meta[name="theme-color"]');
           if (metaTheme) metaTheme.setAttribute('content', on ? '#1a1a1a' : '#115e59');
+        });
+      }
+
+      const tajweedToggle = document.getElementById('toggle-tajweed');
+      if (tajweedToggle) {
+        tajweedToggle.classList.toggle('on', TAJWEED_ON);
+        tajweedToggle.addEventListener('click', () => {
+          TAJWEED_ON = !TAJWEED_ON;
+          localStorage.setItem('qk_tajweed', TAJWEED_ON ? '1' : '0');
+          tajweedToggle.classList.toggle('on', TAJWEED_ON);
+          if (isPagelessMode()) {
+            refreshTajweedLayout();
+          } else {
+            renderMushafPage();
+          }
         });
       }
 
