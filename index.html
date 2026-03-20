@@ -4094,6 +4094,44 @@
       }
     });
 
+    // Pinch-to-zoom → increase font size instead of browser zoom
+    (function () {
+      let isPinching = false, pinchDist0 = 0, pinchScale0 = 1;
+      function td(touches) { return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY); }
+      function liveScale() { return parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--qk-font-scale')) || 1; }
+
+      document.addEventListener('touchstart', e => {
+        if (e.touches.length === 2) { isPinching = true; pinchDist0 = td(e.touches); pinchScale0 = liveScale(); }
+      }, { passive: true });
+
+      document.addEventListener('touchmove', e => {
+        if (!isPinching || e.touches.length !== 2) return;
+        e.preventDefault();
+        const s = Math.max(FONT_STEPS[0], Math.min(FONT_STEPS[FONT_STEPS.length - 1], pinchScale0 * td(e.touches) / pinchDist0));
+        document.documentElement.style.setProperty('--qk-font-scale', String(s));
+      }, { passive: false });
+
+      document.addEventListener('touchend', e => {
+        if (!isPinching || e.touches.length >= 2) return;
+        isPinching = false;
+        const cur = liveScale();
+        fontStep = FONT_STEPS.reduce((b, v, i) => Math.abs(v - cur) < Math.abs(FONT_STEPS[b] - cur) ? i : b, 0);
+        applyFontScale();
+      }, { passive: true });
+
+      // Safari blocks pinch via gesturestart — prevent it
+      document.addEventListener('gesturestart', e => e.preventDefault());
+      document.addEventListener('gesturechange', e => e.preventDefault());
+
+      // Desktop: Ctrl+scroll → font size
+      window.addEventListener('wheel', e => {
+        if (!e.ctrlKey && !e.metaKey) return;
+        e.preventDefault();
+        fontStep = e.deltaY < 0 ? Math.min(fontStep + 1, FONT_STEPS.length - 1) : Math.max(fontStep - 1, 0);
+        applyFontScale();
+      }, { passive: false });
+    })();
+
     const MIN_PAGE = 1;
     function setupNav() {
       const maxP = getMaxPage();
