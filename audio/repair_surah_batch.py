@@ -285,7 +285,7 @@ def main():
 
     # 2 — Timestamps
     print('[2/4] Loading existing timestamps...')
-    with open(ts_path, encoding='utf-8') as f:
+    with open(ts_path, encoding='utf-8-sig') as f:
         ts_data = json.load(f)
     timestamps = ts_data['audio_file']['timestamps']
     total = sum(1 for t in timestamps if int(t['verse_key'].split(':')[1]) >= args.start_verse)
