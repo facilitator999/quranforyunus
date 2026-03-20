@@ -85,12 +85,21 @@ python audio/repair_surah_batch.py --reciter maher --surah 2 --start-verse 100
 
 # Preview changes without writing anything
 python audio/repair_surah_batch.py --reciter maher --surah 2 --dry-run
-
-# Repair all 114 surahs (runs for many hours)
-for i in $(seq 1 114); do python audio/repair_surah_batch.py --reciter maher --surah $i; done
 ```
 
-Progress is saved every 10 verses. A `.bak` backup of the original timestamps is created before any changes.
+**Repair all 114 surahs — Linux/Mac** (run inside `screen` or `tmux` so it survives disconnect):
+```bash
+screen -S repair
+for i in $(seq 1 114); do python audio/repair_surah_batch.py --reciter maher --surah $i; done
+# Ctrl+A then D to detach — screen -r repair to reattach
+```
+
+**Repair all 114 surahs — Windows PowerShell:**
+```powershell
+1..114 | ForEach-Object { python audio/repair_surah_batch.py --reciter maher --surah $_ }
+```
+
+Dependencies (`torch`, `whisperx`, `scipy`) are auto-installed on first run. Progress is saved every 10 verses. A `.bak` backup of the original timestamps is created before any changes.
 
 ---
 

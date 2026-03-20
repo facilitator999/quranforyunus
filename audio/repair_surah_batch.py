@@ -26,24 +26,49 @@ def ensure_dependencies():
     import os as _os
     import shutil as _shutil
 
-    PACKAGES = {'whisperx': 'whisperx', 'scipy': 'scipy', 'torch': 'torch'}
-    missing = []
-    for name, pip_name in PACKAGES.items():
-        try:
-            __import__(name)
-        except ImportError:
-            missing.append(pip_name)
+    # Install torch first (must come before whisperx; use CPU wheel if no CUDA)
+    try:
+        __import__('torch')
+    except ImportError:
+        print('=' * 55)
+        print('  Installing torch (CPU)...')
+        print('=' * 55)
+        result = subprocess.run([
+            sys.executable, '-m', 'pip', 'install', 'torch',
+            '--index-url', 'https://download.pytorch.org/whl/cpu'
+        ])
+        if result.returncode != 0:
+            print('\nERROR: torch install failed. Fix the error above then re-run.')
+            sys.exit(1)
 
+    # whisperx is not on PyPI — install from GitHub
+    try:
+        __import__('whisperx')
+    except ImportError:
+        print('=' * 55)
+        print('  Installing whisperx from GitHub...')
+        print('=' * 55)
+        result = subprocess.run([
+            sys.executable, '-m', 'pip', 'install',
+            'git+https://github.com/m-bain/whisperX.git'
+        ])
+        if result.returncode != 0:
+            print('\nERROR: whisperx install failed. Fix the error above then re-run.')
+            sys.exit(1)
+
+    # Remaining pure-PyPI packages
+    plain = {'scipy': 'scipy'}
+    missing = [pip for name, pip in plain.items() if not __import__('importlib').util.find_spec(name)]
     if missing:
         print('=' * 55)
-        print(f'  Missing packages: {", ".join(missing)}')
-        print(f'  Installing via: {sys.executable} -m pip install ...')
+        print(f'  Installing: {", ".join(missing)}')
         print('=' * 55)
         result = subprocess.run([sys.executable, '-m', 'pip', 'install'] + missing)
         if result.returncode != 0:
             print('\nERROR: pip install failed. Fix the error above then re-run.')
             sys.exit(1)
-        print('\nAll packages installed. Continuing...\n')
+
+    print('\nAll packages installed. Continuing...\n')
 
     _root = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
     _bundled = _os.path.join(_root, 'ffmpeg', 'ffmpeg.exe')
