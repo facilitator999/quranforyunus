@@ -185,16 +185,16 @@ def find_all_verse_words(surah):
 
 
 def find_ffmpeg():
-    for candidate in [
-        os.path.join(ROOT_DIR, 'ffmpeg', 'ffmpeg.exe'),
-        os.path.join(ROOT_DIR, 'ffmpeg', 'ffmpeg'),
-        'ffmpeg',
-    ]:
+    candidates = []
+    if sys.platform == 'win32':
+        candidates.append(os.path.join(ROOT_DIR, 'ffmpeg', 'ffmpeg.exe'))
+    candidates.append(os.path.join(ROOT_DIR, 'ffmpeg', 'ffmpeg'))
+    for candidate in candidates:
         if os.path.isfile(candidate):
             return candidate
-        if candidate == 'ffmpeg' and shutil.which('ffmpeg'):
-            return 'ffmpeg'
-    print('ERROR: ffmpeg not found. Put it in {ROOT_DIR}/ffmpeg/ or add to PATH.')
+    if shutil.which('ffmpeg'):
+        return 'ffmpeg'
+    print(f'ERROR: ffmpeg not found. Put it in {ROOT_DIR}/ffmpeg/ or add to PATH.')
     sys.exit(1)
 
 
