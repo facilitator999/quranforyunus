@@ -548,6 +548,23 @@
       padding-top: 0.5rem;
       border-top: 1px solid var(--border);
     }
+    #font-size-toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      font-size: 1.1rem;
+      font-family: sans-serif;
+      padding: 0.45em 0.9em;
+      border-radius: 999px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      z-index: 9999;
+    }
+    #font-size-toast.visible { opacity: 1; }
 
     /* Surah headers */
     .surah-name {
@@ -1185,6 +1202,7 @@
       <div class="pronunciation-hint" id="pronunciation-hint"></div>
       <div class="page-number" id="page-title"></div>
     </div>
+    <div id="font-size-toast"></div>
 
     <div class="controls" dir="ltr">
       <button class="controls-handle" id="controls-toggle" title="Hide/show bar" aria-label="Toggle controls bar">
@@ -4037,32 +4055,40 @@
     })();
 
     // Font size scaling
-    const FONT_STEPS = [1, 1.1, 1.22, 1.35, 1.5, 1.7];
+    const FONT_STEPS = [1, 1.1, 1.22, 1.35, 1.5, 1.7, 2.0, 2.5, 3.0];
     let fontStep = FONT_STEPS.indexOf(1);
     const saved = parseFloat(localStorage.getItem('qk_font_scale'));
     if (saved && FONT_STEPS.includes(saved)) fontStep = FONT_STEPS.indexOf(saved);
 
-    function syncFontBtnVisibility() {
-      // When mushaf match is active, force font scale to 1 (lines are scaleX-justified at scale 1).
-      const inMushaf = (useIndopak13() && ip13MushafMatchOn()) || (!useIndopak13() && hafsMusharMatchOn());
-      if (inMushaf && fontStep !== 0) {
-        fontStep = 0;
-        document.documentElement.style.setProperty('--qk-font-scale', '1');
-        localStorage.removeItem('qk_font_scale');
-      }
+    let _fontToastTimer = null;
+    function showFontToast(scaleValue) {
+      const el = document.getElementById('font-size-toast');
+      if (!el) return;
+      const pct = Math.round(scaleValue * 100);
+      el.textContent = pct + '%';
+      el.classList.add('visible');
+      clearTimeout(_fontToastTimer);
+      _fontToastTimer = setTimeout(() => el.classList.remove('visible'), 1200);
     }
 
     function applyFontScale() {
       const s = FONT_STEPS[fontStep];
       document.documentElement.style.setProperty('--qk-font-scale', s);
       localStorage.setItem('qk_font_scale', s);
-      // Double rAF: first lets CSS var propagate, second measures after reflow.
-      // The extra setTimeout(0) catches mobile browsers that need an extra tick.
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        applyIp13Justification(document);
-        applyHafsJustification(document);
-      }));
+      showFontToast(s);
+      // fontStep 0 = mushaf layout (line-restricted); any larger step = free-flow
+      const wantMushaf = fontStep === 0;
+      const inMushaf = (useIndopak13() && ip13MushafMatchOn()) || (!useIndopak13() && hafsMusharMatchOn());
+      if (wantMushaf !== inMushaf) {
+        setMushafMode(wantMushaf); // triggers full re-render with correct layout
+      } else {
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          applyIp13Justification(document);
+          applyHafsJustification(document);
+        }));
+      }
     }
+    function syncFontBtnVisibility() { /* mode is now auto-synced by applyFontScale */ }
     applyFontScale();
     syncFontBtnVisibility();
     function setMushafMode(on) {
@@ -4075,23 +4101,8 @@
       }
     }
     $('font-cycle').addEventListener('click', () => {
-      const inMushaf = (useIndopak13() && ip13MushafMatchOn()) || (!useIndopak13() && hafsMusharMatchOn());
-      if (inMushaf) {
-        // Exit mushaf mode and jump to font step 1.
-        fontStep = 1;
-        applyFontScale();
-        setMushafMode(false);
-      } else {
-        fontStep = (fontStep + 1) % FONT_STEPS.length;
-        if (fontStep === 0) {
-          // Wrapped past max — re-enter mushaf mode, reset scale.
-          document.documentElement.style.setProperty('--qk-font-scale', '1');
-          localStorage.removeItem('qk_font_scale');
-          setMushafMode(true);
-        } else {
-          applyFontScale();
-        }
-      }
+      fontStep = (fontStep + 1) % FONT_STEPS.length;
+      applyFontScale();
     });
 
     // Pinch-to-zoom → increase font size instead of browser zoom
@@ -4109,6 +4120,7 @@
         e.preventDefault();
         const s = Math.max(FONT_STEPS[0], Math.min(FONT_STEPS[FONT_STEPS.length - 1], pinchScale0 * td(e.touches) / pinchDist0));
         document.documentElement.style.setProperty('--qk-font-scale', String(s));
+        showFontToast(s);
       }, { passive: false });
 
       document.addEventListener('touchend', e => {
