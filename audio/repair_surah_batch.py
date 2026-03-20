@@ -15,6 +15,30 @@ Progress is saved to disk every 10 verses so a crash doesn't lose all work.
 
 import subprocess
 import sys
+import os
+
+# torch requires Python 3.8+. If we're running on something older, scan PATH
+# for all python3.X interpreters, pick the highest version, and re-exec.
+if sys.version_info < (3, 8):
+    import shutil, glob
+    _found_versions = []
+    for _search in os.environ.get('PATH', '').split(os.pathsep):
+        for _p in glob.glob(os.path.join(_search, 'python3.*')):
+            try:
+                _minor = int(os.path.basename(_p).split('.')[1])
+                if _minor >= 8:
+                    _found_versions.append((_minor, _p))
+            except (IndexError, ValueError):
+                pass
+    if _found_versions:
+        _best = sorted(_found_versions, reverse=True)[0][1]
+        print(f'Python {sys.version_info.major}.{sys.version_info.minor} is too old '
+              f'(need 3.8+). Re-running with {_best}...\n')
+        os.execv(_best, [_best] + sys.argv)
+    print(f'ERROR: Python 3.8+ is required but only {sys.version} was found.')
+    print('Install python3.9 or later, then run:')
+    print(f'  python3.9 {" ".join(sys.argv)}')
+    sys.exit(1)
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
