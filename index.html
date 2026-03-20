@@ -569,7 +569,7 @@
     /* Floating speed bar — appears above bottom bar while audio plays */
     #speed-bar {
       position: fixed;
-      bottom: 4rem;
+      bottom: 5.5rem;
       left: 50%;
       transform: translateX(-50%) translateY(0.5rem);
       display: flex;
@@ -3415,11 +3415,27 @@
         });
       }
 
+      let _speedBarTimer = null;
+
+      function showSpeedBarFor5s() {
+        const bar = $('speed-bar');
+        if (!bar) return;
+        bar.classList.add('visible');
+        clearTimeout(_speedBarTimer);
+        _speedBarTimer = setTimeout(() => bar.classList.remove('visible'), 5000);
+      }
+
       window.updateSpeedBar = function () {
         buildSpeedBar();
         syncSpeedBtns();
         const bar = $('speed-bar');
-        if (bar) bar.classList.toggle('visible', isPlaying);
+        if (!bar) return;
+        if (isPlaying) {
+          showSpeedBarFor5s();
+        } else {
+          clearTimeout(_speedBarTimer);
+          bar.classList.remove('visible');
+        }
       };
     })();
 
