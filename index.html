@@ -1602,8 +1602,26 @@
     }
     function getPageDataDir() { return useIndopak13() ? 'data/indopak13/pages/' : 'data/pages/'; }
     function refreshTajweedLayout() {
-      pagelessCache.forEach(pd => recomputeTajweedOnPlaylist(pd.playlist));
-      refreshHafsMatchLayout();
+      // 1. Recompute tajweedHtml on every relevant playlist entry
+      if (isPagelessMode()) {
+        pagelessCache.forEach(pd => recomputeTajweedOnPlaylist(pd.playlist));
+      } else {
+        if (PAGE_PLAYLIST) recomputeTajweedOnPlaylist(PAGE_PLAYLIST);
+      }
+      // 2. Patch word spans in place — no full DOM rebuild needed
+      document.querySelectorAll('#mushaf-content .word[data-play-index]').forEach(sp => {
+        const pi  = parseInt(sp.dataset.playIndex, 10);
+        const pg  = parseInt(sp.dataset.page, 10);
+        const plist = isPagelessMode() ? (pagelessCache.get(pg) || {}).playlist : PAGE_PLAYLIST;
+        if (!plist) return;
+        const cur = plist[pi];
+        if (!cur) return;
+        if (TAJWEED_ON && cur.tajweedHtml) {
+          sp.innerHTML = cur.tajweedHtml;
+        } else if (!TAJWEED_ON) {
+          sp.textContent = stripHafsMarks(cur.text || '');
+        }
+      });
     }
     function getMaxPage() { return useIndopak13() ? 849 : 604; }
     const RECITERS = {
@@ -4193,14 +4211,9 @@
         // Load tajweed index in the background; re-render when ready if tajweed is on
         fetch('data/tajweed-index.json').then(r => r.json()).then(d => {
           TAJWEED_INDEX = d;
-          if (TAJWEED_ON) {
-            if (isPagelessMode()) {
-              refreshTajweedLayout();
-            } else {
-              renderMushafPage();
-            }
-          }
-        }).catch(() => {});
+          console.log('[tajweed] index loaded, keys:', Object.keys(d).length, '| TAJWEED_ON:', TAJWEED_ON);
+          if (TAJWEED_ON) refreshTajweedLayout();
+        }).catch(e => { console.error('[tajweed] failed to load index:', e); });
         const bookmark = getBookmark();
         const params = new URLSearchParams(location.search);
         const scrollToVerseNum = params.get('verse');
@@ -4476,11 +4489,8 @@
           TAJWEED_ON = !TAJWEED_ON;
           localStorage.setItem('qk_tajweed', TAJWEED_ON ? '1' : '0');
           tajweedToggle.classList.toggle('on', TAJWEED_ON);
-          if (isPagelessMode()) {
-            refreshTajweedLayout();
-          } else {
-            renderMushafPage();
-          }
+          console.log('[tajweed] toggle clicked, TAJWEED_ON:', TAJWEED_ON, '| TAJWEED_INDEX loaded:', !!TAJWEED_INDEX);
+          refreshTajweedLayout();
         });
       }
 
