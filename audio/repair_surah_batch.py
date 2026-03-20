@@ -95,15 +95,36 @@ def ensure_dependencies():
     print('\nAll packages installed. Continuing...\n')
 
     _root = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
-    _bundled = _os.path.join(_root, 'ffmpeg', 'ffmpeg.exe')
-    if not _os.path.isfile(_bundled) and not _shutil.which('ffmpeg'):
+    # On Windows look for the bundled ffmpeg.exe; on Linux/Mac use system ffmpeg
+    _bundled = _os.path.join(_root, 'ffmpeg', 'ffmpeg.exe') if sys.platform == 'win32' else None
+    if not (_bundled and _os.path.isfile(_bundled)) and not _shutil.which('ffmpeg'):
         print('=' * 55)
-        print('  ERROR: ffmpeg not found.')
-        print(f'    1. Place ffmpeg.exe in: {_os.path.join(_root, "ffmpeg", "")}')
-        print('    2. Or add ffmpeg to your system PATH')
-        print('    Download: https://ffmpeg.org/download.html')
+        print('  ffmpeg not found — attempting to install...')
         print('=' * 55)
-        sys.exit(1)
+        # Try common Linux package managers, then Homebrew (macOS)
+        _installed = False
+        for _cmd in [
+            ['dnf',     'install', '-y', 'ffmpeg'],   # Rocky / RHEL / Fedora
+            ['apt-get', 'install', '-y', 'ffmpeg'],   # Debian / Ubuntu
+            ['yum',     'install', '-y', 'ffmpeg'],   # older CentOS
+            ['brew',    'install',       'ffmpeg'],   # macOS Homebrew
+        ]:
+            if _shutil.which(_cmd[0]):
+                print(f'  Running: {" ".join(_cmd)}')
+                _r = subprocess.run(_cmd)
+                if _r.returncode == 0 and _shutil.which('ffmpeg'):
+                    print('  ffmpeg installed.\n')
+                    _installed = True
+                    break
+        if not _installed:
+            print('  ERROR: could not install ffmpeg automatically.')
+            print('  Install it manually:')
+            print('    Rocky/RHEL:  sudo dnf install ffmpeg')
+            print('    Ubuntu:      sudo apt install ffmpeg')
+            print('    Windows:     place ffmpeg.exe in the ffmpeg/ folder')
+            print('    macOS:       brew install ffmpeg')
+            print('=' * 55)
+            sys.exit(1)
 
 
 ensure_dependencies()
