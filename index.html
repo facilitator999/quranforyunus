@@ -888,6 +888,9 @@
     }
     .word:hover { background: rgba(17,94,89,0.06); }
     .word:active { background: rgba(17,94,89,0.14); }
+    /* Memorisation mode — words invisible but layout preserved */
+    body.hide-words .word { color: transparent !important; text-shadow: none !important; }
+    body.hide-words .word.highlight { background: var(--highlight-strong); }
     .word.highlight {
       background: var(--highlight-strong);
       box-shadow: 0 0 0 2px rgba(17,94,89,0.1);
@@ -1265,6 +1268,10 @@
         <button id="btn-play" title="Play page"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
         <a href="?" class="nav-btn" id="btn-next" title="Previous page"><svg viewBox="0 0 24 24"><path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg></a>
         <button type="button" class="nav-btn" id="btn-share-link" title="Copy link to share"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg></button>
+        <button type="button" class="nav-btn" id="btn-hide-words" title="Toggle word visibility (memorisation)">
+          <svg id="icon-eye-show" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          <svg id="icon-eye-hide" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -4152,6 +4159,23 @@
           document.body.removeChild(ta);
         }
       });
+    })();
+
+    // Word visibility toggle (memorisation)
+    (function setupHideWords() {
+      const btn = document.getElementById('btn-hide-words');
+      const iconShow = document.getElementById('icon-eye-show');
+      const iconHide = document.getElementById('icon-eye-hide');
+      if (!btn) return;
+      let hidden = localStorage.getItem('qk_hide_words') === '1';
+      function apply() {
+        document.body.classList.toggle('hide-words', hidden);
+        iconShow.style.display = hidden ? 'none' : '';
+        iconHide.style.display = hidden ? '' : 'none';
+        btn.title = hidden ? 'Show words' : 'Hide words (memorisation)';
+      }
+      apply();
+      btn.addEventListener('click', () => { hidden = !hidden; localStorage.setItem('qk_hide_words', hidden ? '1' : '0'); apply(); });
     })();
 
     // Font size scaling
