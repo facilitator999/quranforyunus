@@ -566,6 +566,55 @@
     }
     #font-size-toast.visible { opacity: 1; }
 
+    /* Floating speed bar — appears above bottom bar while audio plays */
+    #speed-bar {
+      position: fixed;
+      bottom: 4rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(0.5rem);
+      display: flex;
+      align-items: center;
+      gap: 0.15rem;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.25rem 0.4rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      z-index: 49;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    #speed-bar.visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+    body.night-mode #speed-bar {
+      background: rgba(45,45,45,0.95);
+    }
+    .speed-btn {
+      font-family: sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--ink-muted);
+      background: none;
+      border: none;
+      border-radius: 999px;
+      padding: 0.3em 0.55em;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+      white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .speed-btn:hover { background: var(--bg-hover); color: var(--ink); }
+    .speed-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
     /* Surah headers */
     .surah-name {
       max-width: 100%;
@@ -1203,6 +1252,8 @@
       <div class="page-number" id="page-title"></div>
     </div>
     <div id="font-size-toast"></div>
+
+    <div id="speed-bar" dir="ltr" aria-label="Playback speed"></div>
 
     <div class="controls" dir="ltr">
       <button class="controls-handle" id="controls-toggle" title="Hide/show bar" aria-label="Toggle controls bar">
@@ -3331,7 +3382,46 @@
         btn.innerHTML = SVG_PLAY;
         btn.title = 'Play page';
       }
+      updateSpeedBar();
     }
+
+    // Build and sync the floating speed bar
+    (function () {
+      const SPEED_LABELS = { 0.5: '0.5×', 0.7: '0.7×', 0.9: '0.9×', 1: '1×', 1.1: '1.1×', 1.3: '1.3×', 1.5: '1.5×' };
+      let _built = false;
+
+      function buildSpeedBar() {
+        const bar = $('speed-bar');
+        if (!bar || _built) return;
+        _built = true;
+        PLAYBACK_RATES.forEach(rate => {
+          const btn = document.createElement('button');
+          btn.className = 'speed-btn';
+          btn.dataset.rate = rate;
+          btn.textContent = SPEED_LABELS[rate] || (rate + '×');
+          btn.addEventListener('click', () => {
+            localStorage.setItem('qk_playback_rate', String(rate));
+            document.dispatchEvent(new CustomEvent('playbackratechange'));
+            syncSpeedBtns();
+          });
+          bar.appendChild(btn);
+        });
+      }
+
+      function syncSpeedBtns() {
+        const cur = getPlaybackRate();
+        document.querySelectorAll('.speed-btn').forEach(b => {
+          b.classList.toggle('active', parseFloat(b.dataset.rate) === cur);
+        });
+      }
+
+      window.updateSpeedBar = function () {
+        buildSpeedBar();
+        syncSpeedBtns();
+        const bar = $('speed-bar');
+        if (bar) bar.classList.toggle('visible', isPlaying);
+      };
+    })();
 
     // Tap verse number: cycles 1→2→3→cancel, then plays verse-by-verse (recite mode).
     // Spelling mode: start spelling from the first word of that verse.
