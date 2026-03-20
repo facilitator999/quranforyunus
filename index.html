@@ -1237,7 +1237,6 @@
       <a href="?" class="home-btn" id="btn-home" title="Back to index">&#8962;</a>
       <div class="toolbar-title" id="toolbar-surah-juz" aria-label="Surah and Juz"></div>
       <div class="font-size-ctrl">
-        <button id="font-cycle" title="Increase text size">A+</button>
         <button class="gear-btn" id="btn-quick-install" title="Install app" style="display:none;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </button>
@@ -4224,10 +4223,6 @@
         refreshHafsMatchLayout();
       }
     }
-    $('font-cycle').addEventListener('click', () => {
-      fontStep = (fontStep + 1) % FONT_STEPS.length;
-      applyFontScale(true);
-    });
 
     // Pinch-to-zoom → increase font size instead of browser zoom
     (function () {
@@ -4310,16 +4305,18 @@
 
     // Desktop controls bar collapse toggle
     (function setupControlsToggle() {
-      if (window.innerWidth <= 720) return;
       const controls = document.querySelector('.controls');
       const toggle = document.getElementById('controls-toggle');
       if (!toggle || !controls) return;
       const KEY = 'qk_bar_collapsed';
-      if (localStorage.getItem(KEY) === '1') controls.classList.add('bar-collapsed');
+      if (window.innerWidth > 720 && localStorage.getItem(KEY) === '1') controls.classList.add('bar-collapsed');
       toggle.addEventListener('click', () => {
         const collapsed = controls.classList.toggle('bar-collapsed');
         localStorage.setItem(KEY, collapsed ? '1' : '0');
       });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth <= 720) controls.classList.remove('bar-collapsed');
+      }, { passive: true });
     })();
 
     // Swipe navigation for mobile
