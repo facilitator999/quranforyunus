@@ -3403,6 +3403,7 @@
             localStorage.setItem('qk_playback_rate', String(rate));
             document.dispatchEvent(new CustomEvent('playbackratechange'));
             syncSpeedBtns();
+            showSpeedBarFor5s();
           });
           bar.appendChild(btn);
         });
