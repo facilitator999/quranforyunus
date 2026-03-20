@@ -4071,11 +4071,11 @@
       _fontToastTimer = setTimeout(() => el.classList.remove('visible'), 1200);
     }
 
-    function applyFontScale() {
+    function applyFontScale(toast = false) {
       const s = FONT_STEPS[fontStep];
       document.documentElement.style.setProperty('--qk-font-scale', s);
       localStorage.setItem('qk_font_scale', s);
-      showFontToast(s);
+      if (toast) showFontToast(s);
       // fontStep 0 = mushaf layout (line-restricted); any larger step = free-flow
       const wantMushaf = fontStep === 0;
       const inMushaf = (useIndopak13() && ip13MushafMatchOn()) || (!useIndopak13() && hafsMusharMatchOn());
@@ -4102,7 +4102,7 @@
     }
     $('font-cycle').addEventListener('click', () => {
       fontStep = (fontStep + 1) % FONT_STEPS.length;
-      applyFontScale();
+      applyFontScale(true);
     });
 
     // Pinch-to-zoom → increase font size instead of browser zoom
@@ -4128,7 +4128,7 @@
         isPinching = false;
         const cur = liveScale();
         fontStep = FONT_STEPS.reduce((b, v, i) => Math.abs(v - cur) < Math.abs(FONT_STEPS[b] - cur) ? i : b, 0);
-        applyFontScale();
+        applyFontScale(true);
       }, { passive: true });
 
       // Safari blocks pinch via gesturestart — prevent it
@@ -4140,9 +4140,21 @@
         if (!e.ctrlKey && !e.metaKey) return;
         e.preventDefault();
         fontStep = e.deltaY < 0 ? Math.min(fontStep + 1, FONT_STEPS.length - 1) : Math.max(fontStep - 1, 0);
-        applyFontScale();
+        applyFontScale(true);
       }, { passive: false });
     })();
+
+    // Recompute mushaf justification on rotation / window resize
+    let _resizeTimer = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(_resizeTimer);
+      _resizeTimer = setTimeout(() => {
+        requestAnimationFrame(() => {
+          applyIp13Justification(document);
+          applyHafsJustification(document);
+        });
+      }, 150);
+    }, { passive: true });
 
     const MIN_PAGE = 1;
     function setupNav() {
