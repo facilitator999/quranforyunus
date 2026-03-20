@@ -333,9 +333,6 @@
     .gear-btn svg { width: 1rem; height: 1rem; fill: currentColor; }
     #btn-quick-install svg { fill: none; stroke: currentColor; stroke-width: 2px; }
     .gear-btn:hover { background: var(--bg-hover); }
-    @media (max-width: 720px) {
-      .controls.bar-hidden { transform: translateY(100%); }
-    }
     /* Desktop pull-up handle */
     .controls-handle {
       display: none;
@@ -2287,9 +2284,8 @@
     function attachVerseNumButton(btn, verseKey, pageNum) {
       btn.type = 'button';
       btn.className = 'verse-num';
-      const en = localStorage.getItem('qk_english_nums') === '1';
       const vn = parseInt(String(verseKey).split(':')[1], 10) || 0;
-      btn.textContent = en ? String(vn) : (AR_NUMS[vn - 1] || String(vn));
+      btn.textContent = String(vn);
       btn.dataset.verseKey = verseKey;
       btn.title = 'Tap: play verse · Hold: bookmark';
       btn.addEventListener('click', (e) => {
@@ -2573,8 +2569,7 @@
       if (container.classList && container.classList.contains('pageless-section')) {
         const foot = document.createElement('div');
         foot.className = 'page-section-end-num';
-        const en = localStorage.getItem('qk_english_nums') === '1';
-        foot.textContent = 'Page ' + (en ? String(pageNum) : toArabicNum(pageNum));
+        foot.textContent = 'Page ' + String(pageNum);
         container.appendChild(foot);
       }
       if (updateToolbarMeta) updateToolbarForPageData(null, surahsArr, pageNum, playlist);
@@ -2670,8 +2665,7 @@
       if (container.classList && container.classList.contains('pageless-section')) {
         const foot = document.createElement('div');
         foot.className = 'page-section-end-num';
-        const en = localStorage.getItem('qk_english_nums') === '1';
-        foot.textContent = 'Page ' + (en ? String(pageNum) : toArabicNum(pageNum));
+        foot.textContent = 'Page ' + String(pageNum);
         container.appendChild(foot);
       }
       if (updateToolbarMeta) {
@@ -2798,7 +2792,7 @@
             btn.className = 'verse-num';
             btn.dataset.page = String(pageNum);
             btn.dataset.num = it.num;
-            btn.textContent = localStorage.getItem('qk_english_nums') === '1' ? it.num : toArabicNum(it.num);
+            btn.textContent = it.num;
             btn.dataset.verseKey = it.verseKey;
             btn.addEventListener('click', (e) => {
               e.preventDefault();
@@ -2834,8 +2828,7 @@
       if (container.classList && container.classList.contains('pageless-section')) {
         const foot = document.createElement('div');
         foot.className = 'page-section-end-num';
-        const en = localStorage.getItem('qk_english_nums') === '1';
-        foot.textContent = 'Page ' + (en ? String(pageNum) : toArabicNum(pageNum));
+        foot.textContent = 'Page ' + String(pageNum);
         container.appendChild(foot);
       }
       if (updateToolbarMeta) {
@@ -4290,25 +4283,6 @@
       else { hideArrow(next, false); next.style.pointerEvents = ''; next.href = `?page=${CURRENT_PAGE - 1}`; }
     }
 
-    // Auto-hide header & controls on mobile scroll (unless sticky setting is on)
-    (function setupScrollHide() {
-      if (window.innerWidth > 720) return;
-      const controls = document.querySelector('.controls');
-      let lastY = window.scrollY;
-      let ticking = false;
-      window.addEventListener('scroll', () => {
-        if ((localStorage.getItem('qk_sticky_bar') || '1') === '1') return;
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          const y = window.scrollY;
-          const hide = y > lastY && y > 40;
-          if (controls) controls.classList.toggle('bar-hidden', hide);
-          lastY = y;
-          ticking = false;
-        });
-      }, { passive: true });
-    })();
 
     // Desktop controls bar collapse toggle
     (function setupControlsToggle() {
@@ -4534,16 +4508,8 @@
             <button class="settings-toggle" id="toggle-tajweed" aria-label="Toggle tajweed colours"></button>
           </div>
           <div class="settings-row">
-            <label>Verse numbers in English</label>
-            <button class="settings-toggle" id="toggle-english-nums" aria-label="Toggle verse number format"></button>
-          </div>
-          <div class="settings-row">
             <label>Continuous scroll (whole Quran)</label>
             <button class="settings-toggle" id="toggle-pageless" aria-label="Continuous scroll mode"></button>
-          </div>
-          <div class="settings-row">
-            <label>Always show bottom bar</label>
-            <button class="settings-toggle" id="toggle-sticky-bar" aria-label="Toggle always show bottom bar"></button>
           </div>
           <div class="settings-row">
             <label>Pause at end of verse</label>
@@ -4553,18 +4519,6 @@
               <option value="2">2 sec</option>
               <option value="3">3 sec</option>
               <option value="5">5 sec</option>
-            </select>
-          </div>
-          <div class="settings-row">
-            <label>Recitation speed</label>
-            <select class="settings-select" id="playback-speed" aria-label="Recitation speed">
-              <option value="0.5">-50%</option>
-              <option value="0.7">-30%</option>
-              <option value="0.9">-10%</option>
-              <option value="1">Normal</option>
-              <option value="1.1">+10%</option>
-              <option value="1.3">+30%</option>
-              <option value="1.5">+50%</option>
             </select>
           </div>
           <div class="settings-row settings-install-row">
@@ -4674,10 +4628,6 @@
         else hint.innerHTML = after;
       })();
 
-      const toggle = document.getElementById('toggle-english-nums');
-      const useEnglish = localStorage.getItem('qk_english_nums') === '1';
-      if (useEnglish) toggle.classList.add('on');
-
       const pagelessToggle = document.getElementById('toggle-pageless');
       if (pagelessToggle) {
         if (localStorage.getItem('qk_pageless') === '1') pagelessToggle.classList.add('on');
@@ -4691,25 +4641,7 @@
         });
       }
 
-      toggle.addEventListener('click', () => {
-        toggle.classList.toggle('on');
-        const on = toggle.classList.contains('on');
-        localStorage.setItem('qk_english_nums', on ? '1' : '0');
-        document.querySelectorAll('.verse-num').forEach(el => {
-          const num = el.dataset.num;
-          if (num) el.textContent = on ? num : toArabicNum(num);
-        });
-      });
 
-      const stickyToggle = document.getElementById('toggle-sticky-bar');
-      if ((localStorage.getItem('qk_sticky_bar') || '1') === '1') stickyToggle.classList.add('on');
-      stickyToggle.addEventListener('click', () => {
-        stickyToggle.classList.toggle('on');
-        const on = stickyToggle.classList.contains('on');
-        localStorage.setItem('qk_sticky_bar', on ? '1' : '0');
-        const controls = document.querySelector('.controls');
-        if (controls && on) controls.classList.remove('bar-hidden');
-      });
 
       const versePauseSelect = document.getElementById('verse-pause-seconds');
       const savedPause = localStorage.getItem('qk_verse_end_pause') || '0';
@@ -4718,15 +4650,6 @@
         versePauseSelect.addEventListener('change', () => localStorage.setItem('qk_verse_end_pause', versePauseSelect.value));
       }
 
-      const playbackSpeedSelect = document.getElementById('playback-speed');
-      const savedRate = localStorage.getItem('qk_playback_rate') || '1';
-      if (playbackSpeedSelect) {
-        playbackSpeedSelect.value = ['0.5','0.7','0.9','1','1.1','1.3','1.5'].includes(savedRate) ? savedRate : '1';
-        playbackSpeedSelect.addEventListener('change', () => {
-          localStorage.setItem('qk_playback_rate', playbackSpeedSelect.value);
-          document.dispatchEvent(new CustomEvent('playbackratechange'));
-        });
-      }
 
       const installBtn = document.getElementById('btn-install-app');
       if (installBtn) {
