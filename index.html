@@ -1951,10 +1951,14 @@
           }
           return w;
         })();
-      const seg = ts.segments?.[wordIdx];
+      const segs = ts.segments;
+      const seg = segs?.[wordIdx];
       if (!seg) return null;
       const [surah] = vk.split(':').map(Number);
-      return { surah, startMs: seg[1], endMs: seg[2] };
+      // If segment has zero/negative duration, extend to next segment's start
+      const startMs = seg[1];
+      const endMs = seg[2] > seg[1] ? seg[2] : (segs[wordIdx + 1] ? segs[wordIdx + 1][1] : ts.timestamp_to);
+      return { surah, startMs, endMs };
     }
 
     function getSegmentPronunciation(segment) {
