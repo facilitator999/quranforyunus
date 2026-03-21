@@ -90,9 +90,11 @@ python audio/repair_surah_batch.py --reciter maher --surah 2 --dry-run
 **Repair all 114 surahs — Linux/Mac** (run inside `screen` or `tmux` so it survives disconnect):
 ```bash
 screen -S repair
-for i in $(seq 1 114); do python audio/repair_surah_batch.py --reciter maher --surah $i; done
+for i in $(seq 1 114); do python3.11 audio/repair_surah_batch.py --reciter maher --surah $i; done
 # Ctrl+A then D to detach — screen -r repair to reattach
 ```
+
+> On Rocky Linux 8 the system `python` is 3.6 — use `python3.11` (or whichever 3.8+ version is installed). The script will auto-detect and re-exec if you accidentally use the wrong one.
 
 **Repair all 114 surahs — Windows PowerShell:**
 ```powershell
