@@ -3544,8 +3544,12 @@
             let timers = [];
             segs.forEach((seg, i) => {
               if (i >= wis.length) return;
-              timers.push(setTimeout(() => { if (!signal.aborted) highlightByPlayIndex(wis[i], true); }, recordingMsToRealMs(seg[1] - startMs)));
-              timers.push(setTimeout(() => { if (!signal.aborted) highlightByPlayIndex(wis[i], false); }, recordingMsToRealMs(seg[2] - startMs)));
+              const onDelay = Math.max(0, recordingMsToRealMs(seg[1] - startMs));
+              // If segment has zero/negative duration, use next segment's start as off-time
+              const offRaw = seg[2] > seg[1] ? seg[2] : (segs[i + 1] ? segs[i + 1][1] : endMs);
+              const offDelay = Math.max(onDelay + 50, recordingMsToRealMs(offRaw - startMs));
+              timers.push(setTimeout(() => { if (!signal.aborted) highlightByPlayIndex(wis[i], true); }, onDelay));
+              timers.push(setTimeout(() => { if (!signal.aborted) highlightByPlayIndex(wis[i], false); }, offDelay));
             });
             const isLastRepeat = (r === verseRepeat - 1);
             await playSurahSegment(surah, startMs, endMs, canKeepPlaying && isLastRepeat);
