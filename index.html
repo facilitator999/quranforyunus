@@ -1113,11 +1113,15 @@
       padding: 1.2rem 1rem;
       text-align: center;
       position: sticky; top: 0; z-index: 50;
-      /* allow absolute gear */
     }
-    .idx-header .gear-btn {
+    .idx-header-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .idx-header .font-size-ctrl {
       position: absolute;
-      right: 1rem;
+      right: 0;
       top: 50%;
       transform: translateY(-50%);
     }
@@ -1144,6 +1148,60 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 0.75rem;
+    }
+
+    .idx-about {
+      max-width: 680px;
+      margin: 2.5rem auto 3rem;
+      padding: 0 1.25rem;
+      color: var(--ink-muted);
+    }
+    .idx-about p.idx-about-lead {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      color: var(--ink);
+    }
+    .idx-about h2 {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 0.75rem;
+    }
+    .idx-features {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.6rem;
+    }
+    .idx-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+    .idx-feature-icon {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 6px;
+      background: var(--accent-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+    .idx-feature-text strong {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .idx-feature-text span {
+      color: var(--ink-muted);
+      font-size: 0.78rem;
     }
 
     .idx-card {
@@ -1223,12 +1281,61 @@
   <script>if('serviceWorker'in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
   <!-- ===== INDEX VIEW ===== -->
   <div id="index-view">
-    <div class="idx-header" style="position:relative;">
-      <div class="site-logo-wrap"><img src="logo.png?v=7" alt="Quran for Yunus" class="site-logo" width="48" height="48"></div>
-      <h1 id="site-title">Quran for Yunus</h1>
-      <p>Learn to read letters, vowels, words.</p>
+    <div class="idx-header">
+      <div class="idx-header-inner">
+        <div class="site-logo-wrap"><img src="logo.png?v=7" alt="Quran for Yunus" class="site-logo" width="48" height="48"></div>
+        <h1 id="site-title">Quran for Yunus</h1>
+        <p>Learn to read letters, vowels, words.</p>
+        <div class="font-size-ctrl">
+          <button class="gear-btn" id="btn-quick-install" title="Install app" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </button>
+          <button class="gear-btn" id="btn-settings" title="Settings">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94a7.07 7.07 0 0 0 .06-.94c0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7.04 7.04 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.37 1.03.7 1.62.94l.36 2.54c.05.24.26.41.48.41h3.84c.24 0 .44-.17.48-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+          </button>
+        </div>
+      </div>
     </div>
     <div class="idx-grid" id="idx-grid"></div>
+
+    <div class="idx-about">
+      <p class="idx-about-lead">A Quran learning app built for my son Yunus — so he can read, listen, and learn word by word.</p>
+      <h2>Features</h2>
+      <div class="idx-features">
+        <div class="idx-feature">
+          <div class="idx-feature-icon">🔍</div>
+          <div class="idx-feature-text"><strong>Pinch to zoom</strong><span>Resize the mushaf to any size</span></div>
+        </div>
+        <div class="idx-feature">
+          <div class="idx-feature-icon">⚡</div>
+          <div class="idx-feature-text"><strong>Playback speed</strong><span>Slow down or speed up recitation</span></div>
+        </div>
+        <div class="idx-feature">
+          <div class="idx-feature-icon">👆</div>
+          <div class="idx-feature-text"><strong>Tap any word</strong><span>Hear it recited and see its translation</span></div>
+        </div>
+        <div class="idx-feature">
+          <div class="idx-feature-icon">🔁</div>
+          <div class="idx-feature-text"><strong>Repeat mode</strong><span>Loop a verse to help with memorisation</span></div>
+        </div>
+        <div class="idx-feature">
+          <div class="idx-feature-icon">🫣</div>
+          <div class="idx-feature-text"><strong>Hide mode</strong><span>Cover the text to test your memory</span></div>
+        </div>
+        <div class="idx-feature">
+          <div class="idx-feature-icon">📖</div>
+          <div class="idx-feature-text"><strong>Mushaf layouts</strong><span>Uthmani Hafs, IndoPak 15-line, IndoPak 13-line</span></div>
+        </div>
+        <div class="idx-feature">
+          <div class="idx-feature-icon">🎨</div>
+          <div class="idx-feature-text"><strong>Tajweed colours</strong><span>Rules colour-coded on every word</span></div>
+        </div>
+        <div class="idx-feature">
+          <div class="idx-feature-icon">📱</div>
+          <div class="idx-feature-text"><strong>Install as an app</strong><span>Works on iPhone, Android and tablet — no app store needed</span></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ===== PAGE VIEW ===== -->
@@ -4476,8 +4583,7 @@
         deferredInstallPrompt = e;
         const btn = document.getElementById('btn-install-app');
         if (btn) btn.style.display = '';
-        const quickBtn = document.getElementById('btn-quick-install');
-        if (quickBtn) quickBtn.style.display = '';
+        document.querySelectorAll('#btn-quick-install').forEach(b => b.style.display = '');
       });
 
       function triggerInstallPrompt() {
@@ -4487,8 +4593,7 @@
           deferredInstallPrompt = null;
           const btn = document.getElementById('btn-install-app');
           if (btn) btn.style.display = 'none';
-          const quickBtn = document.getElementById('btn-quick-install');
-          if (quickBtn) quickBtn.style.display = 'none';
+          document.querySelectorAll('#btn-quick-install').forEach(b => b.style.display = 'none');
           if (choice.outcome === 'accepted') {
             const toast = document.createElement('div');
             toast.className = 'bookmark-toast';
@@ -4686,11 +4791,10 @@
           }
         });
       }
-      const quickInstallBtn = document.getElementById('btn-quick-install');
-      if (quickInstallBtn) {
+      document.querySelectorAll('#btn-quick-install').forEach(quickInstallBtn => {
         if (deferredInstallPrompt) quickInstallBtn.style.display = '';
         quickInstallBtn.addEventListener('click', triggerInstallPrompt);
-      }
+      });
 
       overlay.addEventListener('click', e => {
         if (e.target === overlay) overlay.classList.remove('open');
