@@ -1956,7 +1956,7 @@
       if (!seg) return null;
       const [surah] = vk.split(':').map(Number);
       const startMs = seg[1];
-      const endMs = seg[2] > seg[1] ? seg[2] : (segs[wordIdx + 1] ? segs[wordIdx + 1][1] + 150 : ts.timestamp_to);
+      const endMs = seg[2] > seg[1] ? seg[2] : (segs[wordIdx + 1] ? segs[wordIdx + 1][1] : ts.timestamp_to);
       return { surah, startMs, endMs };
     }
 

@@ -18,6 +18,7 @@ ffmpeg:
     The script looks for ../ffmpeg/ffmpeg.exe (bundled) then falls back to PATH.
 """
 
+import os
 import subprocess
 import sys
 
@@ -109,8 +110,7 @@ def clean_for_alignment(text):
         if 0x064B <= cp <= 0x065F: continue  # harakat (tanwin, vowels, shadda…)
         if cp == 0x0670:            continue  # alif khanjariya
         if 0x0610 <= cp <= 0x061A: continue  # Arabic extended marks
-        if 0x06D6 <= cp <= 0x06DC: continue  # Quranic annotation signs
-        if 0x06DF <= cp <= 0x06E4: continue  # more Quranic signs
+        if 0x06D6 <= cp <= 0x06E4: continue  # Quranic annotation signs (incl. ۝۞)
         if 0x06E7 <= cp <= 0x06E8: continue  # small high Quran signs
         if 0x06EA <= cp <= 0x06ED: continue  # Arabic symbols
         out.append(c)
