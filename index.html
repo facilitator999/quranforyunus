@@ -545,6 +545,10 @@
       padding-top: 0.5rem;
       border-top: 1px solid var(--border);
     }
+    #page-view:not(.qk-pageless) .page-number {
+      border-top: none;
+      padding-top: 0;
+    }
     #font-size-toast {
       position: fixed;
       top: 50%;
@@ -836,7 +840,7 @@
       align-items: center;
       justify-content: center;
       font-family: 'Inter', sans-serif;
-      font-size: 0.45em;
+      font-size: 0.44em;
       font-weight: 700;
       color: var(--accent);
       cursor: pointer;
@@ -1122,8 +1126,7 @@
     .idx-header .font-size-ctrl {
       position: absolute;
       right: 0;
-      top: 50%;
-      transform: translateY(-50%);
+      top: 0;
     }
     .idx-header .site-logo {
       display: block;
@@ -1279,6 +1282,34 @@
       padding: 0.5rem 0 0;
     }
 
+    .idx-quick-scroll-wrap {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      scrollbar-width: none;
+    }
+    .idx-quick-scroll-wrap::-webkit-scrollbar { display: none; }
+    .idx-quick-chip {
+      flex-shrink: 0;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.4rem 0.75rem;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: var(--paper);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      white-space: nowrap;
+      line-height: 1.3;
+    }
+    .idx-quick-chip:hover { background: var(--accent-light); border-color: var(--accent); }
+    .idx-quick-chip small { font-size: 0.7rem; font-weight: 400; color: var(--ink-muted); }
+
     .idx-card.recent {
       border-color: var(--accent);
       background: var(--accent-light);
@@ -1299,7 +1330,7 @@
   <script>(function(){var on=localStorage.getItem('qk_night_mode')==='1';if(on){document.body.classList.add('night-mode');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#1a1a1a');}var f=localStorage.getItem('qk_mushaf_font')||'uthmani';var fam=(f==='indopak'||f==='indopak13')?'IndoPak':'UthmanicHafs';document.documentElement.style.setProperty('--qk-mushaf-font',fam);})();</script>
   <script>if('serviceWorker'in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
   <!-- ===== INDEX VIEW ===== -->
-  <div id="index-view">
+  <div id="index-view" dir="ltr">
     <div class="idx-header">
       <div class="idx-header-inner">
         <div class="site-logo-wrap"><img src="logo.png?v=7" alt="Quran for Yunus" class="site-logo" width="48" height="48"></div>
@@ -1318,7 +1349,7 @@
     <div class="idx-grid" id="idx-grid"></div>
 
     <div class="idx-about">
-      <p class="idx-about-lead">A Quran learning app built for my son Yunus — so he can read, listen, and learn word by word.</p>
+      <p class="idx-about-lead">A Quran learning app built for my son Yunus — so he can read, listen, and learn letters, vowels and words.</p>
       <h2>Features</h2>
       <div class="idx-features">
         <div class="idx-feature">
@@ -1347,7 +1378,11 @@
         </div>
         <div class="idx-feature">
           <div class="idx-feature-icon">🎨</div>
-          <div class="idx-feature-text"><strong>Tajweed colours</strong><span>Rules colour-coded on every word</span></div>
+          <div class="idx-feature-text"><strong>Tajweed colours</strong><span style="display:flex;flex-wrap:wrap;gap:0.3em 0.6em;margin-top:0.25em"><span><span style="display:inline-block;width:0.65em;height:0.65em;border-radius:50%;background:#FF80AA;vertical-align:middle;margin-right:0.2em"></span>Madd 2</span><span><span style="display:inline-block;width:0.65em;height:0.65em;border-radius:50%;background:#FF8000;vertical-align:middle;margin-right:0.2em"></span>Madd 2·4·6</span><span><span style="display:inline-block;width:0.65em;height:0.65em;border-radius:50%;background:#FF007F;vertical-align:middle;margin-right:0.2em"></span>Madd Muttasil</span><span><span style="display:inline-block;width:0.65em;height:0.65em;border-radius:50%;background:#CC0000;vertical-align:middle;margin-right:0.2em"></span>Madd 6</span><span><span style="display:inline-block;width:0.65em;height:0.65em;border-radius:50%;background:#00AA00;vertical-align:middle;margin-right:0.2em"></span>Ghunnah</span><span><span style="display:inline-block;width:0.65em;height:0.65em;border-radius:50%;background:#00AA00;vertical-align:middle;margin-right:0.2em"></span>Ikhfa</span><span><span style="display:inline-block;width:0.65em;height:0.65em;border-radius:50%;background:#008000;vertical-align:middle;margin-right:0.2em"></span>Ikhfa Shafawi</span><span><span style="display:inline-block;width:0.65em;height:0.65em;border-radius:50%;background:#008080;vertical-align:middle;margin-right:0.2em"></span>Qalqalah</span><span><span style="display:inline-block;width:0.65em;height:0.65em;border-radius:50%;background:#0055FF;vertical-align:middle;margin-right:0.2em"></span>Lam Shamsiyyah</span><span><span style="display:inline-block;width:0.65em;height:0.65em;border-radius:50%;background:#AAAAAA;vertical-align:middle;margin-right:0.2em"></span>Silent</span></span></div>
+        </div>
+        <div class="idx-feature">
+          <div class="idx-feature-icon">🔖</div>
+          <div class="idx-feature-text"><strong>Bookmark</strong><span>Hold a verse number to bookmark it — only one bookmark allowed</span></div>
         </div>
         <div class="idx-feature">
           <div class="idx-feature-icon">📱</div>
@@ -1362,7 +1397,7 @@
 
   <!-- ===== PAGE VIEW ===== -->
   <div id="page-view">
-    <div class="page-toolbar">
+    <div class="page-toolbar" dir="ltr">
       <a href="?" class="home-btn" id="btn-home" title="Back to index">&#8962;</a>
       <div class="toolbar-title" id="toolbar-surah-juz" aria-label="Surah and Juz"></div>
       <div class="font-size-ctrl">
@@ -1551,6 +1586,15 @@
           const pageJsonDir = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 'data/indopak13/pages/' : 'data/pages/';
           const maxPageForFont = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 849 : 604;
           const safePage = (p) => Math.min(Math.max(1, parseInt(String(p), 10) || 1), maxPageForFont);
+          let lastSurahNum = null;
+          if (lastPage) {
+            const lp = safePage(lastPage);
+            let best = 1;
+            for (let n = 1; n <= 114; n++) {
+              if (surahStartPage[n] && surahStartPage[n] <= lp) best = n;
+            }
+            lastSurahNum = best;
+          }
           function firstVerseKeyFromPageJson(pd) {
             if (pd.layout === 'indopak13_qudratullah') {
               for (const ln of pd.lines || []) {
@@ -1568,27 +1612,22 @@
             label.textContent = 'Continue reading';
             grid.appendChild(label);
 
-            if (lastPage) {
+            if (lastPage && lastSurahNum) {
               const lp = safePage(lastPage);
+              const lastSurahInfo = SURAHS.find(s => s.n === lastSurahNum);
+              const lastSurahName = lastSurahInfo ? lastSurahInfo.name : '';
+              const lastJuz = getJuzForVerseIndex(lastSurahNum, 1);
               const a = document.createElement('a');
               a.className = 'idx-card recent';
               a.href = '?page=' + lp + qkPagelessQ;
               a.innerHTML = `
                 <span class="card-num">&#9654;</span>
                 <span style="flex:1;min-width:0;display:flex;flex-direction:column">
-                  <span class="card-name">Juz 1 Page ${lp}</span>
                   <span class="card-meta">last visited</span>
+                  <span class="card-name">${lastSurahName}</span>
+                  <span class="card-meta">Juz ${lastJuz} Page ${lp}</span>
                 </span>`;
               grid.appendChild(a);
-              fetch(pageJsonDir + lp + '.json').then(r => r.json()).then(pd => {
-                const vk = firstVerseKeyFromPageJson(pd);
-                if (vk) {
-                  const [s, vn] = vk.split(':').map(Number);
-                  const juz = getJuzForVerseIndex(s, vn);
-                  const el = a.querySelector('.card-name');
-                  if (el) el.textContent = 'Juz ' + juz + ' Page ' + lastPage;
-                }
-              }).catch(() => {});
             }
 
             // Find which page a verse is on in the current font by scanning forward from surah start.
@@ -1620,6 +1659,9 @@
             if (bookmark) {
               const vm = /^(\d+):(\d+)$/.exec(String(bookmark.verse || '').trim());
               const surahNum = vm ? Number(vm[1]) : 1;
+              const verseNum = vm ? vm[2] : '';
+              const surahInfo = SURAHS.find(s => s.n === surahNum);
+              const surahName = surahInfo ? surahInfo.name : `Surah ${surahNum}`;
               const a = document.createElement('a');
               a.className = 'idx-card recent';
               a.href = '#';
@@ -1627,7 +1669,7 @@
                 <span class="card-num" style="background:var(--accent);color:white;border-color:var(--accent)">&#x1F516;</span>
                 <span style="flex:1;min-width:0;display:flex;flex-direction:column">
                   <span class="card-meta">Bookmark</span>
-                  <span class="card-name">Verse ${bookmark.verse}</span>
+                  <span class="card-name">${surahName} ${verseNum}</span>
                   <span class="card-meta card-meta-page">…</span>
                 </span>`;
               grid.appendChild(a);
@@ -1682,6 +1724,22 @@
             label2.className = 'idx-section-label';
             label2.textContent = 'All Surahs';
             grid.appendChild(label2);
+
+            // Quick scroll chips — most read surahs
+            const QUICK_SURAHS = [18, 36, 55, 56, 67, 114];
+            const quickWrap = document.createElement('div');
+            quickWrap.className = 'idx-quick-scroll-wrap';
+            for (const n of QUICK_SURAHS) {
+              const info = SURAHS.find(s => s.n === n);
+              const pg = surahStartPage[n];
+              if (!info || !pg) continue;
+              const chip = document.createElement('a');
+              chip.className = 'idx-quick-chip';
+              chip.href = '?page=' + pg + '&surah=' + n + qkPagelessQ;
+              chip.textContent = info.name;
+              quickWrap.appendChild(chip);
+            }
+            grid.appendChild(quickWrap);
           }
 
           for (const s of SURAHS) {
@@ -1697,7 +1755,7 @@
               <span class="card-num">${s.n}</span>
               <span style="flex:1;min-width:0;display:flex;flex-direction:column">
                 <span class="card-name">${s.name}</span>
-                <span class="card-meta">Juz ${juz} Page ${page}</span>
+                <span class="card-meta">Juz ${juz}</span>
               </span>`;
             grid.appendChild(a);
           }
@@ -3025,7 +3083,7 @@
       if (updateToolbarMeta) {
         const surahNames = (surahsArr || []).map(ch => {
           const s = SURAHS.find(x => x.n === ch);
-          return s ? s.name : 'Surah ' + ch;
+          return s ? ch + '. ' + s.name : 'Surah ' + ch;
         }).join(', ');
         const firstVerse = (items || []).find(it => it.verseKey);
         let juzNum = null;
@@ -3089,7 +3147,7 @@
     function updateToolbarForPageData(items, surahsArr, pageNum, playlistOpt) {
       const surahNames = (surahsArr || []).map(ch => {
         const s = SURAHS.find(x => x.n === ch);
-        return s ? s.name : 'Surah ' + ch;
+        return s ? ch + '. ' + s.name : 'Surah ' + ch;
       }).join(', ');
       let firstVerse = (items || []).find(it => it.verseKey);
       if (!firstVerse && playlistOpt && playlistOpt.length) {
