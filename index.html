@@ -1565,44 +1565,70 @@
               }).catch(() => {});
             }
 
-            if (bookmark) {
-              const currentFont = localStorage.getItem('qk_mushaf_font') || 'uthmani';
-              const bookmarkFont = bookmark.font || 'uthmani';
-              const fontChanged = (currentFont === 'indopak13') !== (bookmarkFont === 'indopak13');
-              const vm = /^(\d+):(\d+)$/.exec(String(bookmark.verse || '').trim());
-              let bp;
-              if (fontChanged && vm) {
-                // Bookmark was saved with a different page-count script — use surahStartPage
-                // for the current script so we land near the right verse.
-                bp = safePage(surahStartPage[Number(vm[1])] || bookmark.page);
-              } else {
-                bp = safePage(bookmark.page);
+            // Find which page a verse is on in the current font by scanning forward from surah start.
+            function pageHasVerse(pd, verseKey) {
+              if (pd.layout === 'indopak13_qudratullah') {
+                return (pd.lines || []).some(ln => ln.line_type === 'ayah' &&
+                  (ln.words || []).some(w => w.surah + ':' + w.ayah === verseKey));
               }
+              return (pd.verses || []).some(v => v.verse_key === verseKey);
+            }
+            async function findPageForVerse(verseKey) {
+              const surahNum = Number(verseKey.split(':')[0]);
+              const startPage = surahStartPage[surahNum] || 1;
+              for (let i = 0; i < 40 && (startPage + i) <= maxPageForFont; i++) {
+                const pg = startPage + i;
+                try {
+                  const pd = await fetch(pageJsonDir + pg + '.json').then(r => r.json());
+                  if (pageHasVerse(pd, verseKey)) return pg;
+                  // Stop if we've gone past the surah
+                  const pastSurah = pd.layout === 'indopak13_qudratullah'
+                    ? (pd.lines || []).some(ln => ln.line_type === 'ayah' && (ln.words || []).some(w => Number(w.surah) > surahNum))
+                    : (pd.verses || []).some(v => Number(v.verse_key.split(':')[0]) > surahNum);
+                  if (pastSurah && i > 0) break;
+                } catch (_) { break; }
+              }
+              return startPage;
+            }
+
+            if (bookmark) {
+              const vm = /^(\d+):(\d+)$/.exec(String(bookmark.verse || '').trim());
+              const surahNum = vm ? Number(vm[1]) : 1;
               const a = document.createElement('a');
               a.className = 'idx-card recent';
-              // Always respect the user's current pageless preference — never force-enable it
-              let bmHref = '?page=' + bp + qkPagelessQ;
-              // Only include surah+verse in URL when font changed (so init scrolls to verse)
-              // For same-font, let the bookmark path in init handle it (avoids "Shared verse" toast)
-              if (fontChanged && vm) bmHref += '&surah=' + vm[1] + '&verse=' + vm[2];
-              a.href = bmHref;
+              a.href = '#';
               a.innerHTML = `
                 <span class="card-num" style="background:var(--accent);color:white;border-color:var(--accent)">&#x1F516;</span>
                 <span style="flex:1;min-width:0;display:flex;flex-direction:column">
                   <span class="card-meta">Bookmark</span>
                   <span class="card-name">Verse ${bookmark.verse}</span>
-                  <span class="card-meta card-meta-page">Juz 1 Page ${bp}</span>
+                  <span class="card-meta card-meta-page">…</span>
                 </span>`;
               grid.appendChild(a);
-              fetch(pageJsonDir + bp + '.json').then(r => r.json()).then(pd => {
-                const vk = firstVerseKeyFromPageJson(pd);
-                if (vk) {
-                  const [s, vn] = vk.split(':').map(Number);
-                  const juz = getJuzForVerseIndex(s, vn);
+
+              let resolvedPage = null;
+              const pagePromise = findPageForVerse(bookmark.verse).then(bp => {
+                resolvedPage = bp;
+                a.href = '?page=' + bp + qkPagelessQ;
+                fetch(pageJsonDir + bp + '.json').then(r => r.json()).then(pd => {
+                  const vk = firstVerseKeyFromPageJson(pd);
+                  if (vk) {
+                    const [s, vn] = vk.split(':').map(Number);
+                    const juz = getJuzForVerseIndex(s, vn);
+                    const el = a.querySelector('.card-meta-page');
+                    if (el) el.textContent = 'Juz ' + juz + ' Page ' + bp;
+                  }
+                }).catch(() => {
                   const el = a.querySelector('.card-meta-page');
-                  if (el) el.textContent = 'Juz ' + juz + ' Page ' + bp;
-                }
-              }).catch(() => {});
+                  if (el) el.textContent = 'Page ' + bp;
+                });
+              });
+              // If user clicks before scan resolves, wait then navigate
+              a.addEventListener('click', (e) => {
+                if (resolvedPage !== null) return; // href already set, let it follow
+                e.preventDefault();
+                pagePromise.then(() => { location.href = a.href; });
+              });
             } else {
               const hint = document.createElement('div');
               hint.className = 'idx-card';
@@ -2438,7 +2464,7 @@
           holdTimer = 'fired';
           if (ev && ev.preventDefault) ev.preventDefault();
           btn._verseBookmarkJustFired = true;
-          setBookmark(verseKey, pageNum);
+          setBookmark(verseKey);
         }, 800);
       };
       const endHold = (ev) => {
@@ -3185,7 +3211,8 @@
         if (sh) {
           try {
             const bk = JSON.parse(localStorage.getItem('qk_bookmark') || 'null');
-            sh.classList.toggle('visible', !!(bk && Number(bk.page) === bestP));
+            const bkInDom = bk ? !!document.querySelector(`.verse-num[data-verse-key="${bk.verse}"]`) : false;
+            sh.classList.toggle('visible', bkInDom);
           } catch (_) {}
         }
       }
@@ -3276,14 +3303,14 @@
     function getBookmark() {
       try { return JSON.parse(localStorage.getItem('qk_bookmark')); } catch { return null; }
     }
-    function setBookmark(verseKey, page) {
+    function setBookmark(verseKey) {
       const existing = getBookmark();
       let msg;
       if (existing && existing.verse === verseKey) {
         localStorage.removeItem('qk_bookmark');
         msg = 'Bookmark removed';
       } else {
-        localStorage.setItem('qk_bookmark', JSON.stringify({ verse: verseKey, page, font: localStorage.getItem('qk_mushaf_font') || 'uthmani' }));
+        localStorage.setItem('qk_bookmark', JSON.stringify({ verse: verseKey }));
         const [ch, v] = verseKey.split(':');
         const surahInfo = SURAHS.find(s => s.n === Number(ch));
         const name = surahInfo ? surahInfo.name : `Surah ${ch}`;
@@ -3293,7 +3320,8 @@
       const shareBtn = document.getElementById('btn-share-link');
       if (shareBtn) {
         const bk = getBookmark();
-        shareBtn.classList.toggle('visible', !!(bk && Number(bk.page) === (isPagelessMode() ? pagelessVisiblePage : CURRENT_PAGE)));
+        const bkInDom = bk ? !!document.querySelector(`.verse-num[data-verse-key="${bk.verse}"]`) : false;
+        shareBtn.classList.toggle('visible', bkInDom);
       }
       showBookmarkToast(msg);
     }
@@ -4264,8 +4292,8 @@
       if (!btn) return;
       function updateVisibility() {
         const bk = getBookmark();
-        const pg = isPagelessMode() ? pagelessVisiblePage : CURRENT_PAGE;
-        btn.classList.toggle('visible', !!(bk && Number(bk.page) === pg));
+        const bkInDom = bk ? !!document.querySelector(`.verse-num[data-verse-key="${bk.verse}"]`) : false;
+        btn.classList.toggle('visible', bkInDom);
       }
       updateVisibility();
       btn.addEventListener('click', () => {
@@ -4555,14 +4583,7 @@
           };
           setTimeout(trySurah, isPagelessMode() ? 80 : 0);
         } else if (bookmark && bookmark.verse) {
-          const _bkFont = bookmark.font || 'uthmani';
-          const _curFont = localStorage.getItem('qk_mushaf_font') || 'uthmani';
-          // Page numbers are shared between uthmani and indopak (both 604 pages);
-          // indopak13 has 849 pages — only a page-count mismatch prevents direct navigation.
-          const _pageCountSame = (_bkFont === 'indopak13') === (_curFont === 'indopak13');
-          if (_pageCountSame && Number(bookmark.page) === CURRENT_PAGE) {
-            scrollToVerseKey(bookmark.verse, {});
-          }
+          scrollToVerseKey(bookmark.verse, {});
         }
         if (AUTO_PLAY) {
           if (isPagelessMode()) playFromIndex(0, pagelessVisiblePage);
