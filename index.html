@@ -1580,10 +1580,11 @@
               }
               const a = document.createElement('a');
               a.className = 'idx-card recent';
-              // When font changed, force pageless so scroll-to-verse can scan across pages
-              const bmPagelessQ = fontChanged ? '&pageless=1' : qkPagelessQ;
-              let bmHref = '?page=' + bp + bmPagelessQ;
-              if (vm) bmHref += '&surah=' + vm[1] + '&verse=' + vm[2];
+              // Always respect the user's current pageless preference — never force-enable it
+              let bmHref = '?page=' + bp + qkPagelessQ;
+              // Only include surah+verse in URL when font changed (so init scrolls to verse)
+              // For same-font, let the bookmark path in init handle it (avoids "Shared verse" toast)
+              if (fontChanged && vm) bmHref += '&surah=' + vm[1] + '&verse=' + vm[2];
               a.href = bmHref;
               a.innerHTML = `
                 <span class="card-num" style="background:var(--accent);color:white;border-color:var(--accent)">&#x1F516;</span>
@@ -4556,8 +4557,10 @@
         } else if (bookmark && bookmark.verse) {
           const _bkFont = bookmark.font || 'uthmani';
           const _curFont = localStorage.getItem('qk_mushaf_font') || 'uthmani';
-          const _fontSame = (_bkFont === 'indopak13') === (_curFont === 'indopak13');
-          if (_fontSame && Number(bookmark.page) === CURRENT_PAGE) {
+          // Page numbers are shared between uthmani and indopak (both 604 pages);
+          // indopak13 has 849 pages — only a page-count mismatch prevents direct navigation.
+          const _pageCountSame = (_bkFont === 'indopak13') === (_curFont === 'indopak13');
+          if (_pageCountSame && Number(bookmark.page) === CURRENT_PAGE) {
             scrollToVerseKey(bookmark.verse, {});
           }
         }
