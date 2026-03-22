@@ -1520,6 +1520,32 @@
             } catch (_) { /* keep Hafs mapping if import not run */ }
           }
 
+          // If URL has ?verse=S:V (a shared link), find the correct page and redirect
+          const _sharedVerse = new URLSearchParams(location.search).get('verse');
+          if (_sharedVerse && /^\d+:\d+$/.test(_sharedVerse)) {
+            const _qkPl = localStorage.getItem('qk_pageless') === '1' ? '&pageless=1' : '';
+            const _pjDir = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 'data/indopak13/pages/' : 'data/pages/';
+            const _maxPg = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 849 : 604;
+            const _sNum = Number(_sharedVerse.split(':')[0]);
+            const _start = surahStartPage[_sNum] || 1;
+            let _foundPage = _start;
+            for (let i = 0; i < 40 && (_start + i) <= _maxPg; i++) {
+              try {
+                const _pd = await fetch(_pjDir + (_start + i) + '.json').then(r => r.json());
+                const _has = _pd.layout === 'indopak13_qudratullah'
+                  ? (_pd.lines||[]).some(l => l.line_type==='ayah' && (l.words||[]).some(w => w.surah+':'+w.ayah === _sharedVerse))
+                  : (_pd.verses||[]).some(v => v.verse_key === _sharedVerse);
+                if (_has) { _foundPage = _start + i; break; }
+                const _past = _pd.layout === 'indopak13_qudratullah'
+                  ? (_pd.lines||[]).some(l => l.line_type==='ayah' && (l.words||[]).some(w => Number(w.surah) > _sNum))
+                  : (_pd.verses||[]).some(v => Number(v.verse_key.split(':')[0]) > _sNum);
+                if (_past && i > 0) break;
+              } catch(_) { break; }
+            }
+            location.replace('?page=' + _foundPage + _qkPl);
+            return;
+          }
+
           const bookmark = (() => { try { return JSON.parse(localStorage.getItem('qk_bookmark')); } catch { return null; } })();
           const qkPagelessQ = localStorage.getItem('qk_pageless') === '1' ? '&pageless=1' : '';
           const pageJsonDir = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 'data/indopak13/pages/' : 'data/pages/';
@@ -4298,14 +4324,7 @@
       updateVisibility();
       btn.addEventListener('click', () => {
         const bk = getBookmark();
-        const surahParam = new URLSearchParams(location.search).get('surah') || (PAGE_SURAHS && PAGE_SURAHS[0]);
-        let qs = '?page=' + (isPagelessMode() ? pagelessVisiblePage : CURRENT_PAGE);
-        if (isPagelessMode()) qs += '&pageless=1';
-        if (surahParam) qs += '&surah=' + surahParam;
-        if (bk && bk.verse) {
-          const vNum = bk.verse.includes(':') ? bk.verse.split(':')[1] : bk.verse;
-          qs += '&verse=' + vNum;
-        }
+        const qs = bk && bk.verse ? '?verse=' + bk.verse : '?page=' + (isPagelessMode() ? pagelessVisiblePage : CURRENT_PAGE);
         const url = location.origin + (location.pathname || '/') + qs;
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(url).then(() => showBookmarkToast('Link copied!')).catch(() => showBookmarkToast('Could not copy'));
