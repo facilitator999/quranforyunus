@@ -5299,7 +5299,7 @@
         si.value = ''; vi.value = '';
         renderList(null, null);
         listEl.scrollTop = 0;
-        setTimeout(() => si.focus(), 220);
+        /* Intentionally do not focus inputs — user taps Surah / Verse fields to type (no auto keyboard). */
       }
       function closeNav() { navOverlay.classList.remove('open'); }
 
