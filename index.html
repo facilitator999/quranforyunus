@@ -164,10 +164,11 @@
       z-index: 200;
       background: rgba(0,0,0,0.35);
       opacity: 0;
-      transition: opacity 0.25s ease;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
       pointer-events: none;
     }
-    .settings-overlay.open { opacity: 1; pointer-events: auto; }
+    .settings-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
     .settings-panel {
       position: absolute;
       top: 50%;
@@ -437,14 +438,23 @@
     .mushaf-page {
       max-width: 680px;
       margin: 1.25rem auto;
-      padding: 1.5rem 1.75rem 2rem;
+      padding: 1.5rem 1.75rem 0.15rem;
       background: var(--paper);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow-md);
       position: relative;
       overflow-x: clip;
+      display: flex;
+      flex-direction: column;
     }
+    #mushaf-content {
+      flex: 1 1 auto;
+    }
+    #mushaf-content, .page-nav-footer {
+      transition: opacity 0.2s ease;
+    }
+    #mushaf-content.page-fade, .page-nav-footer.page-fade { opacity: 0; }
     /* Pageless: no side padding on desktop, restore on mobile */
     #page-view.qk-pageless .mushaf-page {
       padding-left: 0;
@@ -459,7 +469,7 @@
     @media (max-width: 720px) {
       .mushaf-page {
         margin: 0;
-        padding: 0.5rem 0.9rem 1.5rem;
+        padding: 0.5rem 0.9rem 0.25rem;
         border: none;
         border-radius: 0;
         box-shadow: none;
@@ -470,10 +480,11 @@
     /* Pageless: fixed top toolbar (settings always reachable); hides on scroll down */
     #page-view.qk-pageless #mushaf-content {
       margin-top: 3.35rem;
-      transition: margin-top 0.22s ease;
+      transform: translateY(0);
+      transition: transform 0.22s ease;
     }
     #page-view.qk-pageless.qk-pageless-toolbar-hidden #mushaf-content {
-      margin-top: 0.35rem;
+      transform: translateY(-3rem);
     }
     #page-view.qk-pageless .page-toolbar {
       position: fixed;
@@ -537,18 +548,35 @@
       user-select: none;
     }
 
-    .page-number {
-      text-align: center;
+    .page-nav-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.25rem;
+      padding: 0.3rem 0;
+      transition: opacity 0.2s ease;
+    }
+    .page-nav-num {
       font-size: 0.85rem;
       color: var(--ink-muted);
-      margin-top: 1rem;
-      padding-top: 0.5rem;
-      border-top: 1px solid var(--border);
+      user-select: none;
     }
-    #page-view:not(.qk-pageless) .page-number {
-      border-top: none;
-      padding-top: 0;
+    .page-nav-arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.2rem;
+      height: 2.2rem;
+      border-radius: 50%;
+      color: var(--ink-light, #888);
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.15s ease;
     }
+    .page-nav-arrow:hover { background: var(--bg-hover); }
+    .page-nav-arrow svg { width: 1.1rem; height: 1.1rem; fill: currentColor; }
+    .page-nav-arrow[data-hidden] { visibility: hidden; pointer-events: none; }
+    #page-view.qk-pageless .page-nav-footer { display: none; }
     #font-size-toast {
       position: fixed;
       top: 50%;
@@ -824,16 +852,16 @@
       padding-top: 2px;
     }
     /* Tajweed colours (cpfair schema) */
-    .tj-silent        { color: #AAAAAA; } /* grey — matches */
-    .tj-madd_2        { color: #FF80AA; } /* light pink */
-    .tj-madd_246      { color: #FF8000; } /* orange */
-    .tj-madd_muttasil { color: #FF007F; } /* hot pink/magenta */
-    .tj-madd_6        { color: #CC0000; } /* red */
-    .tj-ghunnah       { color: #00AA00; } /* green */
-    .tj-ikhfa         { color: #00AA00; } /* green */
-    .tj-ikhfa_shafawi { color: #008000; } /* green */
-    .tj-qalqalah      { color: #008080; } /* cyan/teal */
-    .tj-lam_shamsiyyah{ color: #0055FF; } /* bright blue */
+    .tj-silent        { color: #7F8C8D; }
+    .tj-madd_2        { color: #64B5F6; }
+    .tj-madd_246      { color: #42A5F5; }
+    .tj-madd_muttasil { color: #26C6DA; }
+    .tj-madd_6        { color: #1E88E5; }
+    .tj-ghunnah       { color: #2ECC71; }
+    .tj-ikhfa         { color: #F4D03F; }
+    .tj-ikhfa_shafawi { color: #F39C12; }
+    .tj-qalqalah      { color: #E74C3C; }
+    .tj-lam_shamsiyyah{ color: #8E44AD; }
     /* Verse number markers (button to avoid iOS "Open in New Tab" on long-press) */
     .verse-num {
       display: inline-flex;
@@ -872,13 +900,14 @@
       border-color: var(--accent);
     }
     .verse-num.shared-verse {
-      box-shadow: 0 0 0 3px var(--accent);
+      outline: 3px solid var(--accent);
+      outline-offset: 0;
       background: var(--accent-light);
       animation: shared-verse-pulse 1.5s ease-out 2;
     }
     @keyframes shared-verse-pulse {
-      0%, 100% { box-shadow: 0 0 0 3px var(--accent); }
-      50% { box-shadow: 0 0 0 8px rgba(17,94,89,0.25); }
+      0%, 100% { outline-offset: 0; }
+      50% { outline-offset: 4px; }
     }
 
     /* Words */
@@ -961,7 +990,7 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: background 0.15s ease, transform 0.15s ease;
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
@@ -1410,9 +1439,13 @@
       </div>
     </div>
     <div class="mushaf-page" translate="no">
-      <div id="mushaf-content"></div>
+      <div id="mushaf-content" class="page-fade"></div>
       <div class="pronunciation-hint" id="pronunciation-hint"></div>
-      <div class="page-number" id="page-title"></div>
+      <div class="page-nav-footer page-fade" id="page-nav-footer">
+        <a href="?" class="page-nav-arrow" id="footer-prev" title="Previous page"><svg viewBox="0 0 24 24"><path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg></a>
+        <span class="page-nav-num" id="page-title"></span>
+        <a href="?" class="page-nav-arrow" id="footer-next" title="Next page"><svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></a>
+      </div>
     </div>
     <div id="font-size-toast"></div>
 
@@ -1427,9 +1460,7 @@
         <button class="mode-btn" id="mode-spelling">Spelling</button>
       </div>
       <div class="controls-nav">
-        <a href="?" class="nav-btn" id="btn-prev" title="Next page"><svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></a>
         <button id="btn-play" title="Play page"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
-        <a href="?" class="nav-btn" id="btn-next" title="Previous page"><svg viewBox="0 0 24 24"><path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg></a>
         <button type="button" class="nav-btn" id="btn-share-link" title="Copy link to share"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92z"/></svg></button>
         <button type="button" class="nav-btn" id="btn-hide-words" title="Toggle word visibility (memorisation)">
           <svg id="icon-eye-show" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
@@ -1499,6 +1530,7 @@
       {n:109,name:'Al-Kafirun'},{n:110,name:'An-Nasr'},{n:111,name:'Al-Masad'},
       {n:112,name:'Al-Ikhlas'},{n:113,name:'Al-Falaq'},{n:114,name:'An-Nas'}
     ];
+    const SURAHS_MAP = new Map(SURAHS.map(s => [s.n, s]));
 
     /** Juz 2..30 start verses (surah, ayah) — Hafs mushaf; used for index "Juz X Page Y" */
     const JUZ_STARTS_INDEX = [
@@ -1539,6 +1571,9 @@
       fetch('data/full_quran.json')
         .then(r => r.json())
         .then(async data => {
+          const _mushafFont = localStorage.getItem('qk_mushaf_font') || 'uthmani';
+          const _isIndopak = _mushafFont === 'indopak13';
+          const _isPageless = localStorage.getItem('qk_pageless') === '1';
           const surahStartPage = {};
           const pages = Object.keys(data).map(Number).sort((a,b) => a - b);
           for (const page of pages) {
@@ -1546,7 +1581,7 @@
               if (!surahStartPage[ch]) surahStartPage[ch] = page;
             }
           }
-          if (localStorage.getItem('qk_mushaf_font') === 'indopak13') {
+          if (_isIndopak) {
             try {
               const sp = await fetch('data/indopak13/surah_start_pages.json').then(r => r.json());
               for (let n = 1; n <= 114; n++) {
@@ -1558,9 +1593,9 @@
           // If URL has ?verse=S:V (a shared link), find the correct page and redirect
           const _sharedVerse = new URLSearchParams(location.search).get('verse');
           if (_sharedVerse && /^\d+:\d+$/.test(_sharedVerse)) {
-            const _qkPl = localStorage.getItem('qk_pageless') === '1' ? '&pageless=1' : '';
-            const _pjDir = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 'data/indopak13/pages/' : 'data/pages/';
-            const _maxPg = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 849 : 604;
+            const _qkPl = _isPageless ? '&pageless=1' : '';
+            const _pjDir = _isIndopak ? 'data/indopak13/pages/' : 'data/pages/';
+            const _maxPg = _isIndopak ? 849 : 604;
             const _sNum = Number(_sharedVerse.split(':')[0]);
             const _start = surahStartPage[_sNum] || 1;
             let _foundPage = _start;
@@ -1582,9 +1617,8 @@
           }
 
           const bookmark = (() => { try { return JSON.parse(localStorage.getItem('qk_bookmark')); } catch { return null; } })();
-          const qkPagelessQ = localStorage.getItem('qk_pageless') === '1' ? '&pageless=1' : '';
-          const pageJsonDir = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 'data/indopak13/pages/' : 'data/pages/';
-          const maxPageForFont = localStorage.getItem('qk_mushaf_font') === 'indopak13' ? 849 : 604;
+          const qkPagelessQ = _isPageless ? '&pageless=1' : '';
+          const maxPageForFont = _isIndopak ? 849 : 604;
           const safePage = (p) => Math.min(Math.max(1, parseInt(String(p), 10) || 1), maxPageForFont);
           let lastSurahNum = null;
           if (lastPage) {
@@ -1595,17 +1629,6 @@
             }
             lastSurahNum = best;
           }
-          function firstVerseKeyFromPageJson(pd) {
-            if (pd.layout === 'indopak13_qudratullah') {
-              for (const ln of pd.lines || []) {
-                if (ln.line_type === 'ayah' && ln.words && ln.words[0]) {
-                  return ln.words[0].surah + ':' + ln.words[0].ayah;
-                }
-              }
-            }
-            const v = pd.verses && pd.verses[0];
-            return v && v.verse_key;
-          }
           {
             const label = document.createElement('div');
             label.className = 'idx-section-label';
@@ -1614,7 +1637,7 @@
 
             if (lastPage && lastSurahNum) {
               const lp = safePage(lastPage);
-              const lastSurahInfo = SURAHS.find(s => s.n === lastSurahNum);
+              const lastSurahInfo = SURAHS_MAP.get(lastSurahNum);
               const lastSurahName = lastSurahInfo ? lastSurahInfo.name : '';
               const lastJuz = getJuzForVerseIndex(lastSurahNum, 1);
               const a = document.createElement('a');
@@ -1630,73 +1653,24 @@
               grid.appendChild(a);
             }
 
-            // Find which page a verse is on in the current font by scanning forward from surah start.
-            function pageHasVerse(pd, verseKey) {
-              if (pd.layout === 'indopak13_qudratullah') {
-                return (pd.lines || []).some(ln => ln.line_type === 'ayah' &&
-                  (ln.words || []).some(w => w.surah + ':' + w.ayah === verseKey));
-              }
-              return (pd.verses || []).some(v => v.verse_key === verseKey);
-            }
-            async function findPageForVerse(verseKey) {
-              const surahNum = Number(verseKey.split(':')[0]);
-              const startPage = surahStartPage[surahNum] || 1;
-              for (let i = 0; i < 40 && (startPage + i) <= maxPageForFont; i++) {
-                const pg = startPage + i;
-                try {
-                  const pd = await fetch(pageJsonDir + pg + '.json').then(r => r.json());
-                  if (pageHasVerse(pd, verseKey)) return pg;
-                  // Stop if we've gone past the surah
-                  const pastSurah = pd.layout === 'indopak13_qudratullah'
-                    ? (pd.lines || []).some(ln => ln.line_type === 'ayah' && (ln.words || []).some(w => Number(w.surah) > surahNum))
-                    : (pd.verses || []).some(v => Number(v.verse_key.split(':')[0]) > surahNum);
-                  if (pastSurah && i > 0) break;
-                } catch (_) { break; }
-              }
-              return startPage;
-            }
-
             if (bookmark) {
               const vm = /^(\d+):(\d+)$/.exec(String(bookmark.verse || '').trim());
               const surahNum = vm ? Number(vm[1]) : 1;
-              const verseNum = vm ? vm[2] : '';
-              const surahInfo = SURAHS.find(s => s.n === surahNum);
+              const verseNum = vm ? Number(vm[2]) : 1;
+              const surahInfo = SURAHS_MAP.get(surahNum);
               const surahName = surahInfo ? surahInfo.name : `Surah ${surahNum}`;
+              const juz = getJuzForVerseIndex(surahNum, verseNum);
               const a = document.createElement('a');
               a.className = 'idx-card recent';
-              a.href = '#';
+              a.href = '?verse=' + bookmark.verse;
               a.innerHTML = `
                 <span class="card-num" style="background:var(--accent);color:white;border-color:var(--accent)">&#x1F516;</span>
                 <span style="flex:1;min-width:0;display:flex;flex-direction:column">
                   <span class="card-meta">Bookmark</span>
                   <span class="card-name">${surahName} ${verseNum}</span>
-                  <span class="card-meta card-meta-page">…</span>
+                  <span class="card-meta">Juz ${juz}</span>
                 </span>`;
               grid.appendChild(a);
-
-              let resolvedPage = null;
-              const pagePromise = findPageForVerse(bookmark.verse).then(bp => {
-                resolvedPage = bp;
-                a.href = '?page=' + bp + qkPagelessQ;
-                fetch(pageJsonDir + bp + '.json').then(r => r.json()).then(pd => {
-                  const vk = firstVerseKeyFromPageJson(pd);
-                  if (vk) {
-                    const [s, vn] = vk.split(':').map(Number);
-                    const juz = getJuzForVerseIndex(s, vn);
-                    const el = a.querySelector('.card-meta-page');
-                    if (el) el.textContent = 'Juz ' + juz + ' Page ' + bp;
-                  }
-                }).catch(() => {
-                  const el = a.querySelector('.card-meta-page');
-                  if (el) el.textContent = 'Page ' + bp;
-                });
-              });
-              // If user clicks before scan resolves, wait then navigate
-              a.addEventListener('click', (e) => {
-                if (resolvedPage !== null) return; // href already set, let it follow
-                e.preventDefault();
-                pagePromise.then(() => { location.href = a.href; });
-              });
             } else {
               const hint = document.createElement('div');
               hint.className = 'idx-card';
@@ -1730,7 +1704,7 @@
             const quickWrap = document.createElement('div');
             quickWrap.className = 'idx-quick-scroll-wrap';
             for (const n of QUICK_SURAHS) {
-              const info = SURAHS.find(s => s.n === n);
+              const info = SURAHS_MAP.get(n);
               const pg = surahStartPage[n];
               if (!info || !pg) continue;
               const chip = document.createElement('a');
@@ -2033,7 +2007,10 @@
     let pagelessMinLoaded = 1;
     let pagelessMaxLoaded = 1;
     const pagelessCache = new Map();
+    let pagelessSections = [];
     let pagelessScrollBusy = false;
+    let _currentPlayingVerseEl = null;
+    let _currentBookmarkedEl = null;
     let playMode = localStorage.getItem('qk_mode') || 'recite';
     // Repeat is for verses only (verseRepeat); word click plays once.
     const surahAudioElements = {}; // pre-created Audio elements per surah
@@ -2044,8 +2021,10 @@
     const PLAYBACK_RATES = [0.5, 0.7, 0.9, 1, 1.1, 1.3, 1.5];
     function getPlaybackRate() { const v = parseFloat(localStorage.getItem('qk_playback_rate') || '1'); return PLAYBACK_RATES.includes(v) ? v : 1; }
     function applyPlaybackRate(audio) { if (audio) audio.playbackRate = getPlaybackRate(); }
-    function recordingMsToRealMs(recordingMs) { return recordingMs / getPlaybackRate(); }
-    document.addEventListener('playbackratechange', () => { if (currentAudio) currentAudio.playbackRate = getPlaybackRate(); });
+    let _cachedRate = 1;
+    function cachePlaybackRate() { _cachedRate = getPlaybackRate(); }
+    function recordingMsToRealMs(recordingMs) { return recordingMs / _cachedRate; }
+    document.addEventListener('playbackratechange', () => { cachePlaybackRate(); if (currentAudio) currentAudio.playbackRate = _cachedRate; });
 
     document.addEventListener('reciterchange', async () => {
       stopPlayback();
@@ -2088,6 +2067,7 @@
         }
         pagelessMinLoaded = order[0];
         pagelessMaxLoaded = order[order.length - 1];
+        pagelessSections = [...c.querySelectorAll('.pageless-section')];
         const pd = pagelessCache.get(pagelessVisiblePage);
         if (pd) {
           updateToolbarForPageData(pd.items, pd.surahs, pagelessVisiblePage, pd.playlist);
@@ -2114,7 +2094,7 @@
       $('mode-recite').classList.toggle('active', mode === 'recite');
     }
 
-    function getAudioCacheBust() { return '?v=1&r=' + (getReciter() || ''); }
+    function getAudioCacheBust() { return '?v=4&r=' + (getReciter() || ''); }
     async function fetchSurahAudio() {
       TIMESTAMP_DATA_DIR = getTimestampDataDir();
       const recitationDir = getRecitationDir();
@@ -2296,6 +2276,8 @@
      * Given a verse key and word objects (char_type_name === 'word'), returns an
      * array of HTML strings (one per word) with tj-* spans, or null if no annotations.
      */
+    // Uthmani words for Bismillah (1:1) — tajweed offsets for verse X:1 (X≠1,9) include these
+    const BASMALLAH_WORDS = ['\u0628\u0650\u0633\u0652\u0645\u0650', '\u0671\u0644\u0644\u064E\u0651\u0647\u0650', '\u0671\u0644\u0631\u064E\u0651\u062D\u0652\u0645\u064E\u0670\u0646\u0650', '\u0671\u0644\u0631\u064E\u0651\u062D\u0650\u064A\u0645\u0650'];
     function tajweedWordHtmlArray(verseKey, wordObjects) {
       if (!TAJWEED_INDEX) return null;
       const anns = TAJWEED_INDEX[verseKey];
@@ -2304,6 +2286,17 @@
       const STRIP_MARKS = /[\u06DF\u06EB]/g;
       let strippedFull = '';
       const wordRanges = [];
+      // For verse 1 of surahs other than 1 and 9, tajweed offsets are relative to
+      // Bismillah + verse text. Prepend Bismillah words to align the offsets correctly.
+      const [ch, vn] = verseKey.split(':').map(Number);
+      const prefixWords = (vn === 1 && ch !== 1 && ch !== 9) ? BASMALLAH_WORDS : [];
+      for (let wi = 0; wi < prefixWords.length; wi++) {
+        const orig = prefixWords[wi].replace(STRIP_MARKS, '');
+        const stripped = orig.replace(/\u0640/g, '');
+        if (wi > 0) strippedFull += ' ';
+        strippedFull += stripped;
+      }
+      if (prefixWords.length) strippedFull += ' ';
       for (let wi = 0; wi < wordObjects.length; wi++) {
         const origRaw = wordObjects[wi].text_uthmani || wordObjects[wi].text || '';
         const orig = origRaw.replace(STRIP_MARKS, '');
@@ -2317,6 +2310,20 @@
         const p = TAJWEED_PRIORITY[ann.rule] ?? 99;
         for (let i = ann.start; i < ann.end && i < charRule.length; i++) {
           if (charRule[i] === null || p < (TAJWEED_PRIORITY[charRule[i]] ?? 99)) charRule[i] = ann.rule;
+        }
+      }
+      // Propagate rules from diacritic-only positions to the next base letter.
+      // Some source annotations land on a vowel mark before the target consonant
+      // (e.g. qalqalah on the fatha before ب), making the colour nearly invisible.
+      for (let i = 0; i < charRule.length - 1; i++) {
+        if (charRule[i] === null) continue;
+        const cp = strippedFull.codePointAt(i);
+        if (cp >= 0x064B && cp <= 0x065F) { // Arabic diacritic range
+          const p = TAJWEED_PRIORITY[charRule[i]] ?? 99;
+          if (charRule[i + 1] === null || p < (TAJWEED_PRIORITY[charRule[i + 1]] ?? 99)) {
+            charRule[i + 1] = charRule[i];
+          }
+          charRule[i] = null; // remove from diacritic, keep only on base letter
         }
       }
       const hasAny = wordRanges.some(r => {
@@ -2423,8 +2430,15 @@
             }
           } else if (w.char_type_name === 'end' && vn) {
             items.push({ type: 'verse_num', num: vn, verseKey: w.verse_key });
-            if (pendingHafsLine.has(lineNum)) {
-              pendingHafsLine.get(lineNum).verseEnds.push({
+            // Try the end marker's line; fall back to previous line if marker
+            // wraps to a new line that has no words yet (e.g. 101:3 ٣ on line 5)
+            let targetLine = pendingHafsLine.get(lineNum);
+            if (!targetLine) {
+              for (let ln = lineNum - 1; ln >= 0 && !targetLine; ln--)
+                targetLine = pendingHafsLine.get(ln);
+            }
+            if (targetLine) {
+              targetLine.verseEnds.push({
                 verseKey: w.verse_key,
                 afterPi: playlist.length - 1
               });
@@ -2513,7 +2527,7 @@
               verse_key: vk,
               pronunciation: getSegmentPronunciation(w.text_uthmani || w.text || ''),
               wordSound: WORD_SOUNDS[w.text_uthmani || w.text] || w.transliteration?.text || '',
-              word_in_ayah: w.word_in_ayah != null ? w.word_in_ayah : 0,
+              word_in_ayah: w.word_in_ayah != null ? w.word_in_ayah : null,
               translation: w.translation?.text || ''
             });
           }
@@ -2748,7 +2762,7 @@
           const d = document.createElement('div');
           d.className = 'surah-name';
           d.dataset.surah = String(rl.surah);
-          const surahInfo = SURAHS.find(s => s.n === rl.surah);
+          const surahInfo = SURAHS_MAP.get(rl.surah);
           const nameEn = surahInfo ? `${rl.surah}. ${surahInfo.name}` : '';
           d.innerHTML = `<div class="surah-name-inner"><span class="surah-header-icon">${SURAH_HEADER_CHARS[rl.surah]||''}</span><span class="surah-name-en">${nameEn}</span></div>`;
           d.addEventListener('click', () => {
@@ -2844,7 +2858,7 @@
           d.className = 'surah-name' + (match && surahDbCentered ? '' : ' ip13-align-start');
           d.dataset.surah = String(rl.surah);
           d.dataset.ip13DbCentered = surahDbCentered ? '1' : '0';
-          const surahInfo = SURAHS.find(s => s.n === rl.surah);
+          const surahInfo = SURAHS_MAP.get(rl.surah);
           const nameEn = surahInfo ? `${rl.surah}. ${surahInfo.name}` : '';
           d.innerHTML = `<div class="surah-name-inner"><span class="surah-header-icon">${SURAH_HEADER_CHARS[rl.surah] || ''}</span><span class="surah-name-en">${nameEn}</span></div>`;
           d.addEventListener('click', () => {
@@ -2991,7 +3005,7 @@
           const d = document.createElement('div');
           d.className = 'surah-name';
           d.dataset.surah = String(it.surah);
-          const surahInfo = SURAHS.find(s => s.n === it.surah);
+          const surahInfo = SURAHS_MAP.get(it.surah);
           const nameEn = surahInfo ? `${it.surah}. ${surahInfo.name}` : '';
           d.innerHTML = `<div class="surah-name-inner"><span class="surah-header-icon">${SURAH_HEADER_CHARS[it.surah]||''}</span><span class="surah-name-en">${nameEn}</span></div>`;
           d.addEventListener('click', () => {
@@ -3082,7 +3096,7 @@
       }
       if (updateToolbarMeta) {
         const surahNames = (surahsArr || []).map(ch => {
-          const s = SURAHS.find(x => x.n === ch);
+          const s = SURAHS_MAP.get(ch);
           return s ? ch + '. ' + s.name : 'Surah ' + ch;
         }).join(', ');
         const firstVerse = (items || []).find(it => it.verseKey);
@@ -3114,39 +3128,61 @@
 
     function renderMushafPage() {
       const c = $('mushaf-content');
-      c.innerHTML = '';
-      c.classList.toggle('mushaf-indopak13', useIndopak13());
+      const frag = document.createDocumentFragment();
+      const buf = document.createElement('div');
       playbackHighlightPage = CURRENT_PAGE;
+
+      // Build content off-screen
       if (useIndopak13() && PAGE_PLAYLIST && PAGE_INDOPAK_LINES) {
-        if (ip13MushafMatchOn()) c.classList.add('ip13-pending');
-        renderIndopak13Block(c, PAGE_PLAYLIST, PAGE_INDOPAK_LINES, PAGE_SURAHS, CURRENT_PAGE, { updateToolbarMeta: true });
-        $('page-title').textContent = `Page ${CURRENT_PAGE}`;
-        if (ip13MushafMatchOn()) {
-          c.classList.remove('ip13-free');
-          document.fonts.ready.then(() => setTimeout(() => applyIp13Justification(c), 300));
-        } else {
-          // Free mode: collapse all ip13-ayah-line divs into one flowing paragraph
-          // so text wraps naturally like normal Arabic prose.
-          collapseIp13ToFlow(c);
-        }
+        if (ip13MushafMatchOn()) buf.classList.add('ip13-pending');
+        renderIndopak13Block(buf, PAGE_PLAYLIST, PAGE_INDOPAK_LINES, PAGE_SURAHS, CURRENT_PAGE, { updateToolbarMeta: true });
+      } else if (PAGE_PLAYLIST && hafsMusharMatchOn() && PAGE_HAFS_LINES) {
+        buf.classList.add('hafs-pending');
+        renderHafsLinesBlock(buf, PAGE_PLAYLIST, PAGE_HAFS_LINES, PAGE_SURAHS, CURRENT_PAGE, { updateToolbarMeta: true });
+      } else if (PAGE_PLAYLIST && PAGE_ITEMS) {
+        renderMushafBlock(buf, PAGE_PLAYLIST, PAGE_ITEMS, PAGE_SURAHS, CURRENT_PAGE, { updateToolbarMeta: true });
+      } else {
         return;
       }
-      if (!PAGE_PLAYLIST) return;
-      if (hafsMusharMatchOn() && PAGE_HAFS_LINES) {
-        c.classList.add('hafs-pending');
-        renderHafsLinesBlock(c, PAGE_PLAYLIST, PAGE_HAFS_LINES, PAGE_SURAHS, CURRENT_PAGE, { updateToolbarMeta: true });
+      while (buf.firstChild) frag.appendChild(buf.firstChild);
+
+      // Fade out, swap, fade in after fonts ready
+      const footer = $('page-nav-footer');
+      c.classList.add('page-fade');
+      if (footer) footer.classList.add('page-fade');
+      requestAnimationFrame(() => {
+        const isIp13 = useIndopak13() && PAGE_INDOPAK_LINES;
+        c.classList.toggle('mushaf-indopak13', isIp13);
+        if (hafsMusharMatchOn() && PAGE_HAFS_LINES && !isIp13) c.classList.add('hafs-pending');
+        c.replaceChildren(frag);
         $('page-title').textContent = `Page ${CURRENT_PAGE}`;
-        document.fonts.ready.then(() => setTimeout(() => applyHafsJustification(c), 300));
-        return;
-      }
-      if (!PAGE_ITEMS) return;
-      renderMushafBlock(c, PAGE_PLAYLIST, PAGE_ITEMS, PAGE_SURAHS, CURRENT_PAGE, { updateToolbarMeta: true });
-      $('page-title').textContent = `Page ${CURRENT_PAGE}`;
+        const reveal = () => {
+          requestAnimationFrame(() => {
+            c.classList.remove('page-fade');
+            if (footer) footer.classList.remove('page-fade');
+          });
+        };
+        document.fonts.ready.then(() => {
+          if (isIp13) {
+            if (ip13MushafMatchOn()) {
+              c.classList.remove('ip13-free');
+              setTimeout(() => { applyIp13Justification(c); reveal(); }, 300);
+            } else {
+              collapseIp13ToFlow(c);
+              reveal();
+            }
+          } else if (hafsMusharMatchOn() && PAGE_HAFS_LINES) {
+            setTimeout(() => { applyHafsJustification(c); reveal(); }, 300);
+          } else {
+            reveal();
+          }
+        });
+      });
     }
 
     function updateToolbarForPageData(items, surahsArr, pageNum, playlistOpt) {
       const surahNames = (surahsArr || []).map(ch => {
-        const s = SURAHS.find(x => x.n === ch);
+        const s = SURAHS_MAP.get(ch);
         return s ? ch + '. ' + s.name : 'Surah ' + ch;
       }).join(', ');
       let firstVerse = (items || []).find(it => it.verseKey);
@@ -3228,6 +3264,7 @@
         pagelessMaxLoaded = Math.max(pagelessMaxLoaded, pageNum);
         pagelessMinLoaded = Math.min(pagelessMinLoaded, pageNum);
       }
+      pagelessSections = [...container.querySelectorAll('.pageless-section')];
       // Trigger justification after section is in DOM so clientWidth is available.
       if (data.indopak13) {
         if (ip13MushafMatchOn()) {
@@ -3244,6 +3281,7 @@
       const c = $('mushaf-content');
       c.innerHTML = '<div class="page-loading">Loading\u2026</div>';
       pagelessCache.clear();
+      pagelessSections = [];
       pagelessMinLoaded = pagelessMaxLoaded = startPage;
       pagelessVisiblePage = startPage;
       playbackHighlightPage = startPage;
@@ -3271,7 +3309,7 @@
     function updatePagelessVisibleFromScroll() {
       if (!isPagelessMode()) return;
       let best = 0, bestP = pagelessVisiblePage;
-      document.querySelectorAll('.pageless-section').forEach(sec => {
+      pagelessSections.forEach(sec => {
         const r = sec.getBoundingClientRect();
         const vh = window.innerHeight;
         const top = Math.max(r.top, 0);
@@ -3294,7 +3332,7 @@
         const sh = document.getElementById('btn-share-link');
         if (sh) {
           try {
-            const bk = JSON.parse(localStorage.getItem('qk_bookmark') || 'null');
+            const bk = getBookmark();
             const bkInDom = bk ? !!document.querySelector(`.verse-num[data-verse-key="${bk.verse}"]`) : false;
             sh.classList.toggle('visible', bkInDom);
           } catch (_) {}
@@ -3396,7 +3434,7 @@
       } else {
         localStorage.setItem('qk_bookmark', JSON.stringify({ verse: verseKey }));
         const [ch, v] = verseKey.split(':');
-        const surahInfo = SURAHS.find(s => s.n === Number(ch));
+        const surahInfo = SURAHS_MAP.get(Number(ch));
         const name = surahInfo ? surahInfo.name : `Surah ${ch}`;
         msg = `Bookmarked ${name} verse ${v}`;
       }
@@ -3420,11 +3458,11 @@
       _toastTimer = setTimeout(() => { el.classList.add('fade-out'); setTimeout(() => el.remove(), 500); }, 2500);
     }
     function applyBookmarkHighlight() {
-      document.querySelectorAll('.verse-num.bookmarked').forEach(el => el.classList.remove('bookmarked'));
+      if (_currentBookmarkedEl) { _currentBookmarkedEl.classList.remove('bookmarked'); _currentBookmarkedEl = null; }
       const bk = getBookmark();
       if (bk) {
         const el = document.querySelector(`.verse-num[data-verse-key="${bk.verse}"]`);
-        if (el) el.classList.add('bookmarked');
+        if (el) { el.classList.add('bookmarked'); _currentBookmarkedEl = el; }
       }
     }
 
@@ -3502,6 +3540,7 @@
     }
 
     function playReciteContinuous(startIdx, signal, hint) {
+      cachePlaybackRate();
       const versePlans = [];
       let idx = 0;
       while (idx < PAGE_PLAYLIST.length) {
@@ -3687,6 +3726,7 @@
     // Tap verse number: cycles 1→2→3→cancel, then plays verse-by-verse (recite mode).
     // Spelling mode: start spelling from the first word of that verse.
     async function playVerseInline(verseKey, el) {
+      cachePlaybackRate();
       unlockAudioForIOS();
       const sec = el && el.closest && el.closest('.pageless-section');
       const verseInlinePage = sec ? Number(sec.dataset.page) : CURRENT_PAGE;
@@ -3766,9 +3806,10 @@
           didPlay = true;
 
           const vel = getVerseNumEl(vk);
-          document.querySelectorAll('.verse-num.playing-verse').forEach(v => v.classList.remove('playing-verse'));
+          if (_currentPlayingVerseEl) { _currentPlayingVerseEl.classList.remove('playing-verse'); _currentPlayingVerseEl = null; }
           if (vel) {
             vel.classList.add('playing-verse');
+            _currentPlayingVerseEl = vel;
             if (verseRepeat > 1) showVerseBadge(vel, verseRepeat);
           }
 
@@ -3816,7 +3857,7 @@
         const wasAborted = signal.aborted;
         if (abortController === myController) {
           clearAllHighlights();
-          document.querySelectorAll('.verse-num.playing-verse').forEach(v => v.classList.remove('playing-verse'));
+          if (_currentPlayingVerseEl) { _currentPlayingVerseEl.classList.remove('playing-verse'); _currentPlayingVerseEl = null; }
           hint.textContent = '';
           currentAudio = null;
           isPlaying = false;
@@ -3938,12 +3979,14 @@
       }
     }
 
+    const _highlightedWords = new Set();
     function highlightByPlayIndex(i, on) {
       let el = document.querySelector(`.word[data-page="${playbackHighlightPage}"][data-play-index="${i}"]`);
       if (!el) el = document.querySelector(`.word[data-play-index="${i}"]`);
       if (el) {
         el.classList.toggle('highlight', on);
-        if (on) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (on) { _highlightedWords.add(el); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+        else { _highlightedWords.delete(el); }
       }
     }
     function clearSpellingLetterHighlights() {
@@ -3964,13 +4007,15 @@
       }
     }
     function clearAllHighlights() {
-      document.querySelectorAll('.word.highlight').forEach(el => el.classList.remove('highlight'));
+      _highlightedWords.forEach(el => el.classList.remove('highlight'));
+      _highlightedWords.clear();
       clearSpellingLetterHighlights();
       hideWordTranslation();
     }
 
     // --- Full page recite playback (uses preloaded surah audio + real timestamps) ---
     async function playReciterVerse(verseKey, wordIndices, signal) {
+      cachePlaybackRate();
       if (signal.aborted) return;
       const [surah] = (verseKey||'').split(':').map(Number);
       const ts = getVerseTimestamp(verseKey);
@@ -4215,7 +4260,7 @@
               if (signal.aborted) break;
               const audio = getSurahAudio(ch);
               if (!audio) continue;
-              const surahInfo = SURAHS.find(s => s.n === ch);
+              const surahInfo = SURAHS_MAP.get(ch);
               hint.textContent = surahInfo ? `Playing ${surahInfo.name}` : `Playing Surah ${ch}`;
               PAGE_PLAYLIST.forEach((seg, idx) => {
                 const [s] = (seg.verse_key || '').split(':').map(Number);
@@ -4352,7 +4397,7 @@
       }
       clearAllHighlights();
       hideLetterBreakdown();
-      document.querySelectorAll('.verse-num.playing-verse').forEach(v => v.classList.remove('playing-verse'));
+      if (_currentPlayingVerseEl) { _currentPlayingVerseEl.classList.remove('playing-verse'); _currentPlayingVerseEl = null; }
       $('pronunciation-hint').textContent = '';
       isPlaying = false;
       verseRepeat = 0;
@@ -4520,28 +4565,13 @@
     const MIN_PAGE = 1;
     function setupNav() {
       const maxP = getMaxPage();
-      const prev = $('btn-prev'), next = $('btn-next');
+      const prev = $('footer-prev'), next = $('footer-next');
       $('btn-home').href = location.pathname;
-      const hideArrow = (btn, hide) => {
-        btn.style.visibility = '';
-        const svg = btn.querySelector('svg');
-        if (svg) svg.style.visibility = hide ? 'hidden' : '';
-      };
-      if (isPagelessMode()) {
-        hideArrow(prev, pagelessVisiblePage >= maxP);
-        hideArrow(next, pagelessVisiblePage <= MIN_PAGE);
-        prev.href = '#';
-        next.href = '#';
-        prev.onclick = e => { e.preventDefault(); void pagelessNavigateBy(1); };
-        next.onclick = e => { e.preventDefault(); void pagelessNavigateBy(-1); };
-        return;
-      }
-      prev.onclick = null;
-      next.onclick = null;
-      if (CURRENT_PAGE >= maxP) { hideArrow(prev, true); prev.style.pointerEvents = 'none'; }
-      else { hideArrow(prev, false); prev.style.pointerEvents = ''; prev.href = `?page=${CURRENT_PAGE + 1}`; }
-      if (CURRENT_PAGE <= MIN_PAGE) { hideArrow(next, true); next.style.pointerEvents = 'none'; }
-      else { hideArrow(next, false); next.style.pointerEvents = ''; next.href = `?page=${CURRENT_PAGE - 1}`; }
+      if (isPagelessMode()) return;
+      if (CURRENT_PAGE <= MIN_PAGE) { prev.setAttribute('data-hidden', ''); }
+      else { prev.removeAttribute('data-hidden'); prev.href = `?page=${CURRENT_PAGE - 1}`; }
+      if (CURRENT_PAGE >= maxP) { next.setAttribute('data-hidden', ''); }
+      else { next.removeAttribute('data-hidden'); next.href = `?page=${CURRENT_PAGE + 1}`; }
     }
 
 
@@ -4597,7 +4627,6 @@
       localStorage.setItem('qk_last_page', String(CURRENT_PAGE));
       setupNav();
       $('page-title').textContent = `Page ${CURRENT_PAGE}`;
-      $('mushaf-content').innerHTML = '<div class="page-loading">Loading page\u2026</div>';
       try {
         if (isPagelessMode()) {
           document.getElementById('page-view').classList.add('qk-pageless');
@@ -4646,7 +4675,7 @@
         }
         if (scrollToVerse) {
           const [surahNum, verseNum] = scrollToVerse.split(':');
-          const surahInfo = SURAHS.find(s => s.n === Number(surahNum));
+          const surahInfo = SURAHS_MAP.get(Number(surahNum));
           const label = surahInfo ? surahInfo.name + ' ' + scrollToVerse : 'Verse ' + scrollToVerse;
           scrollToVerseKey(scrollToVerse, { toastLabel: 'Shared verse: ' + label });
         } else if (scrollToSurah) {
