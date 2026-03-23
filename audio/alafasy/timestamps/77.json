@@ -1,952 +1,1314 @@
-﻿{
-    "audio_file":  {
-                       "id":  0,
-                       "chapter_id":  77,
-                       "audio_url":  "audio/alafasy/recitation/77.mp3",
-                       "timestamps":  [
-                                          {
-                                              "verse_key":  "77:1",
-                                              "timestamp_from":  0,
-                                              "timestamp_to":  2530,
-                                              "duration":  2530,
-                                              "segments":  [
-                                                               1,
-                                                               30,
-                                                               1500,
-                                                               2,
-                                                               1510,
-                                                               2530
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:2",
-                                              "timestamp_from":  2530,
-                                              "timestamp_to":  5100,
-                                              "duration":  2570,
-                                              "segments":  [
-                                                               1,
-                                                               2560,
-                                                               4100,
-                                                               2,
-                                                               4110,
-                                                               5100
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:3",
-                                              "timestamp_from":  5100,
-                                              "timestamp_to":  8080,
-                                              "duration":  2980,
-                                              "segments":  [
-                                                               1,
-                                                               5130,
-                                                               7180,
-                                                               2,
-                                                               7190,
-                                                               8080
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:4",
-                                              "timestamp_from":  8080,
-                                              "timestamp_to":  10580,
-                                              "duration":  2500,
-                                              "segments":  [
-                                                               1,
-                                                               8110,
-                                                               9570,
-                                                               2,
-                                                               9580,
-                                                               10580
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:5",
-                                              "timestamp_from":  10580,
-                                              "timestamp_to":  13070,
-                                              "duration":  2490,
-                                              "segments":  [
-                                                               1,
-                                                               10610,
-                                                               12110,
-                                                               2,
-                                                               12120,
-                                                               13070
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:6",
-                                              "timestamp_from":  13070,
-                                              "timestamp_to":  15190,
-                                              "duration":  2120,
-                                              "segments":  [
-                                                               1,
-                                                               13140,
-                                                               13850,
-                                                               2,
-                                                               13860,
-                                                               14230,
-                                                               3,
-                                                               14240,
-                                                               15190
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:7",
-                                              "timestamp_from":  15190,
-                                              "timestamp_to":  18920,
-                                              "duration":  3730,
-                                              "segments":  [
-                                                               1,
-                                                               15220,
-                                                               16680,
-                                                               2,
-                                                               16690,
-                                                               17910,
-                                                               3,
-                                                               17920,
-                                                               18920
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:8",
-                                              "timestamp_from":  18920,
-                                              "timestamp_to":  21770,
-                                              "duration":  2850,
-                                              "segments":  [
-                                                               1,
-                                                               18950,
-                                                               19500,
-                                                               2,
-                                                               19510,
-                                                               20890,
-                                                               3,
-                                                               20900,
-                                                               21770
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:9",
-                                              "timestamp_from":  21770,
-                                              "timestamp_to":  25270,
-                                              "duration":  3500,
-                                              "segments":  [
-                                                               1,
-                                                               21800,
-                                                               22270,
-                                                               2,
-                                                               22280,
-                                                               24470,
-                                                               3,
-                                                               24480,
-                                                               25270
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:10",
-                                              "timestamp_from":  25270,
-                                              "timestamp_to":  27640,
-                                              "duration":  2370,
-                                              "segments":  [
-                                                               1,
-                                                               25300,
-                                                               25800,
-                                                               2,
-                                                               25810,
-                                                               26800,
-                                                               3,
-                                                               26810,
-                                                               27640
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:11",
-                                              "timestamp_from":  27640,
-                                              "timestamp_to":  30020,
-                                              "duration":  2380,
-                                              "segments":  [
-                                                               1,
-                                                               27670,
-                                                               28150,
-                                                               2,
-                                                               28160,
-                                                               29010,
-                                                               3,
-                                                               29020,
-                                                               30020
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:12",
-                                              "timestamp_from":  30020,
-                                              "timestamp_to":  32590,
-                                              "duration":  2570,
-                                              "segments":  [
-                                                               1,
-                                                               30050,
-                                                               30820,
-                                                               2,
-                                                               30830,
-                                                               31640,
-                                                               3,
-                                                               31650,
-                                                               32590
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:13",
-                                              "timestamp_from":  32590,
-                                              "timestamp_to":  34100,
-                                              "duration":  1510,
-                                              "segments":  [
-                                                               1,
-                                                               32630,
-                                                               33370,
-                                                               2,
-                                                               33380,
-                                                               34100
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:14",
-                                              "timestamp_from":  34100,
-                                              "timestamp_to":  38430,
-                                              "duration":  4330,
-                                              "segments":  [
-                                                               1,
-                                                               34130,
-                                                               35850,
-                                                               2,
-                                                               35860,
-                                                               36870,
-                                                               3,
-                                                               36880,
-                                                               37190,
-                                                               4,
-                                                               37200,
-                                                               37850,
-                                                               5,
-                                                               37860,
-                                                               38430
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:15",
-                                              "timestamp_from":  38430,
-                                              "timestamp_to":  43890,
-                                              "duration":  5460,
-                                              "segments":  [
-                                                               1,
-                                                               38460,
-                                                               39760,
-                                                               2,
-                                                               39770,
-                                                               40760,
-                                                               3,
-                                                               40770,
-                                                               43890
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:16",
-                                              "timestamp_from":  43890,
-                                              "timestamp_to":  48010,
-                                              "duration":  4120,
-                                              "segments":  [
-                                                               1,
-                                                               43920,
-                                                               44260,
-                                                               2,
-                                                               44270,
-                                                               45230,
-                                                               3,
-                                                               45240,
-                                                               48010
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:17",
-                                              "timestamp_from":  48010,
-                                              "timestamp_to":  53030,
-                                              "duration":  5020,
-                                              "segments":  [
-                                                               1,
-                                                               48040,
-                                                               49200,
-                                                               2,
-                                                               49210,
-                                                               50320,
-                                                               3,
-                                                               50330,
-                                                               53030
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:18",
-                                              "timestamp_from":  53030,
-                                              "timestamp_to":  57860,
-                                              "duration":  4830,
-                                              "segments":  [
-                                                               1,
-                                                               53060,
-                                                               54010,
-                                                               2,
-                                                               54020,
-                                                               54760,
-                                                               3,
-                                                               54770,
-                                                               57860
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:19",
-                                              "timestamp_from":  57860,
-                                              "timestamp_to":  63450,
-                                              "duration":  5590,
-                                              "segments":  [
-                                                               1,
-                                                               57890,
-                                                               59250,
-                                                               2,
-                                                               59260,
-                                                               60280,
-                                                               3,
-                                                               60290,
-                                                               63450
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:20",
-                                              "timestamp_from":  63450,
-                                              "timestamp_to":  71710,
-                                              "duration":  8260,
-                                              "segments":  [
-                                                               1,
-                                                               63480,
-                                                               63950,
-                                                               2,
-                                                               63960,
-                                                               65890,
-                                                               3,
-                                                               65900,
-                                                               65900,
-                                                               4,
-                                                               65910,
-                                                               69870,
-                                                               5,
-                                                               69880,
-                                                               71710
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:21",
-                                              "timestamp_from":  71710,
-                                              "timestamp_to":  77000,
-                                              "duration":  5290,
-                                              "segments":  [
-                                                               1,
-                                                               71740,
-                                                               72980,
-                                                               2,
-                                                               72990,
-                                                               73360,
-                                                               3,
-                                                               73370,
-                                                               75150,
-                                                               4,
-                                                               75160,
-                                                               77000
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:22",
-                                              "timestamp_from":  77000,
-                                              "timestamp_to":  81790,
-                                              "duration":  4790,
-                                              "segments":  [
-                                                               1,
-                                                               77030,
-                                                               77470,
-                                                               2,
-                                                               77480,
-                                                               79020,
-                                                               3,
-                                                               79030,
-                                                               81790
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:23",
-                                              "timestamp_from":  81790,
-                                              "timestamp_to":  86290,
-                                              "duration":  4500,
-                                              "segments":  [
-                                                               1,
-                                                               81820,
-                                                               82850,
-                                                               2,
-                                                               82860,
-                                                               83620,
-                                                               3,
-                                                               83630,
-                                                               86290
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:24",
-                                              "timestamp_from":  86290,
-                                              "timestamp_to":  91780,
-                                              "duration":  5490,
-                                              "segments":  [
-                                                               1,
-                                                               86320,
-                                                               87630,
-                                                               2,
-                                                               87640,
-                                                               88780,
-                                                               3,
-                                                               88790,
-                                                               91780
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:25",
-                                              "timestamp_from":  91780,
-                                              "timestamp_to":  94990,
-                                              "duration":  3210,
-                                              "segments":  [
-                                                               1,
-                                                               91810,
-                                                               92260,
-                                                               2,
-                                                               92270,
-                                                               93040,
-                                                               3,
-                                                               93050,
-                                                               93760,
-                                                               4,
-                                                               93770,
-                                                               94990
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:26",
-                                              "timestamp_from":  94990,
-                                              "timestamp_to":  97480,
-                                              "duration":  2490,
-                                              "segments":  [
-                                                               1,
-                                                               95020,
-                                                               95890,
-                                                               2,
-                                                               95900,
-                                                               97480
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:27",
-                                              "timestamp_from":  97480,
-                                              "timestamp_to":  108400,
-                                              "duration":  10920,
-                                              "segments":  [
-                                                               1,
-                                                               97510,
-                                                               98580,
-                                                               2,
-                                                               98590,
-                                                               99350,
-                                                               3,
-                                                               99360,
-                                                               100350,
-                                                               4,
-                                                               100360,
-                                                               101770,
-                                                               5,
-                                                               101780,
-                                                               104660,
-                                                               6,
-                                                               104670,
-                                                               107200,
-                                                               7,
-                                                               107210,
-                                                               108400
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:28",
-                                              "timestamp_from":  108400,
-                                              "timestamp_to":  113950,
-                                              "duration":  5550,
-                                              "segments":  [
-                                                               1,
-                                                               108430,
-                                                               109770,
-                                                               2,
-                                                               109780,
-                                                               110840,
-                                                               3,
-                                                               110850,
-                                                               113950
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:29",
-                                              "timestamp_from":  113950,
-                                              "timestamp_to":  124610,
-                                              "duration":  10660,
-                                              "segments":  [
-                                                               1,
-                                                               114220,
-                                                               117690,
-                                                               2,
-                                                               117700,
-                                                               118250,
-                                                               3,
-                                                               118260,
-                                                               118590,
-                                                               4,
-                                                               118600,
-                                                               120890,
-                                                               5,
-                                                               120900,
-                                                               121500,
-                                                               6,
-                                                               121510,
-                                                               124610
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:30",
-                                              "timestamp_from":  124610,
-                                              "timestamp_to":  132270,
-                                              "duration":  7660,
-                                              "segments":  [
-                                                               1,
-                                                               124640,
-                                                               128390,
-                                                               2,
-                                                               128400,
-                                                               128990,
-                                                               3,
-                                                               129000,
-                                                               130470,
-                                                               4,
-                                                               130480,
-                                                               130850,
-                                                               5,
-                                                               130860,
-                                                               131690,
-                                                               6,
-                                                               131700,
-                                                               132270
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:31",
-                                              "timestamp_from":  132270,
-                                              "timestamp_to":  136860,
-                                              "duration":  4590,
-                                              "segments":  [
-                                                               1,
-                                                               132300,
-                                                               132680,
-                                                               2,
-                                                               132690,
-                                                               133780,
-                                                               3,
-                                                               133790,
-                                                               134860,
-                                                               4,
-                                                               134870,
-                                                               135730,
-                                                               5,
-                                                               135740,
-                                                               136090,
-                                                               6,
-                                                               136100,
-                                                               136860
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:32",
-                                              "timestamp_from":  136860,
-                                              "timestamp_to":  141630,
-                                              "duration":  4770,
-                                              "segments":  [
-                                                               1,
-                                                               136890,
-                                                               138470,
-                                                               2,
-                                                               138480,
-                                                               139300,
-                                                               3,
-                                                               139310,
-                                                               140730,
-                                                               4,
-                                                               140740,
-                                                               141630
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:33",
-                                              "timestamp_from":  141630,
-                                              "timestamp_to":  145930,
-                                              "duration":  4300,
-                                              "segments":  [
-                                                               1,
-                                                               141660,
-                                                               143400,
-                                                               2,
-                                                               143410,
-                                                               145430,
-                                                               3,
-                                                               145440,
-                                                               145930
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:34",
-                                              "timestamp_from":  145930,
-                                              "timestamp_to":  152200,
-                                              "duration":  6270,
-                                              "segments":  [
-                                                               1,
-                                                               145960,
-                                                               147290,
-                                                               2,
-                                                               147300,
-                                                               148370,
-                                                               3,
-                                                               148380,
-                                                               152200
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:35",
-                                              "timestamp_from":  152200,
-                                              "timestamp_to":  157530,
-                                              "duration":  5330,
-                                              "segments":  [
-                                                               1,
-                                                               152230,
-                                                               152980,
-                                                               2,
-                                                               152990,
-                                                               153640,
-                                                               3,
-                                                               153650,
-                                                               154020,
-                                                               4,
-                                                               154030,
-                                                               157530
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:36",
-                                              "timestamp_from":  157530,
-                                              "timestamp_to":  162740,
-                                              "duration":  5210,
-                                              "segments":  [
-                                                               1,
-                                                               157560,
-                                                               158080,
-                                                               2,
-                                                               158090,
-                                                               158910,
-                                                               3,
-                                                               158920,
-                                                               159450,
-                                                               4,
-                                                               159460,
-                                                               162740
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:37",
-                                              "timestamp_from":  162740,
-                                              "timestamp_to":  168900,
-                                              "duration":  6160,
-                                              "segments":  [
-                                                               1,
-                                                               162770,
-                                                               164140,
-                                                               2,
-                                                               164150,
-                                                               165330,
-                                                               3,
-                                                               165340,
-                                                               168900
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:38",
-                                              "timestamp_from":  168900,
-                                              "timestamp_to":  175550,
-                                              "duration":  6650,
-                                              "segments":  [
-                                                               1,
-                                                               168930,
-                                                               169670,
-                                                               2,
-                                                               169680,
-                                                               170340,
-                                                               3,
-                                                               170350,
-                                                               171140,
-                                                               4,
-                                                               171150,
-                                                               172540,
-                                                               5,
-                                                               172550,
-                                                               175550
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:39",
-                                              "timestamp_from":  175550,
-                                              "timestamp_to":  182460,
-                                              "duration":  6910,
-                                              "segments":  [
-                                                               1,
-                                                               175580,
-                                                               176940,
-                                                               2,
-                                                               176950,
-                                                               177590,
-                                                               3,
-                                                               177600,
-                                                               178150,
-                                                               4,
-                                                               178160,
-                                                               179780,
-                                                               5,
-                                                               179790,
-                                                               182460
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:40",
-                                              "timestamp_from":  182460,
-                                              "timestamp_to":  188450,
-                                              "duration":  5990,
-                                              "segments":  [
-                                                               1,
-                                                               182490,
-                                                               183670,
-                                                               2,
-                                                               183680,
-                                                               184870,
-                                                               3,
-                                                               184880,
-                                                               188450
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:41",
-                                              "timestamp_from":  188450,
-                                              "timestamp_to":  195950,
-                                              "duration":  7500,
-                                              "segments":  [
-                                                               1,
-                                                               188480,
-                                                               189820,
-                                                               2,
-                                                               189830,
-                                                               191160,
-                                                               3,
-                                                               191170,
-                                                               191520,
-                                                               4,
-                                                               191530,
-                                                               192500,
-                                                               5,
-                                                               192510,
-                                                               195950
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:42",
-                                              "timestamp_from":  195950,
-                                              "timestamp_to":  201580,
-                                              "duration":  5630,
-                                              "segments":  [
-                                                               1,
-                                                               195980,
-                                                               197150,
-                                                               2,
-                                                               197160,
-                                                               198640,
-                                                               3,
-                                                               198650,
-                                                               201580
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:43",
-                                              "timestamp_from":  201580,
-                                              "timestamp_to":  210680,
-                                              "duration":  9100,
-                                              "segments":  [
-                                                               1,
-                                                               201610,
-                                                               202130,
-                                                               2,
-                                                               202140,
-                                                               203040,
-                                                               3,
-                                                               203050,
-                                                               206360,
-                                                               4,
-                                                               206370,
-                                                               206810,
-                                                               5,
-                                                               206820,
-                                                               208330,
-                                                               6,
-                                                               208340,
-                                                               210680
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:44",
-                                              "timestamp_from":  210680,
-                                              "timestamp_to":  216100,
-                                              "duration":  5420,
-                                              "segments":  [
-                                                               1,
-                                                               210830,
-                                                               211940,
-                                                               2,
-                                                               211950,
-                                                               213000,
-                                                               3,
-                                                               213010,
-                                                               213520,
-                                                               4,
-                                                               213530,
-                                                               216100
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:45",
-                                              "timestamp_from":  216100,
-                                              "timestamp_to":  222160,
-                                              "duration":  6060,
-                                              "segments":  [
-                                                               1,
-                                                               216130,
-                                                               217550,
-                                                               2,
-                                                               217560,
-                                                               218700,
-                                                               3,
-                                                               218710,
-                                                               222160
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:46",
-                                              "timestamp_from":  222160,
-                                              "timestamp_to":  229690,
-                                              "duration":  7530,
-                                              "segments":  [
-                                                               1,
-                                                               222190,
-                                                               222700,
-                                                               2,
-                                                               222710,
-                                                               224000,
-                                                               3,
-                                                               224010,
-                                                               224900,
-                                                               4,
-                                                               224910,
-                                                               227350,
-                                                               5,
-                                                               227360,
-                                                               229690
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:47",
-                                              "timestamp_from":  229690,
-                                              "timestamp_to":  235600,
-                                              "duration":  5910,
-                                              "segments":  [
-                                                               1,
-                                                               229720,
-                                                               230970,
-                                                               2,
-                                                               230980,
-                                                               232250,
-                                                               3,
-                                                               232260,
-                                                               235600
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:48",
-                                              "timestamp_from":  235600,
-                                              "timestamp_to":  241760,
-                                              "duration":  6160,
-                                              "segments":  [
-                                                               1,
-                                                               235630,
-                                                               236380,
-                                                               2,
-                                                               236390,
-                                                               237210,
-                                                               3,
-                                                               237220,
-                                                               237530,
-                                                               4,
-                                                               237540,
-                                                               238430,
-                                                               5,
-                                                               238440,
-                                                               238780,
-                                                               6,
-                                                               238790,
-                                                               241760
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:49",
-                                              "timestamp_from":  241760,
-                                              "timestamp_to":  248120,
-                                              "duration":  6360,
-                                              "segments":  [
-                                                               1,
-                                                               241790,
-                                                               243470,
-                                                               2,
-                                                               243480,
-                                                               244510,
-                                                               3,
-                                                               244520,
-                                                               248120
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "77:50",
-                                              "timestamp_from":  248120,
-                                              "timestamp_to":  256030,
-                                              "duration":  7910,
-                                              "segments":  [
-                                                               1,
-                                                               248150,
-                                                               249110,
-                                                               2,
-                                                               249120,
-                                                               250860,
-                                                               3,
-                                                               250870,
-                                                               252030,
-                                                               4,
-                                                               252040,
-                                                               256030
-                                                           ]
-                                          }
-                                      ]
-                   }
+{
+  "audio_file": {
+    "id": 0,
+    "chapter_id": 77,
+    "audio_url": "audio/alafasy/recitation/77.mp3",
+    "timestamps": [
+      {
+        "verse_key": "77:1",
+        "timestamp_from": 0,
+        "timestamp_to": 2530,
+        "duration": 2530,
+        "segments": [
+          [
+            1,
+            100.0,
+            1525.0
+          ],
+          [
+            2,
+            1646.0,
+            2188.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:2",
+        "timestamp_from": 2530,
+        "timestamp_to": 5100,
+        "duration": 2570,
+        "segments": [
+          [
+            1,
+            3093.0,
+            4638.0
+          ],
+          [
+            2,
+            4758.0,
+            5300.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:3",
+        "timestamp_from": 5100,
+        "timestamp_to": 8080,
+        "duration": 2980,
+        "segments": [
+          [
+            1,
+            4800.0,
+            5022.0
+          ],
+          [
+            2,
+            5042.0,
+            8080.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:4",
+        "timestamp_from": 8080,
+        "timestamp_to": 10580,
+        "duration": 2500,
+        "segments": [
+          [
+            1,
+            7780.0,
+            8261.0
+          ],
+          [
+            2,
+            8381.0,
+            8702.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:5",
+        "timestamp_from": 10580,
+        "timestamp_to": 13070,
+        "duration": 2490,
+        "segments": [
+          [
+            1,
+            10280.0,
+            10966.0
+          ],
+          [
+            2,
+            11047.0,
+            11612.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:6",
+        "timestamp_from": 13070,
+        "timestamp_to": 15190,
+        "duration": 2120,
+        "segments": [
+          [
+            1,
+            12770.0,
+            12970.0
+          ],
+          [
+            2,
+            12980.0,
+            13180.0
+          ],
+          [
+            3,
+            13292.0,
+            13492.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:7",
+        "timestamp_from": 15190,
+        "timestamp_to": 18920,
+        "duration": 3730,
+        "segments": [
+          [
+            1,
+            15353.0,
+            16038.0
+          ],
+          [
+            2,
+            16098.0,
+            16763.0
+          ],
+          [
+            3,
+            16884.0,
+            17851.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:8",
+        "timestamp_from": 18920,
+        "timestamp_to": 21770,
+        "duration": 2850,
+        "segments": [
+          [
+            1,
+            18620.0,
+            18721.0
+          ],
+          [
+            2,
+            18741.0,
+            18913.0
+          ],
+          [
+            3,
+            18923.0,
+            21770.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:9",
+        "timestamp_from": 21770,
+        "timestamp_to": 25270,
+        "duration": 3500,
+        "segments": [
+          [
+            1,
+            22072.0,
+            22593.0
+          ],
+          [
+            2,
+            22613.0,
+            23335.0
+          ],
+          [
+            3,
+            23355.0,
+            23615.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:10",
+        "timestamp_from": 25270,
+        "timestamp_to": 27640,
+        "duration": 2370,
+        "segments": [
+          [
+            1,
+            25393.0,
+            25738.0
+          ],
+          [
+            2,
+            25758.0,
+            25958.0
+          ],
+          [
+            3,
+            25978.0,
+            26139.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:11",
+        "timestamp_from": 27640,
+        "timestamp_to": 30020,
+        "duration": 2380,
+        "segments": [
+          [
+            1,
+            27340.0,
+            27821.0
+          ],
+          [
+            2,
+            27841.0,
+            28041.0
+          ],
+          [
+            3,
+            28061.0,
+            28262.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:12",
+        "timestamp_from": 30020,
+        "timestamp_to": 32590,
+        "duration": 2570,
+        "segments": [
+          [
+            1,
+            29720.0,
+            29920.0
+          ],
+          [
+            2,
+            29942.0,
+            30164.0
+          ],
+          [
+            3,
+            30305.0,
+            30728.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:13",
+        "timestamp_from": 32590,
+        "timestamp_to": 34100,
+        "duration": 1510,
+        "segments": [
+          [
+            1,
+            32310.0,
+            32552.0
+          ],
+          [
+            2,
+            32593.0,
+            32815.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:14",
+        "timestamp_from": 34100,
+        "timestamp_to": 38430,
+        "duration": 4330,
+        "segments": [
+          [
+            1,
+            33840.0,
+            34681.0
+          ],
+          [
+            2,
+            34962.0,
+            35402.0
+          ],
+          [
+            3,
+            35422.0,
+            35622.0
+          ],
+          [
+            4,
+            35632.0,
+            36283.0
+          ],
+          [
+            5,
+            36303.0,
+            36564.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:15",
+        "timestamp_from": 38430,
+        "timestamp_to": 43890,
+        "duration": 5460,
+        "segments": [
+          [
+            1,
+            38231.0,
+            38513.0
+          ],
+          [
+            2,
+            38634.0,
+            38957.0
+          ],
+          [
+            3,
+            38977.0,
+            43890.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:16",
+        "timestamp_from": 43890,
+        "timestamp_to": 48010,
+        "duration": 4120,
+        "segments": [
+          [
+            1,
+            43610.0,
+            44512.0
+          ],
+          [
+            2,
+            44612.0,
+            44933.0
+          ],
+          [
+            3,
+            44993.0,
+            48010.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:17",
+        "timestamp_from": 48010,
+        "timestamp_to": 53030,
+        "duration": 5020,
+        "segments": [
+          [
+            1,
+            47710.0,
+            47910.0
+          ],
+          [
+            2,
+            47930.0,
+            48371.0
+          ],
+          [
+            3,
+            48391.0,
+            53030.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:18",
+        "timestamp_from": 53030,
+        "timestamp_to": 57860,
+        "duration": 4830,
+        "segments": [
+          [
+            1,
+            52730.0,
+            52930.0
+          ],
+          [
+            2,
+            52950.0,
+            55074.0
+          ],
+          [
+            3,
+            55195.0,
+            56437.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:19",
+        "timestamp_from": 57860,
+        "timestamp_to": 63450,
+        "duration": 5590,
+        "segments": [
+          [
+            1,
+            57560.0,
+            57760.0
+          ],
+          [
+            2,
+            57780.0,
+            58284.0
+          ],
+          [
+            3,
+            58344.0,
+            63450.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:20",
+        "timestamp_from": 63450,
+        "timestamp_to": 71710,
+        "duration": 8260,
+        "segments": [
+          [
+            1,
+            63310.0,
+            65774.0
+          ],
+          [
+            2,
+            65794.0,
+            66115.0
+          ],
+          [
+            3,
+            66125.0,
+            66325.0
+          ],
+          [
+            4,
+            66335.0,
+            66535.0
+          ],
+          [
+            5,
+            66545.0,
+            71710.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:21",
+        "timestamp_from": 71710,
+        "timestamp_to": 77000,
+        "duration": 5290,
+        "segments": [
+          [
+            1,
+            72134.0,
+            72798.0
+          ],
+          [
+            2,
+            72900.0,
+            73100.0
+          ],
+          [
+            3,
+            73200.0,
+            73924.0
+          ],
+          [
+            4,
+            74488.0,
+            77000.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:22",
+        "timestamp_from": 77000,
+        "timestamp_to": 81790,
+        "duration": 4790,
+        "segments": [
+          [
+            1,
+            76700.0,
+            77284.0
+          ],
+          [
+            2,
+            77304.0,
+            77908.0
+          ],
+          [
+            3,
+            78471.0,
+            81790.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:23",
+        "timestamp_from": 81790,
+        "timestamp_to": 86290,
+        "duration": 4500,
+        "segments": [
+          [
+            1,
+            81490.0,
+            82091.0
+          ],
+          [
+            2,
+            82171.0,
+            82432.0
+          ],
+          [
+            3,
+            82452.0,
+            86290.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:24",
+        "timestamp_from": 86290,
+        "timestamp_to": 91780,
+        "duration": 5490,
+        "segments": [
+          [
+            1,
+            86553.0,
+            86916.0
+          ],
+          [
+            2,
+            86936.0,
+            87720.0
+          ],
+          [
+            3,
+            87761.0,
+            91780.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:25",
+        "timestamp_from": 91780,
+        "timestamp_to": 94990,
+        "duration": 3210,
+        "segments": [
+          [
+            1,
+            91641.0,
+            92226.0
+          ],
+          [
+            2,
+            92369.0,
+            92569.0
+          ],
+          [
+            3,
+            92589.0,
+            92690.0
+          ],
+          [
+            4,
+            92710.0,
+            94990.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:26",
+        "timestamp_from": 94990,
+        "timestamp_to": 97480,
+        "duration": 2490,
+        "segments": [
+          [
+            1,
+            94690.0,
+            96496.0
+          ],
+          [
+            2,
+            96596.0,
+            97138.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:27",
+        "timestamp_from": 97480,
+        "timestamp_to": 108400,
+        "duration": 10920,
+        "segments": [
+          [
+            1,
+            97442.0,
+            97783.0
+          ],
+          [
+            2,
+            97804.0,
+            98025.0
+          ],
+          [
+            3,
+            98065.0,
+            98347.0
+          ],
+          [
+            4,
+            98488.0,
+            103876.0
+          ],
+          [
+            5,
+            103876.0,
+            104449.0
+          ],
+          [
+            6,
+            104449.0,
+            104559.5
+          ],
+          [
+            7,
+            104559.5,
+            108400.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:28",
+        "timestamp_from": 108400,
+        "timestamp_to": 113950,
+        "duration": 5550,
+        "segments": [
+          [
+            1,
+            108100.0,
+            108300.0
+          ],
+          [
+            2,
+            108361.0,
+            109166.0
+          ],
+          [
+            3,
+            109206.0,
+            113950.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:29",
+        "timestamp_from": 113950,
+        "timestamp_to": 124610,
+        "duration": 10660,
+        "segments": [
+          [
+            1,
+            113650.0,
+            113850.0
+          ],
+          [
+            2,
+            113860.0,
+            114060.0
+          ],
+          [
+            3,
+            114113.0,
+            118299.0
+          ],
+          [
+            4,
+            118299.0,
+            118950.0
+          ],
+          [
+            5,
+            118950.0,
+            119972.0
+          ],
+          [
+            6,
+            119972.0,
+            124610.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:30",
+        "timestamp_from": 124610,
+        "timestamp_to": 132270,
+        "duration": 7660,
+        "segments": [
+          [
+            1,
+            124310.0,
+            124592.0
+          ],
+          [
+            2,
+            124634.0,
+            124834.0
+          ],
+          [
+            3,
+            124876.0,
+            128794.0
+          ],
+          [
+            4,
+            128794.0,
+            130090.0
+          ],
+          [
+            5,
+            130090.0,
+            131155.0
+          ],
+          [
+            6,
+            131155.0,
+            132270.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:31",
+        "timestamp_from": 132270,
+        "timestamp_to": 136860,
+        "duration": 4590,
+        "segments": [
+          [
+            1,
+            132050.0,
+            132451.0
+          ],
+          [
+            2,
+            132531.0,
+            132971.0
+          ],
+          [
+            3,
+            132991.0,
+            133332.0
+          ],
+          [
+            4,
+            133352.0,
+            134093.0
+          ],
+          [
+            5,
+            134253.0,
+            134453.0
+          ],
+          [
+            6,
+            134593.0,
+            135174.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:32",
+        "timestamp_from": 136860,
+        "timestamp_to": 141630,
+        "duration": 4770,
+        "segments": [
+          [
+            1,
+            136600.0,
+            137301.0
+          ],
+          [
+            2,
+            137321.0,
+            139866.0
+          ],
+          [
+            3,
+            139966.0,
+            141088.0
+          ],
+          [
+            4,
+            141108.0,
+            141409.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:33",
+        "timestamp_from": 141630,
+        "timestamp_to": 145930,
+        "duration": 4300,
+        "segments": [
+          [
+            1,
+            141330.0,
+            141754.0
+          ],
+          [
+            2,
+            141997.0,
+            142280.0
+          ],
+          [
+            3,
+            142403.0,
+            145930.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:34",
+        "timestamp_from": 145930,
+        "timestamp_to": 152200,
+        "duration": 6270,
+        "segments": [
+          [
+            1,
+            145690.0,
+            145952.0
+          ],
+          [
+            2,
+            146053.0,
+            146395.0
+          ],
+          [
+            3,
+            146516.0,
+            152200.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:35",
+        "timestamp_from": 152200,
+        "timestamp_to": 157530,
+        "duration": 5330,
+        "segments": [
+          [
+            1,
+            151900.0,
+            151981.0
+          ],
+          [
+            2,
+            152001.0,
+            152061.0
+          ],
+          [
+            3,
+            152081.0,
+            152281.0
+          ],
+          [
+            4,
+            152291.0,
+            157530.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:36",
+        "timestamp_from": 157530,
+        "timestamp_to": 162740,
+        "duration": 5210,
+        "segments": [
+          [
+            1,
+            157310.0,
+            157911.0
+          ],
+          [
+            2,
+            157951.0,
+            158151.0
+          ],
+          [
+            3,
+            158171.0,
+            158612.0
+          ],
+          [
+            4,
+            158652.0,
+            162740.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:37",
+        "timestamp_from": 162740,
+        "timestamp_to": 168900,
+        "duration": 6160,
+        "segments": [
+          [
+            1,
+            162440.0,
+            163502.0
+          ],
+          [
+            2,
+            163522.0,
+            163922.0
+          ],
+          [
+            3,
+            163962.0,
+            168900.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:38",
+        "timestamp_from": 168900,
+        "timestamp_to": 175550,
+        "duration": 6650,
+        "segments": [
+          [
+            1,
+            170322.0,
+            171003.0
+          ],
+          [
+            2,
+            171123.0,
+            171623.0
+          ],
+          [
+            3,
+            171703.0,
+            172524.0
+          ],
+          [
+            4,
+            172544.0,
+            175928.0
+          ],
+          [
+            5,
+            176028.0,
+            176589.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:39",
+        "timestamp_from": 175550,
+        "timestamp_to": 182460,
+        "duration": 6910,
+        "segments": [
+          [
+            1,
+            176015.0,
+            176075.0
+          ],
+          [
+            2,
+            176095.0,
+            176176.0
+          ],
+          [
+            3,
+            176196.0,
+            176478.0
+          ],
+          [
+            4,
+            176498.0,
+            176698.0
+          ],
+          [
+            5,
+            176820.0,
+            182460.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:40",
+        "timestamp_from": 182460,
+        "timestamp_to": 188450,
+        "duration": 5990,
+        "segments": [
+          [
+            1,
+            182500.0,
+            182921.0
+          ],
+          [
+            2,
+            182981.0,
+            184002.0
+          ],
+          [
+            3,
+            184142.0,
+            188450.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:41",
+        "timestamp_from": 188450,
+        "timestamp_to": 195950,
+        "duration": 7500,
+        "segments": [
+          [
+            1,
+            188210.0,
+            188551.0
+          ],
+          [
+            2,
+            188671.0,
+            189302.0
+          ],
+          [
+            3,
+            189312.0,
+            189512.0
+          ],
+          [
+            4,
+            189532.0,
+            189993.0
+          ],
+          [
+            5,
+            190013.0,
+            195950.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:42",
+        "timestamp_from": 195950,
+        "timestamp_to": 201580,
+        "duration": 5630,
+        "segments": [
+          [
+            1,
+            195650.0,
+            196113.0
+          ],
+          [
+            2,
+            196133.0,
+            196657.0
+          ],
+          [
+            3,
+            196677.0,
+            201580.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:43",
+        "timestamp_from": 201580,
+        "timestamp_to": 210680,
+        "duration": 9100,
+        "segments": [
+          [
+            1,
+            202441.0,
+            202682.0
+          ],
+          [
+            2,
+            202722.0,
+            203222.0
+          ],
+          [
+            3,
+            203383.0,
+            204144.0
+          ],
+          [
+            4,
+            205345.0,
+            205566.0
+          ],
+          [
+            5,
+            205566.0,
+            206037.0
+          ],
+          [
+            6,
+            206037.0,
+            210680.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:44",
+        "timestamp_from": 210680,
+        "timestamp_to": 216100,
+        "duration": 5420,
+        "segments": [
+          [
+            1,
+            210380.0,
+            210580.0
+          ],
+          [
+            2,
+            210590.0,
+            210841.0
+          ],
+          [
+            3,
+            210861.0,
+            211201.0
+          ],
+          [
+            4,
+            211221.0,
+            216100.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:45",
+        "timestamp_from": 216100,
+        "timestamp_to": 222160,
+        "duration": 6060,
+        "segments": [
+          [
+            1,
+            215800.0,
+            217243.0
+          ],
+          [
+            2,
+            217263.0,
+            217583.0
+          ],
+          [
+            3,
+            217724.0,
+            222160.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:46",
+        "timestamp_from": 222160,
+        "timestamp_to": 229690,
+        "duration": 7530,
+        "segments": [
+          [
+            1,
+            223421.0,
+            223902.0
+          ],
+          [
+            2,
+            223962.0,
+            224783.0
+          ],
+          [
+            3,
+            224863.0,
+            225223.0
+          ],
+          [
+            4,
+            225243.0,
+            227605.0
+          ],
+          [
+            5,
+            227625.0,
+            227865.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:47",
+        "timestamp_from": 229690,
+        "timestamp_to": 235600,
+        "duration": 5910,
+        "segments": [
+          [
+            1,
+            229550.0,
+            229870.0
+          ],
+          [
+            2,
+            229891.0,
+            230111.0
+          ],
+          [
+            3,
+            230211.0,
+            235600.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:48",
+        "timestamp_from": 235600,
+        "timestamp_to": 241760,
+        "duration": 6160,
+        "segments": [
+          [
+            1,
+            235300.0,
+            235500.0
+          ],
+          [
+            2,
+            235510.0,
+            235921.0
+          ],
+          [
+            3,
+            235941.0,
+            236141.0
+          ],
+          [
+            4,
+            236242.0,
+            238547.0
+          ],
+          [
+            5,
+            238567.0,
+            238767.0
+          ],
+          [
+            6,
+            238787.0,
+            241760.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:49",
+        "timestamp_from": 241760,
+        "timestamp_to": 248120,
+        "duration": 6360,
+        "segments": [
+          [
+            1,
+            241460.0,
+            241520.0
+          ],
+          [
+            2,
+            241540.0,
+            241740.0
+          ],
+          [
+            3,
+            241760.0,
+            248120.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "77:50",
+        "timestamp_from": 248120,
+        "timestamp_to": 256030,
+        "duration": 7910,
+        "segments": [
+          [
+            1,
+            247820.0,
+            248020.0
+          ],
+          [
+            2,
+            248040.0,
+            249066.0
+          ],
+          [
+            3,
+            249147.0,
+            249468.0
+          ],
+          [
+            4,
+            249489.0,
+            256030.0
+          ]
+        ]
+      }
+    ]
+  }
 }

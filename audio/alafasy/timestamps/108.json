@@ -1,63 +1,83 @@
-﻿{
-    "audio_file":  {
-                       "id":  0,
-                       "chapter_id":  108,
-                       "audio_url":  "audio/alafasy/recitation/108.mp3",
-                       "timestamps":  [
-                                          {
-                                              "verse_key":  "108:1",
-                                              "timestamp_from":  0,
-                                              "timestamp_to":  5900,
-                                              "duration":  5900,
-                                              "segments":  [
-                                                               1,
-                                                               150,
-                                                               2120,
-                                                               2,
-                                                               2130,
-                                                               4970,
-                                                               3,
-                                                               4980,
-                                                               5900
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "108:2",
-                                              "timestamp_from":  5900,
-                                              "timestamp_to":  8690,
-                                              "duration":  2790,
-                                              "segments":  [
-                                                               1,
-                                                               5930,
-                                                               6810,
-                                                               2,
-                                                               6820,
-                                                               7870,
-                                                               3,
-                                                               7880,
-                                                               8690
-                                                           ]
-                                          },
-                                          {
-                                              "verse_key":  "108:3",
-                                              "timestamp_from":  8690,
-                                              "timestamp_to":  12940,
-                                              "duration":  4250,
-                                              "segments":  [
-                                                               1,
-                                                               8720,
-                                                               10350,
-                                                               2,
-                                                               10360,
-                                                               11440,
-                                                               3,
-                                                               11450,
-                                                               11910,
-                                                               4,
-                                                               11920,
-                                                               12940
-                                                           ]
-                                          }
-                                      ]
-                   }
+{
+  "audio_file": {
+    "id": 0,
+    "chapter_id": 108,
+    "audio_url": "audio/alafasy/recitation/108.mp3",
+    "timestamps": [
+      {
+        "verse_key": "108:1",
+        "timestamp_from": 0,
+        "timestamp_to": 5900,
+        "duration": 5900,
+        "segments": [
+          [
+            1,
+            140.0,
+            3471.0
+          ],
+          [
+            2,
+            3551.0,
+            5016.0
+          ],
+          [
+            3,
+            5137.0,
+            5879.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "108:2",
+        "timestamp_from": 5900,
+        "timestamp_to": 8690,
+        "duration": 2790,
+        "segments": [
+          [
+            1,
+            6783.0,
+            7546.0
+          ],
+          [
+            2,
+            7626.0,
+            8569.0
+          ],
+          [
+            3,
+            8729.0,
+            8970.0
+          ]
+        ]
+      },
+      {
+        "verse_key": "108:3",
+        "timestamp_from": 8690,
+        "timestamp_to": 12940,
+        "duration": 4250,
+        "segments": [
+          [
+            1,
+            8390.0,
+            8481.0
+          ],
+          [
+            2,
+            8491.0,
+            8683.0
+          ],
+          [
+            3,
+            8693.0,
+            8884.0
+          ],
+          [
+            4,
+            8894.0,
+            12940.0
+          ]
+        ]
+      }
+    ]
+  }
 }
