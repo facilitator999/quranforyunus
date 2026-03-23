@@ -10,6 +10,9 @@
  *
  * Gradio 6+ uses POST .../gradio_api/call/check_recitation then GET .../call/.../event_id (SSE).
  * Legacy /api/predict returns 404.
+ *
+ * Identify mode: FormData field mode=identify (still send audio). Uses a neutral dummy
+ * expected string so the space returns transcript; client matches surah locally.
  */
 
 export default {
@@ -31,10 +34,19 @@ async function handleRecitation(request, env) {
   try {
     const formData = await request.formData();
     const audio = formData.get("audio");
-    const expected = formData.get("expected");
+    const mode = formData.get("mode");
 
     if (!audio) return jsonError(env, "No audio provided", 400);
-    if (!expected) return jsonError(env, "No expected text provided", 400);
+
+    let expected;
+    if (mode === "identify") {
+      // Long neutral Arabic so HF still runs ASR and returns transcript in JSON.
+      expected =
+        "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ مَٰلِكِ يَوْمِ ٱلدِّينِ";
+    } else {
+      expected = formData.get("expected");
+      if (!expected) return jsonError(env, "No expected text provided", 400);
+    }
 
     const base64 = bytesToBase64(new Uint8Array(await audio.arrayBuffer()));
 

@@ -1,488 +1,733 @@
-<!--
-╔══════════════════════════════════════════════════════════════════════╗
-║  CLOUDFLARE WORKER — Gradio 6+ on HF Spaces                         ║
-║  Your Space uses api_prefix /gradio_api and api_name check_recitation║
-║  (NOT legacy /upload + /api/predict — those return 404 on Gradio 6.) ║
-║  Env:                                                                ║
-║    HF_SPACE_URL   → https://facilitator999-quranforyunus.hf.space    ║
-║                     (no trailing slash)                              ║
-║    ALLOWED_ORIGIN → https://www.quranforyunus.com                    ║
-╚══════════════════════════════════════════════════════════════════════╝
-
-─────────────────────── COPY WORKER CODE BELOW ───────────────────────
-
-function cors(origin) {
-  return {
-    "Access-Control-Allow-Origin":  origin,
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-  };
-}
-function err(msg, status, origin) {
-  return new Response(JSON.stringify({ error: msg }), {
-    status,
-    headers: { "Content-Type": "application/json", ...cors(origin) },
-  });
-}
-
-/** Uint8Array → base64 without blowing the stack on large blobs */
-function bytesToBase64(bytes) {
-  let binary = "";
-  const chunk = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunk) {
-    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
-  }
-  return btoa(binary);
-}
-
-/**
- * Gradio 6: POST .../gradio_api/call/check_recitation → { event_id }
- * then GET  .../gradio_api/call/check_recitation/{event_id} → SSE
- */
-function parseGradioSse(sseText) {
-  const blocks = sseText.split(/\r?\n\r?\n/);
-  for (const block of blocks) {
-    if (block.includes("event: error")) {
-      const line = block.split("\n").find((l) => l.startsWith("data: "));
-      if (line) {
-        const raw = line.slice(6).trim();
-        let msg = raw;
-        try {
-          const outer = JSON.parse(raw);
-          msg = Array.isArray(outer) ? String(outer[0]) : JSON.stringify(outer);
-        } catch (_) { /* keep raw */ }
-        throw new Error(msg || "Gradio event error");
-      }
-    }
-    if (block.includes("event: complete")) {
-      const line = block.split("\n").find((l) => l.startsWith("data: "));
-      if (!line) continue;
-      const raw = line.slice(6).trim();
-      const outer = JSON.parse(raw);
-      if (!Array.isArray(outer) || outer[0] == null) {
-        throw new Error("Unexpected Gradio response shape");
-      }
-      const inner = outer[0];
-      return typeof inner === "string" ? JSON.parse(inner) : inner;
-    }
-  }
-  throw new Error("No complete event from Gradio (timeout or empty SSE)");
-}
-
-export default {
-  async fetch(request, env) {
-    const origin = env.ALLOWED_ORIGIN || "*";
-    const HF = (env.HF_SPACE_URL || "https://facilitator999-quranforyunus.hf.space").replace(
-      /\/$/,
-      ""
-    );
-
-    if (request.method === "OPTIONS") {
-      return new Response(null, { headers: cors(origin) });
-    }
-    if (request.method !== "POST") {
-      return err("POST only", 405, origin);
-    }
-
-    try {
-      const formData = await request.formData();
-      const audio = formData.get("audio");
-      const expected = formData.get("expected");
-
-      if (!audio) return err("No audio provided", 400, origin);
-      if (!expected) return err("No expected text provided", 400, origin);
-
-      const buf = new Uint8Array(await audio.arrayBuffer());
-      const audioB64 = bytesToBase64(buf);
-
-      const callUrl = `${HF}/gradio_api/call/check_recitation`;
-      const initRes = await fetch(callUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: [audioB64, expected] }),
-      });
-
-      if (!initRes.ok) {
-        const txt = await initRes.text();
-        return err(`HF Gradio call failed ${initRes.status}: ${txt}`, 502, origin);
-      }
-
-      const { event_id: eventId } = await initRes.json();
-      if (!eventId) return err("HF returned no event_id", 502, origin);
-
-      const sseRes = await fetch(`${callUrl}/${eventId}`, { method: "GET" });
-      if (!sseRes.ok) {
-        const txt = await sseRes.text();
-        return err(`HF Gradio result failed ${sseRes.status}: ${txt}`, 502, origin);
-      }
-
-      const sseText = await sseRes.text();
-      const result = parseGradioSse(sseText);
-
-      return new Response(JSON.stringify(result), {
-        headers: { "Content-Type": "application/json", ...cors(origin) },
-      });
-    } catch (e) {
-      return err(e.message || String(e), 500, origin);
-    }
-  },
-};
-
-─────────────────────── COPY WORKER CODE ABOVE ───────────────────────
--->
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>فحص التلاوة — quranforyunus.com</title>
+<title>Juz Amma — Recitation check · quranforyunus</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg:          #faf7f2;
-    --surface:     #ffffff;
-    --border:      #e8e0d0;
-    --gold:        #c8962a;
-    --gold-light:  #f5e8c7;
-    --green:       #1a6b3a;
-    --green-light: #e6f4ec;
-    --red:         #c0392b;
-    --red-light:   #fdecea;
-    --orange:      #d35400;
-    --text:        #1a1408;
-    --muted:       #8b7d5e;
-    --font-arabic: 'Amiri', serif;
-    --font-ui:     'Cairo', sans-serif;
+    --bg: #faf7f2; --surface: #fff; --border: #e8e0d0; --gold: #c8962a; --gold-light: #f5e8c7;
+    --green: #15803d; --green-light: #e6f4ec; --red: #c0392b; --red-light: #fdecea; --orange: #d35400;
+    --text: #1a1408; --muted: #8b7d5e; --font-ar: 'Amiri', serif; --font-ui: 'Cairo', sans-serif;
   }
-
   html, body { background: var(--bg); color: var(--text); font-family: var(--font-ui); min-height: 100vh; }
-
-  body::before {
-    content: ''; position: fixed; inset: 0; z-index: 0;
-    background-image:
-      repeating-linear-gradient(45deg,  transparent, transparent 20px, rgba(200,150,42,.04) 20px, rgba(200,150,42,.04) 21px),
-      repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(200,150,42,.04) 20px, rgba(200,150,42,.04) 21px);
-    pointer-events: none;
+  .wrap { max-width: 640px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+  h1 { font-size: clamp(1.15rem, 4vw, 1.5rem); color: var(--green); margin-bottom: .25rem; text-align: center; }
+  .sub { text-align: center; color: var(--muted); font-size: .85rem; margin-bottom: 1.25rem; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 2px 16px rgba(0,0,0,.05);
   }
-
-  .page { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
-
-  header { text-align: center; margin-bottom: 2.5rem; }
-  .bismillah { font-family: var(--font-arabic); font-size: 1.8rem; color: var(--gold); margin-bottom: .5rem; }
-  header h1  { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; color: var(--green); margin-bottom: .3rem; }
-  header p   { color: var(--muted); font-size: .9rem; }
-
-  .divider { height: 2px; margin: 1.5rem 0; background: linear-gradient(90deg, transparent, var(--gold), transparent); border: none; }
-
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.8rem; box-shadow: 0 2px 20px rgba(0,0,0,.06); margin-bottom: 1.5rem; }
-  .card-title { font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 1rem; direction: ltr; text-align: left; }
-
-  .selector-row { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem; }
-  select, input[type=number] {
-    flex: 1; min-width: 120px;
-    font-family: var(--font-ui); font-size: .9rem;
-    border: 1px solid var(--border); border-radius: 8px;
-    padding: .55rem .8rem; background: var(--bg); color: var(--text);
-    direction: ltr; appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b7d5e' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: left .8rem center; padding-left: 2rem;
+  .label { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .45rem; }
+  select {
+    width: 100%; font: inherit; font-size: 1rem; padding: .65rem .85rem; border-radius: 10px;
+    border: 1px solid var(--border); background: var(--bg); color: var(--text);
+    cursor: pointer; margin-bottom: .75rem;
   }
-  select:focus, input[type=number]:focus { outline: none; border-color: var(--gold); }
-
-  .ayah-text {
-    font-family: var(--font-arabic); font-size: 1.7rem; line-height: 2.4;
-    text-align: center; direction: rtl; color: var(--text);
-    padding: 1rem; background: var(--gold-light); border-radius: 10px; min-height: 80px;
+  select:focus { outline: none; border-color: var(--gold); }
+  .ref {
+    font-family: var(--font-ar); font-size: clamp(1.15rem, 3.8vw, 1.45rem); line-height: 1.85;
+    text-align: center; direction: rtl; padding: .85rem; background: var(--gold-light); border-radius: 10px;
+    min-height: 3.5rem;
   }
-  .ayah-loading { color: var(--muted); font-size: 1rem; }
-
-  .result-ayah { font-family: var(--font-arabic); font-size: 1.7rem; line-height: 2.8; text-align: center; direction: rtl; padding: 1rem; }
-  .word { display: inline-block; padding: .1em .25em; border-radius: 5px; margin: .1em; cursor: default; }
-  .word.ok      { color: var(--green); }
-  .word.missing { background: var(--red-light);   color: var(--red);    text-decoration: line-through; }
-  .word.wrong   { background: var(--red-light);   color: var(--red); }
-  .word.extra   { background: rgba(211,84,0,.1); color: var(--orange); font-style: italic; }
-
-  .score-row { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 1rem; }
-  .score-circle { width: 90px; height: 90px; border-radius: 50%; border: 4px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--gold-light); }
-  .score-num { font-size: 1.6rem; font-weight: 700; color: var(--gold); line-height: 1; }
-  .score-pct { font-size: .65rem; color: var(--muted); }
-  .legend { display: flex; flex-direction: column; gap: .4rem; direction: ltr; }
-  .legend-item { display: flex; align-items: center; gap: .5rem; font-size: .8rem; }
-  .dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
-  .dot.ok      { background: var(--green); }
-  .dot.missing { background: var(--red); }
-  .dot.wrong   { background: var(--red); opacity: .7; }
-  .dot.extra   { background: var(--orange); }
-
-  .record-area { text-align: center; }
-  #record-btn {
-    width: 100px; height: 100px; border-radius: 50%;
-    border: 3px solid var(--green); background: var(--green-light);
-    cursor: pointer; display: inline-flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: .3rem;
-    transition: all .2s; font-family: var(--font-ui);
+  .ref.ref--tokens { line-height: 2.05; text-align: center; }
+  .ref.ref--tokens .tok { font-size: inherit; }
+  .tok.pending {
+    color: var(--muted); opacity: 0.88; font-weight: 400;
+    padding: .06em .12em; border-radius: 4px; margin: .06em;
   }
-  #record-btn:hover { background: var(--green); }
-  #record-btn:hover .mic-icon, #record-btn:hover .btn-label { color: #fff; }
-  #record-btn.recording { background: var(--red); border-color: var(--red); animation: beat .7s ease-in-out infinite alternate; }
-  #record-btn.recording .mic-icon, #record-btn.recording .btn-label { color: #fff; }
-  @keyframes beat { from { transform: scale(1); } to { transform: scale(1.07); } }
-  .mic-icon  { font-size: 2rem; color: var(--green); transition: color .2s; }
-  .btn-label { font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--green); transition: color .2s; }
-
-  #status-msg { margin-top: .9rem; font-size: .82rem; color: var(--muted); min-height: 1.2em; }
-  #timer { font-family: monospace; font-size: 1.1rem; color: var(--red); margin-top: .3rem; min-height: 1.5em; }
-
-  .upload-row { display: flex; align-items: center; justify-content: center; gap: .7rem; margin-top: 1.2rem; direction: ltr; }
-  .upload-label { font-size: .78rem; color: var(--muted); cursor: pointer; text-decoration: underline dotted; }
-  #file-input { display: none; }
-
-  #check-btn {
-    display: block; width: 100%; margin-top: 1.2rem; padding: .8rem;
-    background: var(--green); color: #fff; border: none; border-radius: 10px;
-    font-family: var(--font-ui); font-size: 1rem; font-weight: 600;
-    cursor: pointer; transition: opacity .2s;
+  .note { font-size: .72rem; color: var(--muted); line-height: 1.45; margin-top: .6rem; direction: ltr; text-align: center; }
+  .row { text-align: center; margin-top: .75rem; }
+  #rec-btn {
+    width: 88px; height: 88px; border-radius: 50%; border: 3px solid var(--green); background: var(--green-light);
+    cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: .2rem;
+    transition: .2s; font-family: inherit;
   }
-  #check-btn:hover { opacity: .88; }
-  #check-btn:disabled { opacity: .4; cursor: not-allowed; }
-
-  .transcript-box {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-    padding: .8rem 1rem; font-family: var(--font-arabic); font-size: 1.1rem;
-    direction: rtl; color: var(--text); line-height: 2; min-height: 50px;
+  #rec-btn:hover { background: var(--green); color: #fff; }
+  #rec-btn:hover .mic, #rec-btn:hover .lbl { color: #fff; }
+  #rec-btn.on { background: var(--red); border-color: var(--red); animation: beat .75s ease-in-out infinite alternate; }
+  #rec-btn.on .mic, #rec-btn.on .lbl { color: #fff; }
+  @keyframes beat { from { transform: scale(1); } to { transform: scale(1.05); } }
+  .mic { font-size: 1.6rem; line-height: 1; color: var(--green); }
+  .lbl { font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--green); }
+  #timer { font-family: monospace; font-size: 1rem; color: var(--red); margin-top: .35rem; min-height: 1.35em; text-align: center; }
+  #status { font-size: .78rem; color: var(--muted); text-align: center; margin-top: .5rem; min-height: 1.2em; }
+  .transcript {
+    font-family: var(--font-ar); font-size: .95rem; line-height: 1.9; direction: rtl; text-align: center;
+    padding: .65rem; background: var(--bg); border-radius: 8px; border: 1px solid var(--border); margin-bottom: .35rem;
   }
-
-  footer { text-align: center; font-size: .7rem; color: var(--muted); margin-top: 3rem; direction: ltr; }
+  .transcript-note { font-size: .68rem; color: var(--muted); line-height: 1.4; text-align: center; margin-bottom: .75rem; }
+  .tok { display: inline-block; padding: .06em .18em; border-radius: 4px; margin: .06em; }
+  .tok.ok, .tok.correct, .tok.right { color: var(--green); font-weight: 600; }
+  .tok.missing { background: var(--red-light); color: var(--red); text-decoration: line-through; }
+  .tok.wrong { background: var(--red-light); color: var(--red); }
+  .tok.extra { background: rgba(211,84,0,.12); color: var(--orange); font-style: italic; }
+  .tok.unknown { color: var(--muted); }
+  .score-row { display: flex; align-items: flex-start; justify-content: center; gap: 1rem; flex-wrap: wrap; margin-top: .5rem; }
+  .ring {
+    width: 4.5rem; height: 4.5rem; border-radius: 50%; border: 3px solid var(--gold); display: flex;
+    flex-direction: column; align-items: center; justify-content: center; background: var(--gold-light); flex-shrink: 0;
+  }
+  .ring-num { font-size: 1.2rem; font-weight: 800; color: var(--gold); line-height: 1; }
+  .ring-sub { font-size: .55rem; color: var(--muted); }
+  .meta { flex: 1; min-width: 11rem; max-width: 18rem; }
+  .meta-ai { font-size: .68rem; color: var(--muted); line-height: 1.45; margin-bottom: .35rem; }
+  .legend { font-size: .65rem; color: var(--muted); line-height: 1.45; }
+  #results[hidden] { display: none !important; }
+  footer { text-align: center; font-size: .65rem; color: var(--muted); margin-top: 2rem; }
+  .err { color: var(--red); font-size: .85rem; text-align: center; }
+  .id-row { margin-top: .5rem; text-align: center; }
+  #id-btn {
+    width: 100%; max-width: 300px; padding: .7rem 1rem; font: inherit; font-weight: 700; font-size: .82rem;
+    border-radius: 12px; border: 2px solid var(--gold); background: linear-gradient(180deg, #fff9e6, var(--gold-light));
+    color: var(--text); cursor: pointer; transition: .15s; display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  }
+  #id-btn:hover:not(:disabled) { border-color: var(--green); background: var(--green-light); color: var(--green); }
+  #id-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  #id-btn.listening {
+    border-color: var(--green); background: var(--green-light); color: var(--green);
+    animation: beat .85s ease-in-out infinite alternate;
+  }
+  #id-btn .id-emoji { font-size: 1.15rem; line-height: 1; }
 </style>
 </head>
 <body>
-<div class="page">
+<div class="wrap">
+  <h1>Juz ʿAmma — recitation check</h1>
+  <p class="sub">Surahs 78–114 only · serve this folder over HTTP so <code>data/</code> loads</p>
 
-  <header>
-    <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-    <h1>Quran Recitation Checker</h1>
-    <p>Record yourself reciting — the AI will check for missing or incorrect words</p>
-  </header>
-
-  <!-- Step 1 -->
   <div class="card">
-    <div class="card-title">Step 1 — Choose an Ayah</div>
-    <div class="selector-row">
-      <select id="surah-select"><option value="">Loading surahs…</option></select>
-      <input type="number" id="ayah-num" min="1" value="1" placeholder="Ayah #" style="max-width:100px"/>
-      <button onclick="loadAyah()" style="flex:0;padding:.55rem 1.2rem;background:var(--gold);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:var(--font-ui);font-weight:600">Load</button>
-    </div>
-    <div class="ayah-text" id="ayah-display">
-      <span class="ayah-loading">اختر السورة والآية…</span>
-    </div>
+    <div class="label">Choose surah</div>
+    <select id="surah-sel" aria-label="Surah"></select>
+    <div class="label" style="margin-top:.5rem">Expected text (whole surah, basmalah stripped except where none)</div>
+    <div id="ref-text" class="ref">Select a surah…</div>
+    <p class="note">Expected text uses the <strong>same word-by-word</strong> order as the main reader (<code>index.html</code> / <code>data/pages</code> JSON), then normalized for the speech model (ٱ→ا, etc.).</p>
   </div>
 
-  <!-- Step 2 -->
   <div class="card">
-    <div class="card-title">Step 2 — Recite</div>
-    <div class="record-area">
-      <button id="record-btn" onclick="toggleRecord()">
-        <span class="mic-icon">🎙️</span>
-        <span class="btn-label" id="btn-label">Record</span>
+    <div class="label">Record</div>
+    <div class="row">
+      <button type="button" id="rec-btn" aria-label="Record">
+        <span class="mic">🎙️</span>
+        <span class="lbl" id="rec-lbl">Record</span>
       </button>
-      <div id="timer"></div>
-      <div id="status-msg">Press record, then recite the ayah above</div>
-      <div class="upload-row">
-        <span style="color:var(--muted);font-size:.78rem">or</span>
-        <label class="upload-label" for="file-input">upload an audio file</label>
-        <input type="file" id="file-input" accept="audio/*" onchange="handleUpload(event)"/>
-      </div>
-      <button id="check-btn" onclick="checkRecitation()" disabled>Check Recitation ✓</button>
     </div>
+    <div id="timer"></div>
+    <div id="status">Tap Record anytime (surah optional). With a surah loaded, live checks run as you go; Stop runs a final check. With no surah, Stop guesses surah from the clip then checks it.</div>
   </div>
 
-  <!-- Step 3 -->
-  <div class="card" id="results-card" style="display:none">
-    <div class="card-title">Step 3 — Results</div>
-    <p style="font-size:.75rem;color:var(--muted);direction:ltr;margin-bottom:.5rem">What you recited:</p>
-    <div class="transcript-box" id="transcript-box">—</div>
-    <hr class="divider"/>
-    <p style="font-size:.75rem;color:var(--muted);direction:ltr;margin-bottom:.5rem">Word-by-word check:</p>
-    <div class="result-ayah" id="result-ayah"></div>
+  <div class="card" id="results" hidden>
+    <div class="label">What you said</div>
+    <div id="transcript" class="transcript">—</div>
+    <p class="transcript-note">Automatic speech-to-text. Missing/garbled words here often cause “missed” in Expected text above.</p>
     <div class="score-row">
-      <div class="score-circle">
-        <span class="score-num" id="score-num">—</span>
-        <span class="score-pct">accuracy</span>
+      <div class="ring">
+        <span class="ring-num" id="score-lenient">—</span>
+        <span class="ring-sub">letter match</span>
       </div>
-      <div class="legend">
-        <div class="legend-item"><div class="dot ok"></div> Correct</div>
-        <div class="legend-item"><div class="dot missing"></div> Missing word</div>
-        <div class="legend-item"><div class="dot wrong"></div> Wrong word</div>
-        <div class="legend-item"><div class="dot extra"></div> Extra word</div>
+      <div class="meta">
+        <div class="meta-ai" id="score-ai"></div>
+        <div class="legend"><strong>Strikethrough</strong> = word not found in transcript (often ASR). Orange = extra. Green = OK in transcript.</div>
       </div>
     </div>
   </div>
 
-  <footer>Powered by Tarteel AI Whisper · quranforyunus.com</footer>
+  <footer>Worker: <code>WORKER_URL</code> · <code>mode=identify</code> for guess-surah · Tarteel-style check</footer>
 </div>
 
+<script src="js/quran-surah-from-pages.js"></script>
 <script>
-  // ─────────────────────────────────────
-  //  ⚙️  SET YOUR WORKER URL HERE
-  // ─────────────────────────────────────
-  const WORKER_URL = "https://quranforyunus.facilitator999.workers.dev";
-  // ─────────────────────────────────────
+(function () {
+  'use strict';
 
-  let mediaRecorder = null;
-  let audioChunks   = [];
-  let audioBlob     = null;
-  let timerInterval = null;
-  let seconds       = 0;
-  let currentAyah   = "";
+  /** Same Worker as main site (Gradio 6 proxy). */
+  var WORKER_URL = 'https://quranforyunus.facilitator999.workers.dev';
 
-  async function loadSurahs() {
-    try {
-      const r    = await fetch("https://api.alquran.cloud/v1/surah");
-      const data = await r.json();
-      const sel  = document.getElementById("surah-select");
-      sel.innerHTML = data.data.map(s =>
-        `<option value="${s.number}">${s.number}. ${s.englishName} — ${s.name}</option>`
-      ).join("");
-      loadAyah();
-    } catch(e) {
-      document.getElementById("surah-select").innerHTML = '<option value="1">1. Al-Fatiha</option>';
+  var SURAHS = [
+    { n: 78, en: "An-Naba'" }, { n: 79, en: "An-Nazi'at" }, { n: 80, en: 'Abasa' }, { n: 81, en: 'At-Takwir' },
+    { n: 82, en: 'Al-Infitar' }, { n: 83, en: 'Al-Mutaffifin' }, { n: 84, en: 'Al-Inshiqaq' }, { n: 85, en: 'Al-Buruj' },
+    { n: 86, en: 'At-Tariq' }, { n: 87, en: "Al-A'la" }, { n: 88, en: 'Al-Ghashiyah' }, { n: 89, en: 'Al-Fajr' },
+    { n: 90, en: 'Al-Balad' }, { n: 91, en: 'Ash-Shams' }, { n: 92, en: 'Al-Lail' }, { n: 93, en: 'Ad-Duha' },
+    { n: 94, en: 'Ash-Sharh' }, { n: 95, en: 'At-Tin' }, { n: 96, en: 'Al-Alaq' }, { n: 97, en: 'Al-Qadr' },
+    { n: 98, en: 'Al-Bayyinah' }, { n: 99, en: 'Az-Zalzalah' }, { n: 100, en: 'Al-Adiyat' }, { n: 101, en: 'Al-Qariah' },
+    { n: 102, en: 'At-Takathur' }, { n: 103, en: 'Al-Asr' }, { n: 104, en: 'Al-Humazah' }, { n: 105, en: 'Al-Fil' },
+    { n: 106, en: 'Quraysh' }, { n: 107, en: "Al-Ma'un" }, { n: 108, en: 'Al-Kawthar' }, { n: 109, en: 'Al-Kafirun' },
+    { n: 110, en: 'An-Nasr' }, { n: 111, en: 'Al-Masad' }, { n: 112, en: 'Al-Ikhlas' }, { n: 113, en: 'Al-Falaq' },
+    { n: 114, en: 'An-Nas' }
+  ];
+
+  var sel = document.getElementById('surah-sel');
+  var refEl = document.getElementById('ref-text');
+  var idBtn = document.getElementById('id-btn');
+  var idLbl = document.getElementById('id-lbl');
+  var recBtn = document.getElementById('rec-btn');
+  var recLbl = document.getElementById('rec-lbl');
+  var timerEl = document.getElementById('timer');
+  var statusEl = document.getElementById('status');
+  var results = document.getElementById('results');
+  var elTr = document.getElementById('transcript');
+  var elScoreL = document.getElementById('score-lenient');
+  var elScoreAi = document.getElementById('score-ai');
+
+  var currentAyah = '';
+  /** Flat list of Uthmani words (same order as index.html mushaf) after basmalah strip. */
+  var currentWords = [];
+  var mediaRecorder = null;
+  var audioChunks = [];
+  var recordMime = 'audio/webm';
+  var timerIv = null;
+  var sec = 0;
+  var maxSec = 600;
+  var MIN_BYTES = 6000;
+  var LIVE_THROTTLE_MS = 1500;
+  var TIMESLICE_MS = 1000;
+  var checkingInFlight = false;
+  var liveThrottleAt = 0;
+
+  /** Shazam-style: opening signatures per surah (skeleton strings). */
+  var identifyIndex = null;
+  var identifyBuilding = null;
+  var identifyRecorder = null;
+  var identifyChunks = [];
+  var identifyAutoStopTimer = null;
+  var IDENTIFY_MAX_SEC = 10;
+  var IDENTIFY_MIN_BYTES = 4000;
+  var BISM_GUESS = 'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ';
+
+  function normExp(s) {
+    if (s == null || typeof s !== 'string') return '';
+    return s.normalize('NFC')
+      .replace(/\u0640/g, '')
+      .replace(/\u0671/g, '\u0627')
+      .replace(/\u0670/g, '')
+      .replace(/[\u200c\u200d\ufeff]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function stripHarakat(s) {
+    return String(s).replace(/[\u064B-\u065F\u0670\u0610-\u061A\u06D6-\u06ED]/g, '');
+  }
+
+  function skeleton(s) {
+    var t = normExp(s);
+    t = stripHarakat(t);
+    t = t.replace(/\u0622|\u0623|\u0625|\u0671/g, '\u0627').replace(/\u0649/g, '\u064a');
+    return t.replace(/\s+/g, '');
+  }
+
+  function lev(a, b) {
+    if (a === b) return 0;
+    var m = a.length, n = b.length;
+    if (!m) return n;
+    if (!n) return m;
+    var prev = new Uint16Array(n + 1);
+    var cur = new Uint16Array(n + 1);
+    for (var j = 0; j <= n; j++) prev[j] = j;
+    for (var i = 1; i <= m; i++) {
+      cur[0] = i;
+      var ca = a.charCodeAt(i - 1);
+      for (var j = 1; j <= n; j++) {
+        var c = ca === b.charCodeAt(j - 1) ? 0 : 1;
+        cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + c);
+      }
+      var t = prev; prev = cur; cur = t;
     }
+    return prev[n];
   }
 
-  async function loadAyah() {
-    const surah   = document.getElementById("surah-select").value;
-    const ayah    = document.getElementById("ayah-num").value;
-    const display = document.getElementById("ayah-display");
-    if (!surah || !ayah) return;
-    display.innerHTML = '<span class="ayah-loading">جارٍ التحميل…</span>';
-    try {
-      const r    = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar`);
-      const data = await r.json();
-      if (data.code !== 200) throw new Error("Ayah not found");
-      currentAyah         = data.data.text;
-      display.textContent = currentAyah;
-      document.getElementById("results-card").style.display = "none";
-      if (audioBlob) document.getElementById("check-btn").disabled = false;
-    } catch(e) {
-      display.innerHTML = '<span class="ayah-loading">لم يتم العثور على الآية</span>';
-      currentAyah = "";
+  function dicePct(a, b) {
+    if (!a.length || !b.length) return 0;
+    if (a.length === 1 && b.length === 1) return a === b ? 100 : 0;
+    var ma = new Map();
+    for (var i = 0; i < a.length - 1; i++) {
+      var bg = a.slice(i, i + 2);
+      ma.set(bg, (ma.get(bg) || 0) + 1);
     }
+    var inter = 0;
+    for (var i = 0; i < b.length - 1; i++) {
+      var g = b.slice(i, i + 2);
+      var c = ma.get(g);
+      if (c) { inter++; ma.set(g, c - 1); }
+    }
+    var d = Math.max(1, a.length - 1 + b.length - 1);
+    return Math.min(100, Math.round((200 * inter) / d));
   }
 
-  async function toggleRecord() {
-    if (mediaRecorder && mediaRecorder.state === "recording") stopRecording();
-    else await startRecording();
+  function lenientPct(exp, tr) {
+    var a = skeleton(exp);
+    var b = skeleton(tr);
+    if (!a.length && !b.length) return 100;
+    if (!a.length || !b.length) return 0;
+    if (a.length <= 512 && b.length <= 512) {
+      var d = lev(a, b);
+      var mx = Math.max(a.length, b.length);
+      return Math.max(0, Math.min(100, Math.round(100 * (1 - d / mx))));
+    }
+    return dicePct(a, b);
   }
 
-  async function startRecording() {
+  function openingSketches(words, surahNum) {
+    var take = Math.min(28, words.length);
+    var raw = words.slice(0, take).join(' ');
+    var skAfter = skeleton(raw);
+    var skWithBism = surahNum === 9 ? skAfter : skeleton(normExp(BISM_GUESS + ' ' + raw));
+    return { skAfter: skAfter, skWithBism: skWithBism };
+  }
+
+  function ensureIdentifyIndex() {
+    if (identifyIndex) return Promise.resolve(identifyIndex);
+    if (identifyBuilding) return identifyBuilding;
+    var Q = window.QuranSurahFromPages;
+    if (!Q || typeof Q.loadSurahStructured !== 'function') {
+      return Promise.reject(new Error('Loader missing'));
+    }
+    identifyBuilding = new Promise(function (resolve, reject) {
+      var rows = [];
+      var i = 0;
+      var batchSize = 4;
+      function nextBatch() {
+        var slice = SURAHS.slice(i, i + batchSize);
+        if (!slice.length) {
+          identifyIndex = rows;
+          identifyBuilding = null;
+          resolve(rows);
+          return;
+        }
+        Promise.all(slice.map(function (s) {
+          return Q.loadSurahStructured(s.n, {}).then(function (st) {
+            var o = openingSketches(st.words || [], s.n);
+            return { n: s.n, en: s.en, skAfter: o.skAfter, skWithBism: o.skWithBism };
+          });
+        })).then(function (part) {
+          for (var j = 0; j < part.length; j++) rows.push(part[j]);
+          i += batchSize;
+          nextBatch();
+        }).catch(function (e) {
+          identifyBuilding = null;
+          reject(e);
+        });
+      }
+      nextBatch();
+    });
+    return identifyBuilding;
+  }
+
+  function bestSurahFromTranscript(transcript) {
+    var t = normExp(transcript || '');
+    var tSk = skeleton(t);
+    if (!identifyIndex || tSk.length < 5) {
+      return { ok: false, top: null, next: null, transcript: t };
+    }
+    var scored = identifyIndex.map(function (row) {
+      var s = Math.max(lenientPct(row.skAfter, t), lenientPct(row.skWithBism, t));
+      return { n: row.n, en: row.en, s: s };
+    });
+    scored.sort(function (a, b) { return b.s - a.s; });
+    return { ok: true, top: scored[0], next: scored[1] || { s: 0, n: 0, en: '' }, transcript: t };
+  }
+
+  async function submitIdentify(blob) {
+    var form = new FormData();
+    form.append('audio', blob, 'guess.webm');
+    form.append('mode', 'identify');
+    var r = await fetch(WORKER_URL, { method: 'POST', body: form });
+    return r.json();
+  }
+
+  /**
+   * Transcribe + match Juz ʿAmma; optionally run full check_recitation on same blob after load.
+   * @param {{ fullCheck?: boolean }} opt — if true (e.g. Record without surah), submit(blob) after surah loads
+   */
+  function pipelineGuessFromBlob(blob, opt) {
+    opt = opt || {};
+    var fullCheck = !!opt.fullCheck;
+    statusEl.textContent = fullCheck ? 'Guessing surah from your recording…' : 'Sending clip (transcribe + match)…';
+    return ensureIdentifyIndex()
+      .then(function () {
+        return submitIdentify(blob);
+      })
+      .then(function (data) {
+        if (data.error) throw new Error(data.error);
+        var tr = data.transcript || '';
+        var res = bestSurahFromTranscript(tr);
+        if (!res.ok || !res.top || res.top.s < 34) {
+          if (fullCheck) {
+            statusEl.textContent =
+              'Pick a surah from the list, then tap Record again — we could not guess from this clip. (Heard: “' +
+              (tr.slice(0, 48) || '…') +
+              (tr.length > 48 ? '…' : '') +
+              '”)';
+          } else {
+            statusEl.textContent =
+              'No confident match. ASR: “' + (tr.slice(0, 56) || '…') + (tr.length > 56 ? '…' : '') + '” — try a longer clip from the beginning.';
+          }
+          return;
+        }
+        var top = res.top;
+        var next = res.next;
+        sel.value = String(top.n);
+        return onSurahChange().then(function () {
+          if (fullCheck) {
+            statusEl.textContent = 'Surah loaded — running word check on same recording…';
+            return submit(blob).then(function (d) {
+              if (d.error) throw new Error(d.error);
+              render(d);
+              statusEl.textContent = 'Matched ' + top.n + '. ' + top.en + ' — see Expected text & results.';
+            });
+          }
+          var gap = top.s - (next.s || 0);
+          if (top.s >= 40 && gap >= 6) {
+            statusEl.textContent = 'Selected surah ' + top.n + '. ' + top.en + ' (~' + Math.round(top.s) + '% match). Tap Record to check.';
+          } else if (top.s >= 36) {
+            statusEl.textContent =
+              'Best guess: ' +
+              top.n +
+              '. ' +
+              top.en +
+              ' (' +
+              Math.round(top.s) +
+              '%). Also close: ' +
+              next.n +
+              '. ' +
+              next.en +
+              ' (' +
+              Math.round(next.s) +
+              '%) — confirm in the list.';
+          } else {
+            statusEl.textContent = 'Weak match — picked ' + top.n + '. ' + top.en + '. Pick another surah if wrong.';
+          }
+        });
+      })
+      .catch(function (e) {
+        statusEl.textContent =
+          (fullCheck ? 'Guess/check failed: ' : 'Guess failed: ') + e.message + (fullCheck ? '' : ' (redeploy worker with mode=identify).');
+      });
+  }
+
+  function syncRecIdentifyButtons() {
+    var recOn = mediaRecorder && mediaRecorder.state === 'recording';
+    var idOn = identifyRecorder && identifyRecorder.state === 'recording';
+    recBtn.disabled = !!idOn;
+    idBtn.disabled = !!recOn;
+  }
+
+  function stopIdentifyListen() {
+    if (identifyAutoStopTimer) {
+      clearTimeout(identifyAutoStopTimer);
+      identifyAutoStopTimer = null;
+    }
+    if (identifyRecorder && identifyRecorder.state !== 'inactive') identifyRecorder.stop();
+    idBtn.classList.remove('listening');
+    idLbl.textContent = 'Listen & guess surah · up to 10 s';
+    syncRecIdentifyButtons();
+  }
+
+  async function startIdentifyListen() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      statusEl.textContent = 'Stop recitation recording first.';
+      return;
+    }
+    if (identifyRecorder && identifyRecorder.state === 'recording') {
+      stopIdentifyListen();
+      return;
+    }
+    idBtn.disabled = true;
+    statusEl.textContent = 'Loading surah openings for matching…';
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      audioChunks  = [];
-      audioBlob    = null;
-      document.getElementById("check-btn").disabled = true;
-
-      mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-      mediaRecorder.onstop = () => {
-        audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        stream.getTracks().forEach(t => t.stop());
-        if (currentAyah) document.getElementById("check-btn").disabled = false;
-        setStatus("✓ Recording saved — click Check Recitation");
+      await ensureIdentifyIndex();
+    } catch (e) {
+      statusEl.textContent = 'Could not build index: ' + (e.message || String(e));
+      idBtn.disabled = false;
+      return;
+    }
+    try {
+      var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      identifyChunks = [];
+      var ir = new MediaRecorder(stream);
+      identifyRecorder = ir;
+      var idMime = ir.mimeType || 'audio/webm';
+      ir.ondataavailable = function (e) {
+        if (e.data.size > 0) identifyChunks.push(e.data);
       };
-      mediaRecorder.start();
-      setRecordingUI(true);
-      startTimer();
-    } catch(e) {
-      setStatus("⚠️ Microphone access denied");
+      ir.onstop = function () {
+        var blob = new Blob(identifyChunks, { type: idMime });
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        identifyRecorder = null;
+        idBtn.classList.remove('listening');
+        idLbl.textContent = 'Listen & guess surah · up to 10 s';
+        syncRecIdentifyButtons();
+        if (blob.size < IDENTIFY_MIN_BYTES) {
+          statusEl.textContent = 'Clip too short — try again (speak clearly from the surah start).';
+          return;
+        }
+        pipelineGuessFromBlob(blob, { fullCheck: false });
+      };
+      ir.start(400);
+      idBtn.classList.add('listening');
+      idLbl.textContent = 'Listening… tap to stop (auto ' + IDENTIFY_MAX_SEC + ' s)';
+      idBtn.disabled = false;
+      syncRecIdentifyButtons();
+      statusEl.textContent = 'Listening — recite from the start of a Juz ʿAmma surah…';
+      identifyAutoStopTimer = setTimeout(function () {
+        if (identifyRecorder && identifyRecorder.state === 'recording') stopIdentifyListen();
+      }, IDENTIFY_MAX_SEC * 1000);
+    } catch (e) {
+      statusEl.textContent = 'Microphone not available.';
+      idBtn.disabled = false;
+      syncRecIdentifyButtons();
     }
   }
 
-  function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-    setRecordingUI(false);
-    stopTimer();
+  function fillSelect() {
+    sel.innerHTML = SURAHS.map(function (s) {
+      return '<option value="' + s.n + '">' + s.n + '. ' + s.en + '</option>';
+    }).join('');
+    sel.value = '114';
   }
 
-  function setRecordingUI(on) {
-    const btn = document.getElementById("record-btn");
-    const lbl = document.getElementById("btn-label");
-    btn.classList.toggle("recording", on);
-    lbl.textContent = on ? "Stop" : "Record";
-    if (on) setStatus("🔴 Recording…");
+  async function onSurahChange() {
+    var n = parseInt(sel.value, 10);
+    results.hidden = true;
+    refEl.textContent = 'Loading…';
+    currentAyah = '';
+    currentWords = [];
+    try {
+      var Q = window.QuranSurahFromPages;
+      if (!Q || typeof Q.loadSurahStructured !== 'function') {
+        throw new Error('Include js/quran-surah-from-pages.js before this script.');
+      }
+      var st = await Q.loadSurahStructured(n, { pagesBase: 'data/pages/', fullQuranUrl: 'data/full_quran.json' });
+      currentWords = st.words || [];
+      currentAyah = normExp(st.textRaw || '');
+      renderRefPlain();
+      statusEl.textContent = 'Ready — tap Record (live checks start once enough audio is captured).';
+    } catch (e) {
+      refEl.innerHTML = '<span class="err">Could not load surah (serve over HTTP + check data/pages/). ' + esc(e.message || String(e)) + '</span>';
+      statusEl.textContent = '';
+    }
   }
 
-  function startTimer() {
-    seconds = 0;
-    const el = document.getElementById("timer");
-    timerInterval = setInterval(() => {
-      seconds++;
-      const m = String(Math.floor(seconds/60)).padStart(2,"0");
-      const s = String(seconds % 60).padStart(2,"0");
-      el.textContent = `${m}:${s}`;
-      if (seconds >= 120) stopRecording();
-    }, 1000);
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+  }
+
+  function tokenStatusClass(st) {
+    var s = String(st || '').toLowerCase().trim();
+    if (s === 'correct' || s === 'right') return 'ok';
+    if (s === 'ok' || s === 'wrong' || s === 'missing' || s === 'extra') return s;
+    return s.replace(/\s+/g, '-').replace(/[^a-z0-9_-]/g, '') || 'unknown';
+  }
+
+  /** Paint word check into #ref-text: align non-extra tokens to currentWords; tail = live “not checked yet”. */
+  function renderRefWordCheck(data) {
+    var tokens = data.tokens || [];
+    if (!tokens.length) {
+      refEl.classList.remove('ref--tokens');
+      refEl.textContent = currentAyah || '';
+      return;
+    }
+    refEl.classList.add('ref--tokens');
+    if (!currentWords.length) {
+      refEl.innerHTML = tokens.map(function (t) {
+        return '<span class="tok ' + tokenStatusClass(t.status) + '" title="' + esc(t.status) + '">' + esc(t.word) + '</span>';
+      }).join(' ');
+      return;
+    }
+    var parts = [];
+    var wi = 0;
+    for (var i = 0; i < tokens.length; i++) {
+      var t = tokens[i];
+      var st = String(t.status || '').toLowerCase();
+      if (st === 'extra') {
+        parts.push('<span class="tok extra" title="extra (transcript)">+' + esc(t.word) + '</span>');
+        continue;
+      }
+      var displayWord = wi < currentWords.length ? currentWords[wi] : (t.word || '');
+      parts.push('<span class="tok ' + tokenStatusClass(t.status) + '" title="' + esc(t.status) + '">' + esc(displayWord) + '</span>');
+      wi++;
+    }
+    for (; wi < currentWords.length; wi++) {
+      parts.push('<span class="tok pending" title="not in this check yet">' + esc(currentWords[wi]) + '</span>');
+    }
+    refEl.innerHTML = parts.join(' ');
+  }
+
+  function renderRefPlain() {
+    refEl.classList.remove('ref--tokens');
+    refEl.textContent = currentAyah || '';
+  }
+
+  function render(data) {
+    elTr.textContent = data.transcript || '—';
+    renderRefWordCheck(data);
+    var tr = (data.transcript || '').trim();
+    if (currentAyah && tr) elScoreL.textContent = lenientPct(currentAyah, tr) + '%';
+    else elScoreL.textContent = data.score != null ? data.score + '%' : '—';
+    var ai = data.score != null ? data.score + '%' : '—';
+    elScoreAi.textContent = 'AI word-by-word (from transcript): ' + ai + '.';
+    results.hidden = false;
+    refEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function buildLiveExpectedPrefix() {
+    if (!currentWords.length) return '';
+    var s = Math.max(1, sec);
+    var n = Math.floor(s * 2.8) + 12;
+    n = Math.min(n, currentWords.length);
+    n = Math.max(n, Math.min(10, currentWords.length));
+    return normExp(currentWords.slice(0, n).join(' '));
+  }
+
+  async function submit(blob, expectedOverride) {
+    var exp = currentAyah;
+    if (expectedOverride != null && String(expectedOverride).trim() !== '') {
+      exp = String(expectedOverride).trim();
+    }
+    var form = new FormData();
+    form.append('audio', blob, 'recitation.webm');
+    form.append('expected', normExp(exp));
+    var r = await fetch(WORKER_URL, { method: 'POST', body: form });
+    return r.json();
+  }
+
+  async function runLiveCheck() {
+    if (!mediaRecorder || mediaRecorder.state !== 'recording') return;
+    if (checkingInFlight || !currentAyah) return;
+    checkingInFlight = true;
+    try {
+      var blob = new Blob(audioChunks, { type: recordMime });
+      if (blob.size < MIN_BYTES) return;
+      statusEl.textContent = 'Checking…';
+      var data = await submit(blob, buildLiveExpectedPrefix());
+      if (data.error) throw new Error(data.error);
+      render(data);
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        statusEl.textContent = 'Recording… keep reading';
+      }
+    } catch (e) {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        statusEl.textContent = 'Live check: ' + e.message;
+      }
+    } finally {
+      checkingInFlight = false;
+    }
+  }
+
+  function waitForCheckThen(fn) {
+    if (!checkingInFlight) {
+      fn();
+      return;
+    }
+    var n = 0;
+    var t = setInterval(function () {
+      n++;
+      if (!checkingInFlight || n > 400) {
+        clearInterval(t);
+        fn();
+      }
+    }, 50);
   }
 
   function stopTimer() {
-    clearInterval(timerInterval);
-    document.getElementById("timer").textContent = "";
+    clearInterval(timerIv);
+    timerIv = null;
+    timerEl.textContent = '';
   }
 
-  function handleUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    audioBlob = file;
-    if (currentAyah) document.getElementById("check-btn").disabled = false;
-    setStatus(`✓ File loaded: ${file.name}`);
+  function startTimer() {
+    sec = 0;
+    timerEl.textContent = '00:00';
+    timerIv = setInterval(function () {
+      sec++;
+      var m = String(Math.floor(sec / 60)).padStart(2, '0');
+      var s = String(sec % 60).padStart(2, '0');
+      timerEl.textContent = m + ':' + s;
+      if (sec >= maxSec) stopRec();
+    }, 1000);
   }
 
-  async function checkRecitation() {
-    if (!audioBlob)   return setStatus("⚠️ Please record audio first");
-    if (!currentAyah) return setStatus("⚠️ Please load an ayah first");
+  function setRec(on) {
+    recBtn.classList.toggle('on', on);
+    recLbl.textContent = on ? 'Stop' : 'Record';
+  }
 
-    const btn = document.getElementById("check-btn");
-    btn.disabled    = true;
-    btn.textContent = "Checking…";
-    setStatus("Sending to AI — this may take 10–20 seconds…");
-
+  async function startRec() {
     try {
-      const form = new FormData();
-      form.append("audio",    audioBlob, "recitation.webm");
-      form.append("expected", currentAyah);
-
-      const r    = await fetch(WORKER_URL, { method: "POST", body: form });
-      const data = await r.json();
-
-      if (data.error) throw new Error(data.error);
-      renderResults(data);
-      setStatus("Done!");
-    } catch(e) {
-      setStatus(`⚠️ Error: ${e.message}`);
-      console.error(e);
-    } finally {
-      btn.disabled    = false;
-      btn.textContent = "Check Recitation ✓";
+      var stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioChunks = [];
+      liveThrottleAt = 0;
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = function (e) {
+        if (e.data.size > 0) audioChunks.push(e.data);
+        if (!currentAyah) return;
+        var blobSoFar = new Blob(audioChunks, { type: recordMime });
+        if (blobSoFar.size < MIN_BYTES) return;
+        var now = Date.now();
+        if (now - liveThrottleAt < LIVE_THROTTLE_MS) return;
+        if (checkingInFlight) return;
+        liveThrottleAt = now;
+        runLiveCheck();
+      };
+      mediaRecorder.onstop = function () {
+        var blob = new Blob(audioChunks, { type: recordMime });
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        mediaRecorder = null;
+        syncRecIdentifyButtons();
+        if (blob.size < 8000) {
+          statusEl.textContent = 'Recording too short.';
+          return;
+        }
+        if (!currentAyah) {
+          pipelineGuessFromBlob(blob, { fullCheck: true });
+          return;
+        }
+        waitForCheckThen(function () {
+          statusEl.textContent = 'Final check…';
+          submit(blob).then(function (data) {
+            if (data.error) throw new Error(data.error);
+            render(data);
+            statusEl.textContent = '';
+          }).catch(function (e) {
+            statusEl.textContent = 'Error: ' + e.message;
+          });
+        });
+      };
+      recordMime = mediaRecorder.mimeType || 'audio/webm';
+      mediaRecorder.start(1000);
+      setRec(true);
+      startTimer();
+      syncRecIdentifyButtons();
+      statusEl.textContent = currentAyah
+        ? 'Recording… live checks when a surah is loaded; Stop for final check.'
+        : 'Recording… choose a surah anytime, or Stop to auto-guess surah + check this clip.';
+    } catch (e) {
+      statusEl.textContent = 'Microphone not available.';
     }
   }
 
-  function renderResults({ transcript, tokens, score }) {
-    document.getElementById("transcript-box").textContent = transcript || "—";
-    document.getElementById("result-ayah").innerHTML = (tokens || []).map(t =>
-      `<span class="word ${t.status}" title="${t.status}">${t.word}</span>`
-    ).join(" ");
-    document.getElementById("score-num").textContent = score + "%";
-    const card = document.getElementById("results-card");
-    card.style.display = "block";
-    card.scrollIntoView({ behavior: "smooth", block: "start" });
+  function stopRec() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    setRec(false);
+    stopTimer();
+    syncRecIdentifyButtons();
   }
 
-  function setStatus(msg) { document.getElementById("status-msg").textContent = msg; }
+  function toggleRec() {
+    if (mediaRecorder && mediaRecorder.state === 'recording') stopRec();
+    else startRec();
+  }
 
-  loadSurahs();
+  fillSelect();
+  sel.addEventListener('change', onSurahChange);
+  recBtn.addEventListener('click', toggleRec);
+  idBtn.addEventListener('click', startIdentifyListen);
+  syncRecIdentifyButtons();
+  onSurahChange();
+})();
 </script>
 </body>
 </html>
