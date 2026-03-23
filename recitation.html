@@ -1,83 +1,15 @@
 <!--
 ╔══════════════════════════════════════════════════════════════════════╗
-║  CLOUDFLARE WORKER — replace your existing Worker with this code    ║
-║  Env variables (same as before):                                    ║
-║    HF_SPACE_URL   → https://facilitator999-quranforyunus.hf.space   ║
-║    ALLOWED_ORIGIN → https://www.quranforyunus.com                   ║
+║  CLOUDFLARE WORKER — Gradio 6+ on HF Spaces                         ║
+║  Your Space uses api_prefix /gradio_api and api_name check_recitation║
+║  (NOT legacy /upload + /api/predict — those return 404 on Gradio 6.) ║
+║  Env:                                                                ║
+║    HF_SPACE_URL   → https://facilitator999-quranforyunus.hf.space    ║
+║                     (no trailing slash)                              ║
+║    ALLOWED_ORIGIN → https://www.quranforyunus.com                    ║
 ╚══════════════════════════════════════════════════════════════════════╝
 
 ─────────────────────── COPY WORKER CODE BELOW ───────────────────────
-
-export default {
-  async fetch(request, env) {
-    const origin = env.ALLOWED_ORIGIN || "*";
-    const HF     = env.HF_SPACE_URL;
-
-    if (request.method === "OPTIONS") {
-      return new Response(null, { headers: cors(origin) });
-    }
-    if (request.method !== "POST") {
-      return err("POST only", 405, origin);
-    }
-
-    try {
-      const formData = await request.formData();
-      const audio    = formData.get("audio");    // Blob
-      const expected = formData.get("expected"); // string
-
-      if (!audio)    return err("No audio provided",    400, origin);
-      if (!expected) return err("No expected text provided", 400, origin);
-
-      // ── Step 1: Upload audio file to Gradio /upload ──────────
-      const uploadForm = new FormData();
-      uploadForm.append("files", audio, "recitation.webm");
-
-      const uploadRes = await fetch(`${HF}/upload`, {
-        method: "POST",
-        body:   uploadForm,
-      });
-
-      if (!uploadRes.ok) {
-        const txt = await uploadRes.text();
-        return err(`HF upload failed ${uploadRes.status}: ${txt}`, 502, origin);
-      }
-
-      const uploaded  = await uploadRes.json();
-      // Gradio returns array of file paths e.g. ["/tmp/gradio/abc123/recitation.webm"]
-      const filePath  = Array.isArray(uploaded) ? uploaded[0] : uploaded?.files?.[0];
-
-      if (!filePath) return err("HF upload returned no file path", 502, origin);
-
-      // ── Step 2: Call /api/predict with file path ─────────────
-      const predictRes = await fetch(`${HF}/api/predict`, {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({
-          data: [
-            { path: filePath },   // Gradio file component expects {path: ...}
-            expected,
-          ],
-        }),
-      });
-
-      if (!predictRes.ok) {
-        const txt = await predictRes.text();
-        return err(`HF predict failed ${predictRes.status}: ${txt}`, 502, origin);
-      }
-
-      const hfJson    = await predictRes.json();
-      // Gradio wraps result in {data: ["json_string"]}
-      const resultStr = hfJson?.data?.[0] ?? JSON.stringify({ error: "empty response" });
-
-      return new Response(resultStr, {
-        headers: { "Content-Type": "application/json", ...cors(origin) },
-      });
-
-    } catch (e) {
-      return err(e.message, 500, origin);
-    }
-  },
-};
 
 function cors(origin) {
   return {
@@ -92,6 +24,109 @@ function err(msg, status, origin) {
     headers: { "Content-Type": "application/json", ...cors(origin) },
   });
 }
+
+/** Uint8Array → base64 without blowing the stack on large blobs */
+function bytesToBase64(bytes) {
+  let binary = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
+/**
+ * Gradio 6: POST .../gradio_api/call/check_recitation → { event_id }
+ * then GET  .../gradio_api/call/check_recitation/{event_id} → SSE
+ */
+function parseGradioSse(sseText) {
+  const blocks = sseText.split(/\r?\n\r?\n/);
+  for (const block of blocks) {
+    if (block.includes("event: error")) {
+      const line = block.split("\n").find((l) => l.startsWith("data: "));
+      if (line) {
+        const raw = line.slice(6).trim();
+        let msg = raw;
+        try {
+          const outer = JSON.parse(raw);
+          msg = Array.isArray(outer) ? String(outer[0]) : JSON.stringify(outer);
+        } catch (_) { /* keep raw */ }
+        throw new Error(msg || "Gradio event error");
+      }
+    }
+    if (block.includes("event: complete")) {
+      const line = block.split("\n").find((l) => l.startsWith("data: "));
+      if (!line) continue;
+      const raw = line.slice(6).trim();
+      const outer = JSON.parse(raw);
+      if (!Array.isArray(outer) || outer[0] == null) {
+        throw new Error("Unexpected Gradio response shape");
+      }
+      const inner = outer[0];
+      return typeof inner === "string" ? JSON.parse(inner) : inner;
+    }
+  }
+  throw new Error("No complete event from Gradio (timeout or empty SSE)");
+}
+
+export default {
+  async fetch(request, env) {
+    const origin = env.ALLOWED_ORIGIN || "*";
+    const HF = (env.HF_SPACE_URL || "https://facilitator999-quranforyunus.hf.space").replace(
+      /\/$/,
+      ""
+    );
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: cors(origin) });
+    }
+    if (request.method !== "POST") {
+      return err("POST only", 405, origin);
+    }
+
+    try {
+      const formData = await request.formData();
+      const audio = formData.get("audio");
+      const expected = formData.get("expected");
+
+      if (!audio) return err("No audio provided", 400, origin);
+      if (!expected) return err("No expected text provided", 400, origin);
+
+      const buf = new Uint8Array(await audio.arrayBuffer());
+      const audioB64 = bytesToBase64(buf);
+
+      const callUrl = `${HF}/gradio_api/call/check_recitation`;
+      const initRes = await fetch(callUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ data: [audioB64, expected] }),
+      });
+
+      if (!initRes.ok) {
+        const txt = await initRes.text();
+        return err(`HF Gradio call failed ${initRes.status}: ${txt}`, 502, origin);
+      }
+
+      const { event_id: eventId } = await initRes.json();
+      if (!eventId) return err("HF returned no event_id", 502, origin);
+
+      const sseRes = await fetch(`${callUrl}/${eventId}`, { method: "GET" });
+      if (!sseRes.ok) {
+        const txt = await sseRes.text();
+        return err(`HF Gradio result failed ${sseRes.status}: ${txt}`, 502, origin);
+      }
+
+      const sseText = await sseRes.text();
+      const result = parseGradioSse(sseText);
+
+      return new Response(JSON.stringify(result), {
+        headers: { "Content-Type": "application/json", ...cors(origin) },
+      });
+    } catch (e) {
+      return err(e.message || String(e), 500, origin);
+    }
+  },
+};
 
 ─────────────────────── COPY WORKER CODE ABOVE ───────────────────────
 -->
