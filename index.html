@@ -3207,9 +3207,10 @@
         container.appendChild(foot);
       }
       if (updateToolbarMeta) {
+        const _multi = (surahsArr || []).length > 1;
         const surahNames = (surahsArr || []).map(ch => {
           const s = SURAHS_MAP.get(ch);
-          return s ? ch + '. ' + s.name : 'Surah ' + ch;
+          return s ? (_multi ? s.name : ch + '. ' + s.name) : 'Surah ' + ch;
         }).join(', ');
         const firstVerse = (items || []).find(it => it.verseKey);
         let juzNum = null;
@@ -3448,9 +3449,10 @@
     }
 
     function updateToolbarForPageData(items, surahsArr, pageNum, playlistOpt) {
+      const _multi = (surahsArr || []).length > 1;
       const surahNames = (surahsArr || []).map(ch => {
         const s = SURAHS_MAP.get(ch);
-        return s ? ch + '. ' + s.name : 'Surah ' + ch;
+        return s ? (_multi ? s.name : ch + '. ' + s.name) : 'Surah ' + ch;
       }).join(', ');
       let firstVerse = (items || []).find(it => it.verseKey);
       if (!firstVerse && playlistOpt && playlistOpt.length) {
