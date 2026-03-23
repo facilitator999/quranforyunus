@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visitors — quranforyunus.com</title>
+<link rel="icon" href="logo-white.png?v=6" type="image/png">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8faf9;
+    --surface: #ffffff;
+    --surface-alt: #f0f5f4;
+    --border: #d5e0de;
+    --border-light: #e8efed;
+    --accent: #115e59;
+    --accent-light: #14b8a6;
+    --accent-bg: #ccfbf1;
+    --accent-glow: rgba(17, 94, 89, 0.08);
+    --blue: #0369a1;
+    --blue-bg: #e0f2fe;
+    --amber: #b45309;
+    --amber-bg: #fef3c7;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --text: #1c1917;
+    --text-secondary: #57534e;
+    --text-muted: #a8a29e;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.03);
+    --shadow-hover: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1514;
+      --surface: #1a2120;
+      --surface-alt: #222d2b;
+      --border: #2d3b39;
+      --border-light: #253331;
+      --accent: #2dd4bf;
+      --accent-light: #5eead4;
+      --accent-bg: rgba(45, 212, 191, 0.1);
+      --accent-glow: rgba(45, 212, 191, 0.06);
+      --blue: #38bdf8;
+      --blue-bg: rgba(56, 189, 248, 0.1);
+      --amber: #fbbf24;
+      --amber-bg: rgba(251, 191, 36, 0.1);
+      --red: #f87171;
+      --red-bg: rgba(248, 113, 113, 0.1);
+      --text: #e7e5e4;
+      --text-secondary: #a8a29e;
+      --text-muted: #6b6560;
+      --shadow: 0 1px 3px rgba(0,0,0,0.2), 0 4px 16px rgba(0,0,0,0.15);
+      --shadow-hover: 0 2px 8px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.2);
+    }
+  }
+
+  html { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
+  body { background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+  .page { max-width: 960px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+
+  /* Header */
+  header { margin-bottom: 2rem; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: .5rem; }
+  .brand { display: flex; align-items: center; gap: .75rem; text-decoration: none; color: var(--text); }
+  .brand img { width: 36px; height: 36px; border-radius: 8px; }
+  .brand h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: -.02em; }
+  .brand h1 span { color: var(--accent); }
+  .header-meta { display: flex; align-items: center; gap: .75rem; }
+  .status { display: flex; align-items: center; gap: .35rem; font-size: .75rem; color: var(--text-muted); }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-light); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+
+  /* Controls */
+  .controls { display: flex; align-items: center; gap: .5rem; }
+  .range-btn {
+    font-size: .8rem; font-weight: 500; padding: .4rem .85rem;
+    border: 1.5px solid var(--border); background: var(--surface);
+    color: var(--text-secondary); border-radius: 100px; cursor: pointer;
+    transition: all .15s ease;
+  }
+  .range-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .range-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .refresh-btn {
+    width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--border);
+    background: var(--surface); cursor: pointer; display: grid; place-items: center;
+    transition: all .2s ease; color: var(--text-secondary); font-size: 1rem;
+  }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); transform: rotate(45deg); }
+  .refresh-btn:disabled { opacity: .3; cursor: not-allowed; transform: none; }
+  .refresh-btn svg { width: 16px; height: 16px; }
+
+  /* Stat Cards */
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: .75rem; margin-bottom: 1.75rem; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--border-light);
+    border-radius: var(--radius); padding: 1.25rem 1.1rem;
+    box-shadow: var(--shadow); transition: all .3s ease;
+    opacity: 0; transform: translateY(8px);
+  }
+  .stat.show { opacity: 1; transform: none; }
+  .stat:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .stat.show:hover { transform: translateY(-2px); }
+  .stat-icon {
+    width: 36px; height: 36px; border-radius: var(--radius-sm);
+    display: grid; place-items: center; font-size: 1.1rem; margin-bottom: .75rem;
+  }
+  .stat-icon.green { background: var(--accent-bg); }
+  .stat-icon.blue  { background: var(--blue-bg); }
+  .stat-icon.amber { background: var(--amber-bg); }
+  .stat-value { font-size: 1.75rem; font-weight: 800; letter-spacing: -.03em; line-height: 1; margin-bottom: .25rem; }
+  .stat-value.green { color: var(--accent); }
+  .stat-value.blue  { color: var(--blue); }
+  .stat-value.amber { color: var(--amber); }
+  .stat-label { font-size: .72rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: .06em; }
+
+  /* Section */
+  .section { margin-bottom: 1.75rem; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: .75rem; }
+  .section-title { font-size: .85rem; font-weight: 600; color: var(--text-secondary); }
+  .section-sub { font-size: .72rem; color: var(--text-muted); }
+
+  /* Chart */
+  .chart-card {
+    background: var(--surface); border: 1px solid var(--border-light);
+    border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow);
+  }
+  .chart { display: flex; align-items: flex-end; gap: 0; height: 140px; padding-top: 1rem; }
+  .chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0 2px; }
+  .chart-val { font-size: .65rem; font-weight: 600; color: var(--text-secondary); }
+  .chart-bar-wrap { width: 100%; position: relative; flex: 1; display: flex; align-items: flex-end; }
+  .chart-bar {
+    width: 100%; border-radius: 6px 6px 2px 2px; min-height: 4px;
+    background: linear-gradient(180deg, var(--accent-light), var(--accent));
+    opacity: .85; transition: height .6s cubic-bezier(.34, 1.56, .64, 1), opacity .2s;
+  }
+  .chart-col:hover .chart-bar { opacity: 1; }
+  .chart-date { font-size: .6rem; color: var(--text-muted); white-space: nowrap; margin-top: 2px; }
+
+  /* Country Table */
+  .table-card {
+    background: var(--surface); border: 1px solid var(--border-light);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    font-size: .68rem; font-weight: 600; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: .05em;
+    padding: .75rem 1rem; text-align: left;
+    background: var(--surface-alt); border-bottom: 1px solid var(--border-light);
+  }
+  thead th:last-child { text-align: right; }
+  tbody tr {
+    border-bottom: 1px solid var(--border-light);
+    opacity: 0; transform: translateX(-6px);
+    transition: all .25s ease;
+  }
+  tbody tr.show { opacity: 1; transform: none; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--accent-glow); }
+  td { padding: .7rem 1rem; font-size: .85rem; }
+  td:last-child { text-align: right; }
+  .rank { color: var(--text-muted); font-size: .7rem; font-weight: 600; width: 2rem; }
+  .country-cell { display: flex; align-items: center; gap: .5rem; }
+  .flag { font-size: 1.2rem; line-height: 1; }
+  .country-name { font-weight: 600; }
+  .country-code { font-size: .7rem; color: var(--text-muted); margin-left: .25rem; }
+  .num-green { color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .num-red { color: var(--red); font-weight: 600; font-variant-numeric: tabular-nums; font-size: .8rem; }
+  .bar-td { width: 140px; }
+  .bar-outer { background: var(--surface-alt); border-radius: 100px; height: 6px; overflow: hidden; }
+  .bar-inner {
+    height: 100%; border-radius: 100px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-light));
+    width: 0; transition: width .8s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  /* Empty / Error states */
+  .empty { text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); font-size: .85rem; }
+  .error { color: var(--red); }
+
+  /* Footer */
+  footer {
+    margin-top: 2rem; padding-top: 1.25rem;
+    border-top: 1px solid var(--border-light);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem;
+    font-size: .7rem; color: var(--text-muted);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* Loading skeleton */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .skeleton {
+    background: linear-gradient(90deg, var(--surface-alt) 25%, var(--border-light) 50%, var(--surface-alt) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-top">
+      <a class="brand" href="/">
+        <img src="logo-white.png?v=6" alt="">
+        <h1>Site <span>Analytics</span></h1>
+      </a>
+      <div class="header-meta">
+        <div class="status">
+          <div class="status-dot"></div>
+          <span id="status-text">Connecting...</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-top:.75rem;">
+      <div class="controls">
+        <button class="range-btn active" data-days="3">3 days</button>
+        <button class="range-btn" data-days="7">7 days</button>
+        <button class="range-btn" data-days="30">30 days</button>
+      </div>
+      <button class="refresh-btn" id="refresh-btn" title="Refresh">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-icon green">&#x1F465;</div>
+      <div class="stat-value green" id="val-pageviews">--</div>
+      <div class="stat-label" id="sub-pageviews">Page views</div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon amber">&#x1F30D;</div>
+      <div class="stat-value amber" id="val-countries">--</div>
+      <div class="stat-label">Countries</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Daily Page Views</div>
+      <div class="section-sub" id="chart-sub">Per day</div>
+    </div>
+    <div class="chart-card">
+      <div class="chart" id="chart">
+        <div class="empty" style="width:100%">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">Traffic by Country</div>
+      <div class="section-sub" id="table-sub"></div>
+    </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Country</th>
+            <th>Requests</th>
+            <th class="bar-td">Share</th>
+          </tr>
+        </thead>
+        <tbody id="country-tbody">
+          <tr><td colspan="4"><div class="empty">Loading...</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <span>Powered by Cloudflare Analytics</span>
+    <span id="footer-updated"></span>
+  </footer>
+</div>
+
+<script>
+const WORKER_URL = "https://quranforyunus.facilitator999.workers.dev";
+
+const FLAGS = {
+  "United States":"&#x1F1FA;&#x1F1F8;","United Kingdom":"&#x1F1EC;&#x1F1E7;","Germany":"&#x1F1E9;&#x1F1EA;","France":"&#x1F1EB;&#x1F1F7;",
+  "Canada":"&#x1F1E8;&#x1F1E6;","Australia":"&#x1F1E6;&#x1F1FA;","India":"&#x1F1EE;&#x1F1F3;","Japan":"&#x1F1EF;&#x1F1F5;","Brazil":"&#x1F1E7;&#x1F1F7;",
+  "Netherlands":"&#x1F1F3;&#x1F1F1;","Poland":"&#x1F1F5;&#x1F1F1;","Spain":"&#x1F1EA;&#x1F1F8;","Italy":"&#x1F1EE;&#x1F1F9;","Russia":"&#x1F1F7;&#x1F1FA;",
+  "China":"&#x1F1E8;&#x1F1F3;","South Korea":"&#x1F1F0;&#x1F1F7;","Mexico":"&#x1F1F2;&#x1F1FD;","Sweden":"&#x1F1F8;&#x1F1EA;","Norway":"&#x1F1F3;&#x1F1F4;",
+  "Denmark":"&#x1F1E9;&#x1F1F0;","Finland":"&#x1F1EB;&#x1F1EE;","Switzerland":"&#x1F1E8;&#x1F1ED;","Austria":"&#x1F1E6;&#x1F1F9;","Belgium":"&#x1F1E7;&#x1F1EA;",
+  "Portugal":"&#x1F1F5;&#x1F1F9;","Singapore":"&#x1F1F8;&#x1F1EC;","Hong Kong":"&#x1F1ED;&#x1F1F0;","New Zealand":"&#x1F1F3;&#x1F1FF;",
+  "South Africa":"&#x1F1FF;&#x1F1E6;","Turkey":"&#x1F1F9;&#x1F1F7;","Argentina":"&#x1F1E6;&#x1F1F7;","Chile":"&#x1F1E8;&#x1F1F1;","Colombia":"&#x1F1E8;&#x1F1F4;",
+  "Indonesia":"&#x1F1EE;&#x1F1E9;","Malaysia":"&#x1F1F2;&#x1F1FE;","Thailand":"&#x1F1F9;&#x1F1ED;","Vietnam":"&#x1F1FB;&#x1F1F3;","Philippines":"&#x1F1F5;&#x1F1ED;",
+  "Pakistan":"&#x1F1F5;&#x1F1F0;","Ukraine":"&#x1F1FA;&#x1F1E6;","Czech Republic":"&#x1F1E8;&#x1F1FF;","Romania":"&#x1F1F7;&#x1F1F4;",
+  "Hungary":"&#x1F1ED;&#x1F1FA;","Greece":"&#x1F1EC;&#x1F1F7;","Israel":"&#x1F1EE;&#x1F1F1;","Saudi Arabia":"&#x1F1F8;&#x1F1E6;","UAE":"&#x1F1E6;&#x1F1EA;",
+  "Egypt":"&#x1F1EA;&#x1F1EC;","Nigeria":"&#x1F1F3;&#x1F1EC;","Bangladesh":"&#x1F1E7;&#x1F1E9;","GB":"&#x1F1EC;&#x1F1E7;","US":"&#x1F1FA;&#x1F1F8;",
+  "DE":"&#x1F1E9;&#x1F1EA;","FR":"&#x1F1EB;&#x1F1F7;","CA":"&#x1F1E8;&#x1F1E6;","AU":"&#x1F1E6;&#x1F1FA;","IN":"&#x1F1EE;&#x1F1F3;",
+  "PK":"&#x1F1F5;&#x1F1F0;","SA":"&#x1F1F8;&#x1F1E6;","AE":"&#x1F1E6;&#x1F1EA;","EG":"&#x1F1EA;&#x1F1EC;","Unknown":"&#x1F310;",
+};
+
+const fmt = n => n >= 1e6 ? (n/1e6).toFixed(1)+"M" : n >= 1e3 ? (n/1e3).toFixed(1)+"K" : String(n);
+const flag = n => FLAGS[n] || "\u{1F310}";
+
+let activeDays = 3, loading = false;
+
+async function fetchData(days) {
+  if (loading) return;
+  loading = true;
+  setStatus("Fetching...");
+  document.getElementById("refresh-btn").disabled = true;
+  try {
+    const r = await fetch(`${WORKER_URL}?days=${days}`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    if (data.error) throw new Error(data.error);
+    render(data);
+    setStatus(`Updated ${new Date().toLocaleTimeString()}`);
+    document.getElementById("footer-updated").textContent = `Last updated ${new Date().toLocaleString()}`;
+  } catch(e) {
+    setStatus("Error");
+    document.getElementById("country-tbody").innerHTML =
+      `<tr><td colspan="4"><div class="empty error">${e.message}</div></td></tr>`;
+    document.getElementById("chart").innerHTML =
+      `<div class="empty error" style="width:100%">${e.message}</div>`;
+    console.error("[visitors]", e);
+  } finally {
+    loading = false;
+    document.getElementById("refresh-btn").disabled = false;
+  }
+}
+
+function setStatus(msg) { document.getElementById("status-text").textContent = msg; }
+
+function render({ summary, daily, countries }) {
+  animateCount("val-pageviews", summary.totalPageViews);
+  document.getElementById("val-countries").textContent = countries.length;
+  document.getElementById("sub-pageviews").textContent = `Page views / ${summary.days}d`;
+  document.getElementById("table-sub").textContent = `${countries.length} countries`;
+  document.querySelectorAll(".stat").forEach((c, i) => setTimeout(() => c.classList.add("show"), i * 60));
+
+  // Chart
+  const maxVal = Math.max(...daily.map(d => d.pageViews), 1);
+  const chart = document.getElementById("chart");
+  chart.innerHTML = daily.length
+    ? daily.map(d => {
+        const pct = Math.max((d.pageViews / maxVal) * 100, 3);
+        const lbl = new Date(d.date + "T00:00:00").toLocaleDateString("en-GB", { day:"numeric", month:"short" });
+        return `<div class="chart-col">
+          <div class="chart-val">${fmt(d.pageViews)}</div>
+          <div class="chart-bar-wrap"><div class="chart-bar" style="height:${pct}%"></div></div>
+          <div class="chart-date">${lbl}</div>
+        </div>`;
+      }).join("")
+    : `<div class="empty" style="width:100%">No data for this period</div>`;
+
+  // Country table
+  const maxH = Math.max(...countries.map(c => c.humanRequests), 1);
+  const tbody = document.getElementById("country-tbody");
+  tbody.innerHTML = countries.length
+    ? countries.map((c, i) => {
+        const pct = ((c.humanRequests / maxH) * 100).toFixed(1);
+        return `<tr>
+          <td class="rank">${i + 1}</td>
+          <td><div class="country-cell"><span class="flag">${flag(c.country)}</span><span class="country-name">${c.country}</span></div></td>
+          <td class="num-green">${fmt(c.humanRequests)}</td>
+          <td class="bar-td">
+            <div class="bar-outer"><div class="bar-inner" data-pct="${pct}"></div></div>
+          </td>
+        </tr>`;
+      }).join("")
+    : `<tr><td colspan="4"><div class="empty">No country data</div></td></tr>`;
+
+  tbody.querySelectorAll("tr").forEach((tr, i) => setTimeout(() => tr.classList.add("show"), i * 25));
+  setTimeout(() => {
+    tbody.querySelectorAll(".bar-inner").forEach(b => { b.style.width = b.dataset.pct + "%"; });
+  }, 150);
+}
+
+function animateCount(id, target) {
+  const el = document.getElementById(id);
+  const start = performance.now();
+  const from = parseInt(el.textContent.replace(/[^0-9]/g, "")) || 0;
+  const step = now => {
+    const t = Math.min((now - start) / 700, 1);
+    const ease = 1 - Math.pow(1 - t, 3);
+    el.textContent = fmt(Math.round(from + (target - from) * ease));
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+document.querySelectorAll("[data-days]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (loading) return;
+    document.querySelectorAll("[data-days]").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    activeDays = parseInt(btn.dataset.days);
+    fetchData(activeDays);
+  });
+});
+
+document.getElementById("refresh-btn").addEventListener("click", () => fetchData(activeDays));
+fetchData(activeDays);
+</script>
+</body>
+</html>
