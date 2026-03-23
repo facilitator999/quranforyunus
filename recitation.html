@@ -1,0 +1,453 @@
+<!--
+╔══════════════════════════════════════════════════════════════════════╗
+║  CLOUDFLARE WORKER — replace your existing Worker with this code    ║
+║  Env variables (same as before):                                    ║
+║    HF_SPACE_URL   → https://facilitator999-quranforyunus.hf.space   ║
+║    ALLOWED_ORIGIN → https://quranforyunus.com                       ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+─────────────────────── COPY WORKER CODE BELOW ───────────────────────
+
+export default {
+  async fetch(request, env) {
+    const origin = env.ALLOWED_ORIGIN || "*";
+    const HF     = env.HF_SPACE_URL;
+
+    if (request.method === "OPTIONS") {
+      return new Response(null, { headers: cors(origin) });
+    }
+    if (request.method !== "POST") {
+      return err("POST only", 405, origin);
+    }
+
+    try {
+      const formData = await request.formData();
+      const audio    = formData.get("audio");    // Blob
+      const expected = formData.get("expected"); // string
+
+      if (!audio)    return err("No audio provided",    400, origin);
+      if (!expected) return err("No expected text provided", 400, origin);
+
+      // ── Step 1: Upload audio file to Gradio /upload ──────────
+      const uploadForm = new FormData();
+      uploadForm.append("files", audio, "recitation.webm");
+
+      const uploadRes = await fetch(`${HF}/upload`, {
+        method: "POST",
+        body:   uploadForm,
+      });
+
+      if (!uploadRes.ok) {
+        const txt = await uploadRes.text();
+        return err(`HF upload failed ${uploadRes.status}: ${txt}`, 502, origin);
+      }
+
+      const uploaded  = await uploadRes.json();
+      // Gradio returns array of file paths e.g. ["/tmp/gradio/abc123/recitation.webm"]
+      const filePath  = Array.isArray(uploaded) ? uploaded[0] : uploaded?.files?.[0];
+
+      if (!filePath) return err("HF upload returned no file path", 502, origin);
+
+      // ── Step 2: Call /api/predict with file path ─────────────
+      const predictRes = await fetch(`${HF}/api/predict`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({
+          data: [
+            { path: filePath },   // Gradio file component expects {path: ...}
+            expected,
+          ],
+        }),
+      });
+
+      if (!predictRes.ok) {
+        const txt = await predictRes.text();
+        return err(`HF predict failed ${predictRes.status}: ${txt}`, 502, origin);
+      }
+
+      const hfJson    = await predictRes.json();
+      // Gradio wraps result in {data: ["json_string"]}
+      const resultStr = hfJson?.data?.[0] ?? JSON.stringify({ error: "empty response" });
+
+      return new Response(resultStr, {
+        headers: { "Content-Type": "application/json", ...cors(origin) },
+      });
+
+    } catch (e) {
+      return err(e.message, 500, origin);
+    }
+  },
+};
+
+function cors(origin) {
+  return {
+    "Access-Control-Allow-Origin":  origin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+}
+function err(msg, status, origin) {
+  return new Response(JSON.stringify({ error: msg }), {
+    status,
+    headers: { "Content-Type": "application/json", ...cors(origin) },
+  });
+}
+
+─────────────────────── COPY WORKER CODE ABOVE ───────────────────────
+-->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>فحص التلاوة — quranforyunus.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:          #faf7f2;
+    --surface:     #ffffff;
+    --border:      #e8e0d0;
+    --gold:        #c8962a;
+    --gold-light:  #f5e8c7;
+    --green:       #1a6b3a;
+    --green-light: #e6f4ec;
+    --red:         #c0392b;
+    --red-light:   #fdecea;
+    --orange:      #d35400;
+    --text:        #1a1408;
+    --muted:       #8b7d5e;
+    --font-arabic: 'Amiri', serif;
+    --font-ui:     'Cairo', sans-serif;
+  }
+
+  html, body { background: var(--bg); color: var(--text); font-family: var(--font-ui); min-height: 100vh; }
+
+  body::before {
+    content: ''; position: fixed; inset: 0; z-index: 0;
+    background-image:
+      repeating-linear-gradient(45deg,  transparent, transparent 20px, rgba(200,150,42,.04) 20px, rgba(200,150,42,.04) 21px),
+      repeating-linear-gradient(-45deg, transparent, transparent 20px, rgba(200,150,42,.04) 20px, rgba(200,150,42,.04) 21px);
+    pointer-events: none;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+
+  header { text-align: center; margin-bottom: 2.5rem; }
+  .bismillah { font-family: var(--font-arabic); font-size: 1.8rem; color: var(--gold); margin-bottom: .5rem; }
+  header h1  { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 700; color: var(--green); margin-bottom: .3rem; }
+  header p   { color: var(--muted); font-size: .9rem; }
+
+  .divider { height: 2px; margin: 1.5rem 0; background: linear-gradient(90deg, transparent, var(--gold), transparent); border: none; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 1.8rem; box-shadow: 0 2px 20px rgba(0,0,0,.06); margin-bottom: 1.5rem; }
+  .card-title { font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 1rem; direction: ltr; text-align: left; }
+
+  .selector-row { display: flex; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  select, input[type=number] {
+    flex: 1; min-width: 120px;
+    font-family: var(--font-ui); font-size: .9rem;
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: .55rem .8rem; background: var(--bg); color: var(--text);
+    direction: ltr; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b7d5e' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: left .8rem center; padding-left: 2rem;
+  }
+  select:focus, input[type=number]:focus { outline: none; border-color: var(--gold); }
+
+  .ayah-text {
+    font-family: var(--font-arabic); font-size: 1.7rem; line-height: 2.4;
+    text-align: center; direction: rtl; color: var(--text);
+    padding: 1rem; background: var(--gold-light); border-radius: 10px; min-height: 80px;
+  }
+  .ayah-loading { color: var(--muted); font-size: 1rem; }
+
+  .result-ayah { font-family: var(--font-arabic); font-size: 1.7rem; line-height: 2.8; text-align: center; direction: rtl; padding: 1rem; }
+  .word { display: inline-block; padding: .1em .25em; border-radius: 5px; margin: .1em; cursor: default; }
+  .word.ok      { color: var(--green); }
+  .word.missing { background: var(--red-light);   color: var(--red);    text-decoration: line-through; }
+  .word.wrong   { background: var(--red-light);   color: var(--red); }
+  .word.extra   { background: rgba(211,84,0,.1); color: var(--orange); font-style: italic; }
+
+  .score-row { display: flex; align-items: center; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 1rem; }
+  .score-circle { width: 90px; height: 90px; border-radius: 50%; border: 4px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--gold-light); }
+  .score-num { font-size: 1.6rem; font-weight: 700; color: var(--gold); line-height: 1; }
+  .score-pct { font-size: .65rem; color: var(--muted); }
+  .legend { display: flex; flex-direction: column; gap: .4rem; direction: ltr; }
+  .legend-item { display: flex; align-items: center; gap: .5rem; font-size: .8rem; }
+  .dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .dot.ok      { background: var(--green); }
+  .dot.missing { background: var(--red); }
+  .dot.wrong   { background: var(--red); opacity: .7; }
+  .dot.extra   { background: var(--orange); }
+
+  .record-area { text-align: center; }
+  #record-btn {
+    width: 100px; height: 100px; border-radius: 50%;
+    border: 3px solid var(--green); background: var(--green-light);
+    cursor: pointer; display: inline-flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: .3rem;
+    transition: all .2s; font-family: var(--font-ui);
+  }
+  #record-btn:hover { background: var(--green); }
+  #record-btn:hover .mic-icon, #record-btn:hover .btn-label { color: #fff; }
+  #record-btn.recording { background: var(--red); border-color: var(--red); animation: beat .7s ease-in-out infinite alternate; }
+  #record-btn.recording .mic-icon, #record-btn.recording .btn-label { color: #fff; }
+  @keyframes beat { from { transform: scale(1); } to { transform: scale(1.07); } }
+  .mic-icon  { font-size: 2rem; color: var(--green); transition: color .2s; }
+  .btn-label { font-size: .65rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--green); transition: color .2s; }
+
+  #status-msg { margin-top: .9rem; font-size: .82rem; color: var(--muted); min-height: 1.2em; }
+  #timer { font-family: monospace; font-size: 1.1rem; color: var(--red); margin-top: .3rem; min-height: 1.5em; }
+
+  .upload-row { display: flex; align-items: center; justify-content: center; gap: .7rem; margin-top: 1.2rem; direction: ltr; }
+  .upload-label { font-size: .78rem; color: var(--muted); cursor: pointer; text-decoration: underline dotted; }
+  #file-input { display: none; }
+
+  #check-btn {
+    display: block; width: 100%; margin-top: 1.2rem; padding: .8rem;
+    background: var(--green); color: #fff; border: none; border-radius: 10px;
+    font-family: var(--font-ui); font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: opacity .2s;
+  }
+  #check-btn:hover { opacity: .88; }
+  #check-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  .transcript-box {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: .8rem 1rem; font-family: var(--font-arabic); font-size: 1.1rem;
+    direction: rtl; color: var(--text); line-height: 2; min-height: 50px;
+  }
+
+  footer { text-align: center; font-size: .7rem; color: var(--muted); margin-top: 3rem; direction: ltr; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    <h1>Quran Recitation Checker</h1>
+    <p>Record yourself reciting — the AI will check for missing or incorrect words</p>
+  </header>
+
+  <!-- Step 1 -->
+  <div class="card">
+    <div class="card-title">Step 1 — Choose an Ayah</div>
+    <div class="selector-row">
+      <select id="surah-select"><option value="">Loading surahs…</option></select>
+      <input type="number" id="ayah-num" min="1" value="1" placeholder="Ayah #" style="max-width:100px"/>
+      <button onclick="loadAyah()" style="flex:0;padding:.55rem 1.2rem;background:var(--gold);color:#fff;border:none;border-radius:8px;cursor:pointer;font-family:var(--font-ui);font-weight:600">Load</button>
+    </div>
+    <div class="ayah-text" id="ayah-display">
+      <span class="ayah-loading">اختر السورة والآية…</span>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="card">
+    <div class="card-title">Step 2 — Recite</div>
+    <div class="record-area">
+      <button id="record-btn" onclick="toggleRecord()">
+        <span class="mic-icon">🎙️</span>
+        <span class="btn-label" id="btn-label">Record</span>
+      </button>
+      <div id="timer"></div>
+      <div id="status-msg">Press record, then recite the ayah above</div>
+      <div class="upload-row">
+        <span style="color:var(--muted);font-size:.78rem">or</span>
+        <label class="upload-label" for="file-input">upload an audio file</label>
+        <input type="file" id="file-input" accept="audio/*" onchange="handleUpload(event)"/>
+      </div>
+      <button id="check-btn" onclick="checkRecitation()" disabled>Check Recitation ✓</button>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="card" id="results-card" style="display:none">
+    <div class="card-title">Step 3 — Results</div>
+    <p style="font-size:.75rem;color:var(--muted);direction:ltr;margin-bottom:.5rem">What you recited:</p>
+    <div class="transcript-box" id="transcript-box">—</div>
+    <hr class="divider"/>
+    <p style="font-size:.75rem;color:var(--muted);direction:ltr;margin-bottom:.5rem">Word-by-word check:</p>
+    <div class="result-ayah" id="result-ayah"></div>
+    <div class="score-row">
+      <div class="score-circle">
+        <span class="score-num" id="score-num">—</span>
+        <span class="score-pct">accuracy</span>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="dot ok"></div> Correct</div>
+        <div class="legend-item"><div class="dot missing"></div> Missing word</div>
+        <div class="legend-item"><div class="dot wrong"></div> Wrong word</div>
+        <div class="legend-item"><div class="dot extra"></div> Extra word</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Powered by Tarteel AI Whisper · quranforyunus.com</footer>
+</div>
+
+<script>
+  // ─────────────────────────────────────
+  //  ⚙️  SET YOUR WORKER URL HERE
+  // ─────────────────────────────────────
+  const WORKER_URL = "https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev";
+  // ─────────────────────────────────────
+
+  let mediaRecorder = null;
+  let audioChunks   = [];
+  let audioBlob     = null;
+  let timerInterval = null;
+  let seconds       = 0;
+  let currentAyah   = "";
+
+  async function loadSurahs() {
+    try {
+      const r    = await fetch("https://api.alquran.cloud/v1/surah");
+      const data = await r.json();
+      const sel  = document.getElementById("surah-select");
+      sel.innerHTML = data.data.map(s =>
+        `<option value="${s.number}">${s.number}. ${s.englishName} — ${s.name}</option>`
+      ).join("");
+      loadAyah();
+    } catch(e) {
+      document.getElementById("surah-select").innerHTML = '<option value="1">1. Al-Fatiha</option>';
+    }
+  }
+
+  async function loadAyah() {
+    const surah   = document.getElementById("surah-select").value;
+    const ayah    = document.getElementById("ayah-num").value;
+    const display = document.getElementById("ayah-display");
+    if (!surah || !ayah) return;
+    display.innerHTML = '<span class="ayah-loading">جارٍ التحميل…</span>';
+    try {
+      const r    = await fetch(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/ar`);
+      const data = await r.json();
+      if (data.code !== 200) throw new Error("Ayah not found");
+      currentAyah         = data.data.text;
+      display.textContent = currentAyah;
+      document.getElementById("results-card").style.display = "none";
+      if (audioBlob) document.getElementById("check-btn").disabled = false;
+    } catch(e) {
+      display.innerHTML = '<span class="ayah-loading">لم يتم العثور على الآية</span>';
+      currentAyah = "";
+    }
+  }
+
+  async function toggleRecord() {
+    if (mediaRecorder && mediaRecorder.state === "recording") stopRecording();
+    else await startRecording();
+  }
+
+  async function startRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioChunks  = [];
+      audioBlob    = null;
+      document.getElementById("check-btn").disabled = true;
+
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        stream.getTracks().forEach(t => t.stop());
+        if (currentAyah) document.getElementById("check-btn").disabled = false;
+        setStatus("✓ Recording saved — click Check Recitation");
+      };
+      mediaRecorder.start();
+      setRecordingUI(true);
+      startTimer();
+    } catch(e) {
+      setStatus("⚠️ Microphone access denied");
+    }
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
+    setRecordingUI(false);
+    stopTimer();
+  }
+
+  function setRecordingUI(on) {
+    const btn = document.getElementById("record-btn");
+    const lbl = document.getElementById("btn-label");
+    btn.classList.toggle("recording", on);
+    lbl.textContent = on ? "Stop" : "Record";
+    if (on) setStatus("🔴 Recording…");
+  }
+
+  function startTimer() {
+    seconds = 0;
+    const el = document.getElementById("timer");
+    timerInterval = setInterval(() => {
+      seconds++;
+      const m = String(Math.floor(seconds/60)).padStart(2,"0");
+      const s = String(seconds % 60).padStart(2,"0");
+      el.textContent = `${m}:${s}`;
+      if (seconds >= 120) stopRecording();
+    }, 1000);
+  }
+
+  function stopTimer() {
+    clearInterval(timerInterval);
+    document.getElementById("timer").textContent = "";
+  }
+
+  function handleUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    audioBlob = file;
+    if (currentAyah) document.getElementById("check-btn").disabled = false;
+    setStatus(`✓ File loaded: ${file.name}`);
+  }
+
+  async function checkRecitation() {
+    if (!audioBlob)   return setStatus("⚠️ Please record audio first");
+    if (!currentAyah) return setStatus("⚠️ Please load an ayah first");
+
+    const btn = document.getElementById("check-btn");
+    btn.disabled    = true;
+    btn.textContent = "Checking…";
+    setStatus("Sending to AI — this may take 10–20 seconds…");
+
+    try {
+      const form = new FormData();
+      form.append("audio",    audioBlob, "recitation.webm");
+      form.append("expected", currentAyah);
+
+      const r    = await fetch(WORKER_URL, { method: "POST", body: form });
+      const data = await r.json();
+
+      if (data.error) throw new Error(data.error);
+      renderResults(data);
+      setStatus("Done!");
+    } catch(e) {
+      setStatus(`⚠️ Error: ${e.message}`);
+      console.error(e);
+    } finally {
+      btn.disabled    = false;
+      btn.textContent = "Check Recitation ✓";
+    }
+  }
+
+  function renderResults({ transcript, tokens, score }) {
+    document.getElementById("transcript-box").textContent = transcript || "—";
+    document.getElementById("result-ayah").innerHTML = (tokens || []).map(t =>
+      `<span class="word ${t.status}" title="${t.status}">${t.word}</span>`
+    ).join(" ");
+    document.getElementById("score-num").textContent = score + "%";
+    const card = document.getElementById("results-card");
+    card.style.display = "block";
+    card.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function setStatus(msg) { document.getElementById("status-msg").textContent = msg; }
+
+  loadSurahs();
+</script>
+</body>
+</html>
