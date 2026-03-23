@@ -211,7 +211,7 @@ def extract_wav(ffmpeg, mp3_path, start_ms, end_ms, out_wav, buffer_ms=300):
 
 
 def align_verse(wav_path, words, clip_start_ms, model_a, metadata, device):
-    """Run WhisperX forced alignment on one verse. Returns (new_segments, n_aligned)."""
+    """Run WhisperX forced alignment on one verse. Returns (new_segments, n_aligned, scores)."""
     sample_rate, wav_data = scipy.io.wavfile.read(wav_path)
     if wav_data.dtype == np.int16:
         audio = wav_data.astype(np.float32) / 32768.0
@@ -230,6 +230,7 @@ def align_verse(wav_path, words, clip_start_ms, model_a, metadata, device):
     aligned = result.get('word_segments', [])
 
     new_segments = []
+    scores = []
     for i, aw in enumerate(aligned):
         if i >= len(words):
             break
@@ -237,17 +238,281 @@ def align_verse(wav_path, words, clip_start_ms, model_a, metadata, device):
         w_s   = int(aw.get('start', 0) * 1000 + clip_start_ms)
         w_e   = int(aw.get('end',   0) * 1000 + clip_start_ms)
         new_segments.append([pos, float(w_s), float(w_e)])
+        scores.append(aw.get('score', 0.0))
 
-    return new_segments, len(aligned)
+    return new_segments, len(aligned), scores
 
 
-def bridge_repetition_gaps(segs, gap_threshold_ms=2000):
+def smooth_segments(segs, scores, words, min_dur_ms=200):
+    """Fix crushed segments by borrowing time from over-long neighbors.
+
+    Conservative approach: only modifies the boundary between a crushed word
+    and its longest neighbor. Does NOT shift other words — preserves WhisperX
+    start positions which are critical for click-to-play accuracy.
+    """
+    if len(segs) < 2:
+        return 0
+
+    smoothed = 0
+    for i in range(len(segs)):
+        dur = segs[i][2] - segs[i][1]
+        if dur >= min_dur_ms:
+            continue
+
+        # Find the longest adjacent word to borrow from
+        prev_dur = segs[i - 1][2] - segs[i - 1][1] if i > 0 else 0
+        next_dur = segs[i + 1][2] - segs[i + 1][1] if i < len(segs) - 1 else 0
+        deficit = min_dur_ms - dur
+
+        # Also account for gap between words
+        gap_before = segs[i][1] - segs[i - 1][2] if i > 0 else 0
+        gap_after = segs[i + 1][1] - segs[i][2] if i < len(segs) - 1 else 0
+
+        # Strategy: first absorb gaps, then borrow from longest neighbor
+        absorbed = 0
+
+        # Absorb gap before (extend start backwards)
+        if gap_before > 20:
+            take = min(deficit - absorbed, gap_before - 10)
+            if take > 0:
+                segs[i][1] -= take
+                absorbed += take
+
+        # Absorb gap after (extend end forwards)
+        if absorbed < deficit and gap_after > 20:
+            take = min(deficit - absorbed, gap_after - 10)
+            if take > 0:
+                segs[i][2] += take
+                absorbed += take
+
+        # Still short? Borrow from the longest neighbor
+        if absorbed < deficit:
+            remaining = deficit - absorbed
+            if prev_dur > next_dur and prev_dur > min_dur_ms + remaining:
+                # Borrow from previous: shrink prev end, extend our start
+                segs[i - 1][2] -= remaining
+                segs[i][1] -= remaining
+                absorbed += remaining
+            elif next_dur > min_dur_ms + remaining:
+                # Borrow from next: extend our end, shift next start
+                segs[i][2] += remaining
+                segs[i + 1][1] += remaining
+                absorbed += remaining
+
+        if absorbed > 0:
+            smoothed += 1
+
+    return smoothed
+
+
+def realign_from_repetition(segs, scores, words, verse_start_ms, verse_end_ms,
+                            ffmpeg, mp3_path, wav_path, model_a, metadata, device,
+                            min_trailing_ms=3000, min_cluster=3):
+    """Re-align trailing words using the repetition section of the audio.
+
+    When a reciter repeats a phrase, WhisperX aligns all words to the first
+    (rushed) pass.  The trailing audio after the last aligned word contains the
+    clearer repetition.  This function:
+      1. Detects trailing audio > min_trailing_ms after the last aligned word.
+      2. Tries re-aligning the last N words (N = min_cluster..min_cluster+3)
+         to several clip offsets within the repetition region.
+      3. Picks the (N, offset) with the highest WhisperX average score.
+      4. Replaces the affected segments.
+    """
+    if len(segs) < min_cluster:
+        return 0
+
+    # --- 1. detect trailing repetition audio ---
+    last_word_end = segs[-1][2]
+    trailing_ms = verse_end_ms - last_word_end
+
+    if trailing_ms < min_trailing_ms:
+        return 0  # no significant trailing audio
+
+    rep_start = last_word_end
+    rep_end = verse_end_ms
+    rep_dur = rep_end - rep_start
+
+    # --- 2. try re-aligning last N words to the repetition section ---
+    best_segs = None
+    best_avg = -1
+    best_n = 0
+
+    max_n = min(len(segs) // 2, min_cluster + 3)  # at most half the verse
+    for n in range(min_cluster, max_n + 1):
+        realign_start = len(segs) - n
+        realign_words = words[realign_start:]
+        realign_text = ' '.join(clean_for_alignment(w['text_uthmani'])
+                                for w in realign_words)
+
+        # candidate clips: start from various points in the repetition
+        clip_candidates = [(int(rep_start), int(rep_end), 'full')]
+        for pct, label in [(0.25, 's25'), (0.50, 's50'), (0.75, 's75')]:
+            offset = int(rep_start + rep_dur * pct)
+            clip_candidates.append((offset, int(rep_end), label))
+
+        for clip_s, clip_e, label in clip_candidates:
+            if clip_e - clip_s < 500:
+                continue
+            try:
+                clip_offset = extract_wav(ffmpeg, mp3_path, clip_s, clip_e,
+                                          wav_path, buffer_ms=0)
+                sr_val, wav_data = scipy.io.wavfile.read(wav_path)
+                audio = wav_data.astype(np.float32) / 32768.0
+                if audio.ndim > 1:
+                    audio = audio.mean(axis=1)
+                duration = len(audio) / 16000.0
+                if duration < 0.3:
+                    continue
+
+                transcript = [{'text': realign_text,
+                               'start': 0.0, 'end': duration}]
+                result = whisperx.align(transcript, model_a, metadata,
+                                        audio, device,
+                                        return_char_alignments=False)
+                aligned = result.get('word_segments', [])
+                if len(aligned) < n:
+                    continue
+
+                cand_segs = []
+                cand_scores = []
+                for j in range(n):
+                    aw = aligned[j]
+                    pos = realign_words[j]['position']
+                    w_s = int(aw.get('start', 0) * 1000 + clip_offset)
+                    w_e = int(aw.get('end',   0) * 1000 + clip_offset)
+                    cand_segs.append([pos, float(w_s), float(w_e)])
+                    cand_scores.append(aw.get('score', 0.0))
+
+                avg_score = sum(cand_scores) / len(cand_scores)
+                # penalise if first word stuck at clip start
+                if (cand_scores[0] < 0.05
+                        or (cand_segs[0][2] - cand_segs[0][1]) < 80):
+                    avg_score *= 0.3
+
+                if avg_score > best_avg:
+                    best_avg = avg_score
+                    best_segs = cand_segs
+                    best_n = n
+            except Exception:
+                continue
+
+        # early exit if we already found a very good match
+        if best_avg > 0.6:
+            break
+
+    if best_segs is None or best_avg < 0.25:
+        return 0
+
+    # --- 3. smooth the new segments (contiguous boundaries) ---
+    for j in range(len(best_segs) - 1):
+        gap = best_segs[j + 1][1] - best_segs[j][2]
+        if gap > 0:
+            mid = best_segs[j][2] + gap / 2
+            best_segs[j][2] = mid
+            best_segs[j + 1][1] = mid
+        elif gap < 0:
+            mid = (best_segs[j][2] + best_segs[j + 1][1]) / 2
+            best_segs[j][2] = mid
+            best_segs[j + 1][1] = mid
+    # extend last segment to verse end
+    if best_segs:
+        best_segs[-1][2] = float(verse_end_ms)
+
+    # --- 4. check if preceding word has a gap to the first re-aligned word ---
+    # If so, the cluster should include one more word.
+    realign_start = len(segs) - best_n
+    if realign_start > 0:
+        gap_to_first = best_segs[0][1] - segs[realign_start - 1][2]
+        if gap_to_first > 2000:
+            # Try re-aligning best_n+1 words using a clip that starts earlier
+            ext_n = best_n + 1
+            ext_start = len(segs) - ext_n
+            ext_words = words[ext_start:]
+            ext_text = ' '.join(clean_for_alignment(w['text_uthmani'])
+                                for w in ext_words)
+            # Start clip earlier: from mid-gap to verse end
+            ext_clip_s = int(segs[ext_start][2])  # after the word's first-pass end
+            ext_candidates = [
+                (ext_clip_s, int(rep_end), 'ext-full'),
+                (int(ext_clip_s + (rep_end - ext_clip_s) * 0.25), int(rep_end), 'ext-s25'),
+                (int(ext_clip_s + (rep_end - ext_clip_s) * 0.50), int(rep_end), 'ext-s50'),
+            ]
+            for clip_s, clip_e, label in ext_candidates:
+                if clip_e - clip_s < 500:
+                    continue
+                try:
+                    clip_offset = extract_wav(ffmpeg, mp3_path, clip_s, clip_e,
+                                              wav_path, buffer_ms=0)
+                    sr_val, wav_data = scipy.io.wavfile.read(wav_path)
+                    audio = wav_data.astype(np.float32) / 32768.0
+                    if audio.ndim > 1:
+                        audio = audio.mean(axis=1)
+                    duration = len(audio) / 16000.0
+                    if duration < 0.3:
+                        continue
+                    transcript = [{'text': ext_text,
+                                   'start': 0.0, 'end': duration}]
+                    result = whisperx.align(transcript, model_a, metadata,
+                                            audio, device,
+                                            return_char_alignments=False)
+                    aligned = result.get('word_segments', [])
+                    if len(aligned) < ext_n:
+                        continue
+                    ext_segs = []
+                    ext_scores = []
+                    for j in range(ext_n):
+                        aw = aligned[j]
+                        pos = ext_words[j]['position']
+                        w_s = int(aw.get('start', 0) * 1000 + clip_offset)
+                        w_e = int(aw.get('end',   0) * 1000 + clip_offset)
+                        ext_segs.append([pos, float(w_s), float(w_e)])
+                        ext_scores.append(aw.get('score', 0.0))
+                    ext_avg = sum(ext_scores) / len(ext_scores)
+                    if ext_scores[0] < 0.05:
+                        ext_avg *= 0.3
+                    # Only accept if words are in the repetition region
+                    # and score beats the initial alignment
+                    if ext_segs[0][1] < rep_start:
+                        continue  # words landed in first pass, not repetition
+                    if ext_avg > best_avg:
+                        best_segs = ext_segs
+                        best_n = ext_n
+                        realign_start = ext_start
+                        # re-smooth extended segments
+                        for j in range(len(best_segs) - 1):
+                            gap = best_segs[j + 1][1] - best_segs[j][2]
+                            if gap > 0:
+                                mid = best_segs[j][2] + gap / 2
+                                best_segs[j][2] = mid
+                                best_segs[j + 1][1] = mid
+                            elif gap < 0:
+                                mid = (best_segs[j][2] + best_segs[j + 1][1]) / 2
+                                best_segs[j][2] = mid
+                                best_segs[j + 1][1] = mid
+                        if best_segs:
+                            best_segs[-1][2] = float(verse_end_ms)
+                        break
+                except Exception:
+                    continue
+
+    # --- 5. replace segments ---
+    for j in range(best_n):
+        segs[realign_start + j] = best_segs[j]
+
+    return best_n
+
+
+def bridge_repetition_gaps(segs, gap_threshold_ms=2000, verse_end_ms=None):
     """Extend each word's end time to the next word's start if the gap is large.
 
     Handles verses where the reciter repeats a phrase — WhisperX leaves a silent
     gap with no active segment, causing the highlighting to go blank. Extending
     the previous word keeps it highlighted through the repeated section.
     Only applies when the gap exceeds gap_threshold_ms (default 2 s).
+
+    If verse_end_ms is given, also extends the last word to cover a trailing gap
+    (reciter repeating at end of verse).
     """
     bridged = 0
     for i in range(len(segs) - 1):
@@ -255,7 +520,23 @@ def bridge_repetition_gaps(segs, gap_threshold_ms=2000):
         if gap > gap_threshold_ms:
             segs[i][2] = segs[i + 1][1]
             bridged += 1
+    # Bridge trailing gap (reciter repeats at end of verse)
+    if verse_end_ms is not None and segs:
+        trailing = verse_end_ms - segs[-1][2]
+        if trailing > gap_threshold_ms:
+            segs[-1][2] = float(verse_end_ms)
+            bridged += 1
     return bridged
+
+
+def normalize_segments(segs):
+    """Convert flat [pos,start,end,pos,start,end,...] to nested [[pos,start,end],...]."""
+    if not segs:
+        return segs
+    if isinstance(segs[0], (list, tuple)):
+        return segs  # already nested
+    # Flat format — group into triples
+    return [segs[i:i+3] for i in range(0, len(segs) - len(segs) % 3, 3)]
 
 
 def save_json(ts_data, ts_path):
@@ -277,6 +558,8 @@ def main():
                     help='Surah number 1-114')
     ap.add_argument('--start-verse', type=int, default=1,
                     help='Resume from this verse (skip earlier ones)')
+    ap.add_argument('--end-verse',   type=int, default=0,
+                    help='Stop after this verse (0 = process all)')
     ap.add_argument('--dry-run',     action='store_true',
                     help='Print what would change without writing anything')
     args = ap.parse_args()
@@ -339,6 +622,8 @@ def main():
             vnum = int(vk.split(':')[1])
             if vnum < args.start_verse:
                 continue
+            if args.end_verse and vnum > args.end_verse:
+                break
 
             words = verse_words.get(vk)
             if not words:
@@ -348,7 +633,7 @@ def main():
             start_ms  = ts_entry['timestamp_from']
             end_ms    = ts_entry['timestamp_to']
             expected  = len(words)
-            orig_segs = ts_entry.get('segments', [])
+            orig_segs = normalize_segments(ts_entry.get('segments', []))
 
             # Detect Tarteel duplicate-segment bug: more segments than words means
             # some word positions were exported twice, pushing trailing words out of
@@ -381,22 +666,56 @@ def main():
                             print(f'             └─ saved ({changed} verses so far)')
                 else:
                     clip_start_ms = extract_wav(ffmpeg, mp3_path, start_ms, end_ms, wav_path)
-                    new_segs, n_aligned = align_verse(
+                    new_segs, n_aligned, scores = align_verse(
                         wav_path, words, clip_start_ms, model_a, metadata, device
                     )
+
+                    # Detect repetition: if aligned words cover <75% of verse,
+                    # the audio likely contains the reciter repeating. Re-align
+                    # with a shorter clip covering only the first pass for better
+                    # per-word accuracy.
+                    verse_dur = end_ms - start_ms
+                    if new_segs and verse_dur > 0:
+                        seg_span = new_segs[-1][2] - new_segs[0][1]
+                        coverage = seg_span / verse_dur
+                        if coverage < 0.75 and n_aligned >= expected:
+                            # Re-extract clip ending just after last aligned word
+                            retry_end = int(new_segs[-1][2] + 1500)
+                            clip_start_ms = extract_wav(ffmpeg, mp3_path, start_ms, retry_end, wav_path)
+                            new_segs, n_aligned, scores = align_verse(
+                                wav_path, words, clip_start_ms, model_a, metadata, device
+                            )
 
                     if n_aligned < expected:
                         # Fill missing positions from original data
                         for i in range(n_aligned, expected):
                             if i < len(orig_segs):
                                 new_segs.append(orig_segs[i])
+                            if i < len(scores):
+                                pass
+                            else:
+                                scores.append(0.0)
                         partial.append(vk)
                         flag = ' ⚠ partial'
                     else:
                         flag = ''
 
+                    # Smooth out crushed segments (WhisperX often compresses
+                    # words in connected speech to <100ms)
+                    n_smoothed = smooth_segments(new_segs, scores, words)
+                    if n_smoothed:
+                        flag += f' ~{n_smoothed} smoothed'
+
+                    # Re-align trailing words using the repetition section
+                    n_realigned = realign_from_repetition(
+                        new_segs, scores, words, start_ms, end_ms,
+                        ffmpeg, mp3_path, wav_path, model_a, metadata, device
+                    )
+                    if n_realigned:
+                        flag += f' ♻ {n_realigned} re-aligned from repetition'
+
                     # Bridge large gaps caused by reciter repeating a phrase
-                    n_bridged = bridge_repetition_gaps(new_segs)
+                    n_bridged = bridge_repetition_gaps(new_segs, verse_end_ms=end_ms)
                     if n_bridged:
                         flag += f' ↔ {n_bridged} gap(s) bridged'
 
