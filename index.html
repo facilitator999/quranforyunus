@@ -120,7 +120,10 @@
       white-space: nowrap;
       line-height: 1.25;
       text-align: center;
+      cursor: pointer;
+      user-select: none;
     }
+    .toolbar-title:hover { opacity: 0.75; }
     @media (max-width: 480px) {
       .toolbar-title {
         font-size: 0.78rem;
@@ -132,6 +135,73 @@
       }
     }
     .toolbar-title .juz { color: var(--ink-muted); font-weight: 500; }
+    /* Surah Navigation Drawer */
+    .surah-nav-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(0,0,0,0.45);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      pointer-events: none;
+    }
+    .surah-nav-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
+    .surah-nav-drawer {
+      position: absolute;
+      top: 0; right: 0;
+      height: 100%;
+      width: min(320px, 88vw);
+      background: var(--paper);
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.25);
+      transform: translateX(100%);
+      transition: transform 0.22s ease;
+    }
+    .surah-nav-overlay.open .surah-nav-drawer { transform: none; }
+    .surah-nav-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .surah-nav-inputs { display: flex; gap: 6px; flex: 1; }
+    .surah-nav-inputs input {
+      flex: 1; width: 0;
+      padding: 7px 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 0.85rem;
+      font-family: inherit;
+      -webkit-appearance: none;
+      -moz-appearance: textfield;
+      appearance: none;
+    }
+    .surah-nav-inputs input::-webkit-inner-spin-button,
+    .surah-nav-inputs input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .surah-nav-inputs input:focus { outline: none; border-color: var(--accent); }
+    .surah-nav-x {
+      background: none; border: none;
+      color: var(--ink-muted); cursor: pointer;
+      font-size: 1.1rem; padding: 4px 6px; line-height: 1; flex-shrink: 0;
+    }
+    .surah-nav-x:hover { color: var(--ink); }
+    .surah-nav-list { flex: 1; overflow-y: auto; }
+    .surah-nav-item {
+      display: flex; align-items: center;
+      padding: 10px 14px; cursor: pointer; gap: 10px;
+      color: var(--ink); border-bottom: 1px solid var(--border);
+    }
+    .surah-nav-item:hover { background: var(--bg-hover); }
+    .sni-num { font-size: 0.75rem; color: var(--ink-muted); min-width: 22px; text-align: right; flex-shrink: 0; }
+    .sni-name { flex: 1; font-weight: 500; font-size: 0.9rem; }
+    .sni-juz { font-size: 0.75rem; color: var(--ink-muted); flex-shrink: 0; }
+    .sni-verse { color: var(--accent); font-size: 0.78rem; font-weight: 600; margin-left: 4px; }
     .font-size-ctrl {
       flex-shrink: 0;
       display: flex;
@@ -4959,6 +5029,82 @@
         btn.addEventListener('click', () => {
           overlay.classList.add('open');
         });
+      });
+    })();
+
+    /* ── Surah Navigation Pane ── */
+    (function() {
+      const navOverlay = document.createElement('div');
+      navOverlay.className = 'surah-nav-overlay';
+      navOverlay.setAttribute('dir', 'ltr');
+      navOverlay.innerHTML = `
+        <div class="surah-nav-drawer">
+          <div class="surah-nav-head">
+            <div class="surah-nav-inputs">
+              <input type="text" id="nav-surah-input" placeholder="Surah name or #" autocomplete="off" inputmode="search">
+              <input type="number" id="nav-verse-input" placeholder="Verse #" min="1" autocomplete="off">
+            </div>
+            <button class="surah-nav-x" id="nav-close-btn" aria-label="Close">&#x2715;</button>
+          </div>
+          <div class="surah-nav-list" id="surah-nav-list"></div>
+        </div>
+      `;
+      document.body.appendChild(navOverlay);
+
+      const listEl = document.getElementById('surah-nav-list');
+
+      function renderList(query, filterVerse) {
+        listEl.innerHTML = '';
+        const q = query ? query.trim().toLowerCase() : '';
+        const qNum = q && /^\d+$/.test(q) ? Number(q) : null;
+        for (const s of SURAHS) {
+          if (q) {
+            if (qNum !== null) { if (s.n !== qNum) continue; }
+            else { if (!s.name.toLowerCase().includes(q)) continue; }
+          }
+          const juz = getJuzForVerse(s.n, 1);
+          const item = document.createElement('div');
+          item.className = 'surah-nav-item';
+          const verseTag = filterVerse ? `<span class="sni-verse">· verse ${filterVerse}</span>` : '';
+          item.innerHTML = `<span class="sni-num">${s.n}</span><span class="sni-name">${s.name} ${verseTag}</span><span class="sni-juz">Juz ${juz}</span>`;
+          item.addEventListener('click', () => {
+            window.location.href = '?verse=' + s.n + ':' + (filterVerse || 1);
+          });
+          listEl.appendChild(item);
+        }
+      }
+      renderList(null, null);
+
+      function openNav() {
+        navOverlay.classList.add('open');
+        const si = document.getElementById('nav-surah-input');
+        const vi = document.getElementById('nav-verse-input');
+        si.value = ''; vi.value = '';
+        renderList(null, null);
+        listEl.scrollTop = 0;
+        setTimeout(() => si.focus(), 220);
+      }
+      function closeNav() { navOverlay.classList.remove('open'); }
+
+      document.getElementById('nav-close-btn').addEventListener('click', closeNav);
+      navOverlay.addEventListener('click', e => { if (e.target === navOverlay) closeNav(); });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && navOverlay.classList.contains('open')) closeNav();
+      });
+
+      const surahInput = document.getElementById('nav-surah-input');
+      const verseInput = document.getElementById('nav-verse-input');
+      function onFilter() {
+        const q = surahInput.value || null;
+        const vn = verseInput.value ? Number(verseInput.value) : null;
+        renderList(q, vn !== null && vn >= 1 ? vn : null);
+      }
+      surahInput.addEventListener('input', onFilter);
+      verseInput.addEventListener('input', onFilter);
+
+      document.querySelectorAll('#toolbar-surah-juz').forEach(el => {
+        el.title = 'Go to Surah';
+        el.addEventListener('click', openNav);
       });
     })();
   </script>
