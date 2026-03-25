@@ -3506,7 +3506,9 @@
       const section = document.createElement('section');
       section.className = 'pageless-section' + (useIndopak13() ? ' mushaf-indopak13' : '');
       section.dataset.page = String(pageNum);
-      if (data.indopak13) {
+      if (TRANSLATION_ON) {
+        renderTranslationBlock(section, data.playlist, data.surahs, pageNum, { updateToolbarMeta: false });
+      } else if (data.indopak13) {
         if (ip13MushafMatchOn()) section.classList.add('ip13-pending');
         renderIndopak13Block(section, data.playlist, data.indopakLines, data.surahs, pageNum, { updateToolbarMeta: false });
       } else if (hafsMusharMatchOn() && data.hafsLines) {
@@ -3531,14 +3533,16 @@
       }
       pagelessSections = [...container.querySelectorAll('.pageless-section')];
       // Trigger justification after section is in DOM so clientWidth is available.
-      if (data.indopak13) {
-        if (ip13MushafMatchOn()) {
-          document.fonts.ready.then(() => setTimeout(() => applyIp13Justification(section), 300));
-        } else {
-          collapseIp13ToFlow(section);
+      if (!TRANSLATION_ON) {
+        if (data.indopak13) {
+          if (ip13MushafMatchOn()) {
+            document.fonts.ready.then(() => setTimeout(() => applyIp13Justification(section), 300));
+          } else {
+            collapseIp13ToFlow(section);
+          }
+        } else if (hafsMusharMatchOn() && data.hafsLines) {
+          document.fonts.ready.then(() => setTimeout(() => applyHafsJustification(section), 300));
         }
-      } else if (hafsMusharMatchOn() && data.hafsLines) {
-        document.fonts.ready.then(() => setTimeout(() => applyHafsJustification(section), 300));
       }
     }
 
