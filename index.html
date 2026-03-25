@@ -3899,6 +3899,7 @@
     }
 
     let verseRepeat = 0; // global verse-repeat: 0=off, 1/2/3
+    let _verseRepeatKey = null; // which verse the repeat count belongs to
 
     function getOrderedVerseKeys() {
       const seen = new Set(), out = [];
@@ -4022,6 +4023,7 @@
         PAGE_PLAYLIST = d.playlist; PAGE_ITEMS = d.items; PAGE_SURAHS = d.surahs;
         playbackHighlightPage = verseInlinePage;
       }
+      if (verseKey !== _verseRepeatKey) verseRepeat = 0;
       let next;
       if (isPlaying) {
         const prev = verseRepeat;
@@ -4032,6 +4034,7 @@
         next = prev >= 3 ? 0 : prev + 1;
       }
       verseRepeat = next;
+      _verseRepeatKey = next > 0 ? verseKey : null;
       updatePlayBtn();
 
       // Show badge on tapped verse, fade it out
