@@ -3558,6 +3558,7 @@
       try {
         await ensurePagelessPageLoaded(startPage, 'append');
         c.querySelectorAll('.page-loading').forEach(n => n.remove());
+        c.classList.remove('page-fade');
       } catch (e) {
         c.innerHTML = '<div class="page-loading error">Could not load.</div>';
         throw e;
