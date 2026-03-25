@@ -3574,6 +3574,12 @@
       $('page-title').textContent = `Page ${startPage}`;
       updateToolbarForPageData(d.items, d.surahs, startPage, d.playlist);
       applyBookmarkHighlight();
+      // Preload next 2 pages so there's visible content without needing to scroll
+      (async () => {
+        for (let i = 1; i <= 2; i++) {
+          try { await ensurePagelessPageLoaded(startPage + i, 'append'); } catch (_) { break; }
+        }
+      })();
     }
 
     let pagelessScrollTimer = null;
