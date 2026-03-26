@@ -993,20 +993,22 @@
       overflow-wrap: break-word;
     }
     .verse-translation {
-      display: block;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
       direction: ltr;
-      text-align: left;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       font-size: 0.92rem;
       line-height: 1.6;
       color: var(--ink-muted);
       padding: 0.2rem 0.6rem 0.6rem;
     }
+    .verse-translation .vt-text { flex: 1; }
     .verse-translation .vt-key {
+      flex-shrink: 0;
       font-size: 0.68rem;
       font-weight: 700;
       color: var(--accent);
-      margin-right: 0.35rem;
     }
 
     /* Words */
@@ -3394,7 +3396,7 @@
           if (w.translation && w.translation.text) return w.translation.text;
           return '';
         }).filter(Boolean).join(' ');
-        transDiv.innerHTML = `<span class="vt-key">${v.verseKey}</span>${transText || ''}`;
+        transDiv.innerHTML = `<span class="vt-text">${transText || ''}</span><span class="vt-key">${v.verseKey}</span>`;
         row.appendChild(transDiv);
 
         container.appendChild(row);
@@ -3506,7 +3508,9 @@
       const section = document.createElement('section');
       section.className = 'pageless-section' + (useIndopak13() ? ' mushaf-indopak13' : '');
       section.dataset.page = String(pageNum);
-      if (TRANSLATION_ON) {
+      if (TRANSLATION_ON && data.indopak13) {
+        await renderTranslationBlockIp13(section, data.playlist, data.surahs, pageNum, { updateToolbarMeta: false });
+      } else if (TRANSLATION_ON) {
         renderTranslationBlock(section, data.playlist, data.surahs, pageNum, { updateToolbarMeta: false });
       } else if (data.indopak13) {
         if (ip13MushafMatchOn()) section.classList.add('ip13-pending');
