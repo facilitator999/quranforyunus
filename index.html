@@ -3870,11 +3870,31 @@
             });
             verseBounds.push({ endMs: plan.ts.timestamp_to, vk: plan.vk });
           }
-          if (!timeline.length) continue;
 
           const firstMs = group[0].ts.timestamp_from;
           const lastMs = group[group.length - 1].ts.timestamp_to;
           const pauseMs = getVerseEndPauseMs();
+
+          // IndoPak13 (and similar): segments may not align 1:1 with playlist words after marker stripping —
+          // empty timeline used to skip audio entirely and left didPlay false (no auto page turn).
+          if (!timeline.length) {
+            if (lastMs > firstMs && !signal.aborted) {
+              didPlay = true;
+              for (let gi = 0; gi < group.length; gi++) {
+                if (signal.aborted) break;
+                const plan = group[gi];
+                const t0 = plan.ts.timestamp_from;
+                const t1 = plan.ts.timestamp_to;
+                if (t1 <= t0) continue;
+                if (hint) hint.textContent = plan.vk;
+                await playSurahSegment(plan.surah, t0, t1);
+                if (!signal.aborted && pauseMs > 0 && gi < group.length - 1) await delay(pauseMs);
+              }
+            }
+            if (pi < versePlans.length && !signal.aborted) await delay(300);
+            continue;
+          }
+
           didPlay = true;
 
           await new Promise(resolve => {
