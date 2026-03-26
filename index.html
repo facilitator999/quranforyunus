@@ -135,6 +135,7 @@
       }
     }
     .toolbar-title .juz { color: var(--ink-muted); font-weight: 500; }
+    .toolbar-chevron { font-size: 1.3em; opacity: 0.8; margin-left: 0.3em; vertical-align: middle; color: var(--accent); }
     /* Surah Navigation Drawer */
     .surah-nav-overlay {
       position: fixed;
@@ -3219,8 +3220,8 @@
         if (toolbarEl) {
           if (surahNames) {
             toolbarEl.innerHTML = juzNum != null
-              ? `${surahNames} · <span class="juz">Juz ${juzNum}</span>`
-              : surahNames;
+              ? `${surahNames} · <span class="juz">Juz ${juzNum}</span><span class="toolbar-chevron">▾</span>`
+              : `${surahNames}<span class="toolbar-chevron">▾</span>`;
           } else {
             toolbarEl.textContent = '';
           }
@@ -3465,8 +3466,8 @@
       if (toolbarEl) {
         if (surahNames) {
           toolbarEl.innerHTML = juzNum != null
-            ? `${surahNames} · <span class="juz">Juz ${juzNum}</span>`
-            : surahNames;
+            ? `${surahNames} · <span class="juz">Juz ${juzNum}</span><span class="toolbar-chevron">▾</span>`
+            : `${surahNames}<span class="toolbar-chevron">▾</span>`;
         } else toolbarEl.textContent = '';
       }
       const pageTitle = surahNames
@@ -4968,7 +4969,9 @@
           const trySurah = () => {
             const el = document.querySelector('.surah-name[data-surah="' + scrollToSurah + '"]');
             if (el) {
-              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              const rect = el.getBoundingClientRect();
+              const alreadyVisible = rect.top >= 0 && rect.top < window.innerHeight * 0.5;
+              if (!alreadyVisible) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
               if (isPagelessMode()) pagelessScrollYForPageLoad = window.scrollY;
             } else if (++st < 15 && isPagelessMode()) setTimeout(trySurah, 100);
           };
