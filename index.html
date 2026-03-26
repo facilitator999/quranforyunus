@@ -1003,13 +1003,6 @@
       color: var(--ink-muted);
       padding: 0.2rem 0.6rem 0.6rem;
     }
-    .verse-translation .vt-text { flex: 1; }
-    .verse-translation .vt-key {
-      flex-shrink: 0;
-      font-size: 0.68rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
 
     /* Words */
     .word {
@@ -3396,7 +3389,7 @@
           if (w.translation && w.translation.text) return w.translation.text;
           return '';
         }).filter(Boolean).join(' ');
-        transDiv.innerHTML = `<span class="vt-text">${transText || ''}</span><span class="vt-key">${v.verseKey}</span>`;
+        transDiv.textContent = transText || '';
         row.appendChild(transDiv);
 
         container.appendChild(row);

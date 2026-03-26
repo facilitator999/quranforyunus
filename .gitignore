@@ -7,6 +7,7 @@ audio/voice_ids.json
 
 # Audio files — see audio/WHERE_TO_GET_AUDIO.md for how to obtain them
 *.mp3
+!audio/*/letters/*.mp3
 audio/*/recitation/
 
 # Backup files created by repair scripts
