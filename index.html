@@ -4764,6 +4764,8 @@
       document.documentElement.style.setProperty('--qk-font-scale', s);
       localStorage.setItem('qk_font_scale', s);
       if (toast) showFontToast(s);
+      // In translation mode pinch only changes text size — never re-render layout
+      if (TRANSLATION_ON) return;
       // fontStep 0 = mushaf layout (line-restricted); any larger step = free-flow
       const wantMushaf = fontStep === 0;
       const inMushaf = (useIndopak13() && ip13MushafMatchOn()) || (!useIndopak13() && hafsMusharMatchOn());
