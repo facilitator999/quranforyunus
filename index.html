@@ -522,6 +522,11 @@
     #mushaf-content {
       flex: 1 1 auto;
     }
+    /* IndoPak13: wide max-content lines must not widen the flex column past the card (fixes wrong targetW + left spill on some pages, e.g. p.24). */
+    .mushaf-page #mushaf-content.mushaf-indopak13 {
+      min-width: 0;
+      max-width: 100%;
+    }
     #mushaf-content, .page-nav-footer {
       transition: opacity 0.2s ease;
     }
@@ -2738,6 +2743,21 @@
       flushGroup();
     }
 
+    /** Target line width for IP13 justify: must NOT use #mushaf-content.clientWidth after rows are width:max-content (long lines inflate the container and break mobile layout, e.g. page 24). */
+    function getIp13JustificationTargetWidth(cont) {
+      const pageEl = cont.closest('.mushaf-page');
+      const cs = getComputedStyle(cont);
+      const cPadL = parseFloat(cs.paddingLeft) || 0;
+      const cPadR = parseFloat(cs.paddingRight) || 0;
+      if (pageEl) {
+        const ps = getComputedStyle(pageEl);
+        const pPadL = parseFloat(ps.paddingLeft) || 0;
+        const pPadR = parseFloat(ps.paddingRight) || 0;
+        return Math.max(10, pageEl.clientWidth - pPadL - pPadR - cPadL - cPadR);
+      }
+      return Math.max(10, cont.clientWidth - cPadL - cPadR);
+    }
+
     function applyIp13Justification(rootEl) {
       if (!useIndopak13() || !ip13MushafMatchOn()) return;
       const allRows = Array.from(rootEl.querySelectorAll('.ip13-ayah-line.indopak13-line--justified'));
@@ -2767,10 +2787,7 @@
 
       requestAnimationFrame(() => requestAnimationFrame(() => {
         containerMap.forEach((rows, cont) => {
-          const cs = getComputedStyle(cont);
-          const padL = parseFloat(cs.paddingLeft) || 0;
-          const padR = parseFloat(cs.paddingRight) || 0;
-          const targetW = cont.clientWidth - padL - padR;
+          const targetW = getIp13JustificationTargetWidth(cont);
           if (targetW < 10) {
             cont.classList.remove('ip13-pending');
             return;
