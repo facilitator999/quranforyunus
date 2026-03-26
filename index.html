@@ -3865,14 +3865,29 @@
           const verseBounds = [];
           for (const plan of group) {
             const segs = plan.ts.segments || [];
-            segs.forEach((seg, si) => {
-              if (si < plan.wis.length) timeline.push({ s: seg[1], e: seg[2], pi: plan.wis[si], vk: plan.vk });
-            });
+            for (const wi of plan.wis) {
+              const item = PAGE_PLAYLIST[wi];
+              if (!item) continue;
+              const wordIdx = item.word_in_ayah != null && item.word_in_ayah >= 0
+                ? item.word_in_ayah
+                : (() => {
+                    let w = 0;
+                    for (let i = 0; i < wi; i++) {
+                      if (PAGE_PLAYLIST[i].verse_key === plan.vk) w++;
+                    }
+                    return w;
+                  })();
+              const seg = segs[wordIdx];
+              if (seg) timeline.push({ s: seg[1], e: seg[2], pi: wi, vk: plan.vk });
+            }
             verseBounds.push({ endMs: plan.ts.timestamp_to, vk: plan.vk });
           }
+          timeline.sort((a, b) => a.s - b.s);
 
-          const firstMs = group[0].ts.timestamp_from;
           const lastMs = group[group.length - 1].ts.timestamp_to;
+          const firstMs = timeline.length
+            ? Math.min(...timeline.map(t => t.s))
+            : group[0].ts.timestamp_from;
           const pauseMs = getVerseEndPauseMs();
 
           // IndoPak13 (and similar): segments may not align 1:1 with playlist words after marker stripping —
@@ -3900,13 +3915,26 @@
           await new Promise(resolve => {
             let done = false, rafId;
             let hlIdx = -1, curVk = null, vbIdx = 0;
-            const finish = () => { if (done) return; done = true; cancelAnimationFrame(rafId); audio.pause(); currentAudio = null; clearAllHighlights(); resolve(); };
-            signal.addEventListener('abort', finish, { once: true });
+            const finish = () => {
+              if (done) return;
+              done = true;
+              signal.removeEventListener('abort', onAbort);
+              audio.removeEventListener('ended', onEnded);
+              cancelAnimationFrame(rafId);
+              audio.pause();
+              currentAudio = null;
+              clearAllHighlights();
+              resolve();
+            };
+            const onAbort = () => finish();
+            const onEnded = () => finish();
+            signal.addEventListener('abort', onAbort, { once: true });
+            audio.addEventListener('ended', onEnded, { once: true });
 
             const check = () => {
               if (done || signal.aborted) return;
               const ct = audio.currentTime * 1000;
-              if (ct >= lastMs) { finish(); return; }
+              if (audio.ended || ct >= lastMs - 40) { finish(); return; }
 
               if (pauseMs > 0 && vbIdx < verseBounds.length - 1 && ct >= verseBounds[vbIdx].endMs) {
                 vbIdx++;
