@@ -2272,14 +2272,15 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
       $('mode-recite').classList.toggle('active', mode === 'recite');
     }
 
-    function getAudioCacheBust() { return '?v=4&r=' + (getReciter() || ''); }
+    // Bump v when timestamp JSON schema or bulk data changes (invalidates old HTTP caches).
+    function getAudioCacheBust() { return '?v=5&r=' + (getReciter() || ''); }
     async function fetchSurahAudio() {
       TIMESTAMP_DATA_DIR = getTimestampDataDir();
       const recitationDir = getRecitationDir();
       const localMp3Base = recitationDir;
       const cacheBust = getAudioCacheBust();
       const results = await Promise.allSettled(PAGE_SURAHS.map(ch =>
-        fetch(TIMESTAMP_DATA_DIR + ch + '.json' + cacheBust).then(r => {
+        fetch(TIMESTAMP_DATA_DIR + ch + '.json' + cacheBust, { cache: 'no-store' }).then(r => {
           if (!r.ok) throw new Error('Not found');
           return r.json();
         })
@@ -3159,7 +3160,7 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
       const recitationDir = getRecitationDir();
       const cacheBust = getAudioCacheBust();
       const results = await Promise.allSettled(need.map(ch =>
-        fetch(TIMESTAMP_DATA_DIR + ch + '.json' + cacheBust).then(r => {
+        fetch(TIMESTAMP_DATA_DIR + ch + '.json' + cacheBust, { cache: 'no-store' }).then(r => {
           if (!r.ok) throw new Error('Not found');
           return r.json();
         })
