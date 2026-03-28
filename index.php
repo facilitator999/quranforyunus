@@ -2273,7 +2273,7 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
     }
 
     // Bump v when timestamp JSON schema or bulk data changes (invalidates old HTTP caches).
-    function getAudioCacheBust() { return '?v=6&r=' + (getReciter() || ''); }
+    function getAudioCacheBust() { return '?v=7&r=' + (getReciter() || ''); }
     async function fetchSurahAudio() {
       TIMESTAMP_DATA_DIR = getTimestampDataDir();
       const recitationDir = getRecitationDir();
