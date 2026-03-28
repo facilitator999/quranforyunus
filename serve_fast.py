@@ -1,4 +1,12 @@
-"""Fast local server: threaded HTTP + Range support for MP3 seeking."""
+"""Fast local server: threaded HTTP + Range support for MP3 seeking.
+
+Primary local dev for this project uses PHP (see start_server.bat):
+  php -S localhost:3000
+
+Use this Python server when you need reliable HTTP Range / partial responses
+for MP3 seeking in browsers; PHP's built-in server is simpler but may handle
+Range less consistently for large audio files.
+"""
 import io
 import os
 import re

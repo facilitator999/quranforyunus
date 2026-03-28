@@ -8,12 +8,16 @@ for /f "tokens=5" %%P in ('netstat -ano 2^>nul ^| findstr ":3000 " ^| findstr LI
 REM Brief pause so Windows releases the port
 timeout /t 1 /nobreak >nul
 
-echo Starting server...
+echo Starting PHP built-in server...
+echo   http://localhost:3000
+echo   Optional: py serve_fast.py 3000 — Python static server with MP3 Range ^(seek^) support
 echo.
-py serve_fast.py 3000
+
+php -S localhost:3000
 if errorlevel 1 (
     echo.
-    echo If "Python was not found", install Python from https://www.python.org/downloads/
-    echo Or try: python serve_fast.py 3000
+    echo If "php" was not found, install PHP and add php.exe to PATH:
+    echo   https://windows.php.net/download/
+    echo.
     pause
 )
