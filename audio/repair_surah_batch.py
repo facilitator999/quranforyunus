@@ -157,6 +157,12 @@ SAVE_EVERY = 10   # save JSON to disk after every N verses
 # only verse duration drives this.
 SHORT_VERSE_SKIP_REPETITION_POST_MS = 5000
 
+# If two consecutive words have silence >= this (ms), re-align the tail words on
+# audio from just after the previous word (WhisperX often drags later words late).
+# Only applies after word 1 (j>=1): tail-from-j0 mis-fires when word 1 still swallows
+# audio, creating bogus huge gaps; first-word drift is handled by verse-level align.
+INTRA_VERSE_GAP_RETRY_MS = 500
+
 # Pad around first/last word ms; gap between ayat when chaining (ms).
 VERSE_PAD_MS = 80
 INTER_VERSE_GAP_MS = 0
@@ -167,6 +173,10 @@ INTER_VERSE_GAP_MS = 0
 # timestamp_from (chain already accounts for prior end).
 ALIGN_LEAD_BUFFER_FIRST_MS = 300
 ALIGN_LEAD_BUFFER_CHAINED_MS = 0
+
+# Cap FFmpeg end for forced align: inflated timestamp_to + long tail makes WhisperX
+# compress early words on re-runs. Allow this much audio after loaded last segment end.
+ALIGN_CLIP_MAX_TAIL_MS = 2200
 
 
 # ---------------------------------------------------------------------------
@@ -328,6 +338,62 @@ def smooth_segments(segs, scores, words, min_dur_ms=200):
             smoothed += 1
 
     return smoothed
+
+
+def squeeze_spurious_gap_after_first_word(segs, min_gap_ms=600, target_gap_ms=80):
+    """If silence after word 1 is huge, WhisperX likely ended word 1 too early."""
+    if len(segs) < 2:
+        return False
+    g = segs[1][1] - segs[0][2]
+    if g < min_gap_ms:
+        return False
+    new_end = segs[1][1] - target_gap_ms
+    if new_end <= segs[0][1] + 30:
+        return False
+    segs[0][2] = new_end
+    return True
+
+
+def realign_tail_after_internal_gap(ffmpeg, mp3_path, wav_path, words, segs, scores,
+                                    start_ms, end_ms, model_a, metadata, device,
+                                    gap_threshold_ms=950):
+    """Re-align words after the first huge inter-word gap (fixes dragged late tails)."""
+    if len(segs) < 2 or len(words) != len(segs):
+        return 0
+    for j in range(len(segs) - 1):
+        if j == 0:
+            continue
+        gap = segs[j + 1][1] - segs[j][2]
+        if gap < gap_threshold_ms:
+            continue
+        tail_words = words[j + 1:]
+        if not tail_words:
+            continue
+        sub_start = max(start_ms, int(segs[j][2] + 30))
+        if sub_start >= end_ms - 250:
+            continue
+        try:
+            sub_clip = extract_wav(
+                ffmpeg, mp3_path, sub_start, end_ms, wav_path, buffer_before_ms=0,
+            )
+            new_tail, n_al, tail_scores = align_verse(
+                wav_path, tail_words, sub_clip, model_a, metadata, device
+            )
+            if n_al < len(tail_words):
+                continue
+            for k in range(len(tail_words)):
+                segs[j + 1 + k] = new_tail[k]
+                ts = tail_scores[k] if k < len(tail_scores) else 0.0
+                if j + 1 + k < len(scores):
+                    scores[j + 1 + k] = ts
+                else:
+                    scores.append(ts)
+            while len(scores) < len(words):
+                scores.append(0.0)
+            return len(tail_words)
+        except Exception:
+            continue
+    return 0
 
 
 def realign_from_repetition(segs, scores, words, verse_start_ms, verse_end_ms,
@@ -712,8 +778,18 @@ def main():
                             save_json(ts_data, ts_path)
                             print(f'             └─ saved ({changed} verses so far)')
                 else:
+                    align_end_ms = end_ms
+                    if orig_segs:
+                        orig_last = max(s[2] for s in orig_segs)
+                        if orig_last >= start_ms:
+                            align_end_ms = min(
+                                align_end_ms,
+                                int(orig_last) + ALIGN_CLIP_MAX_TAIL_MS,
+                            )
+                    align_end_ms = max(align_end_ms, start_ms + 400)
+
                     clip_start_ms = extract_wav(
-                        ffmpeg, mp3_path, start_ms, end_ms, wav_path,
+                        ffmpeg, mp3_path, start_ms, align_end_ms, wav_path,
                         buffer_before_ms=lead_buf,
                     )
                     new_segs, n_aligned, scores = align_verse(
@@ -724,13 +800,16 @@ def main():
                     # the audio likely contains the reciter repeating. Re-align
                     # with a shorter clip covering only the first pass for better
                     # per-word accuracy.
-                    verse_dur = end_ms - start_ms
+                    verse_dur = align_end_ms - start_ms
                     if new_segs and verse_dur > 0:
                         seg_span = new_segs[-1][2] - new_segs[0][1]
                         coverage = seg_span / verse_dur
                         if coverage < 0.75 and n_aligned >= expected:
                             # Re-extract clip ending just after last aligned word
-                            retry_end = int(new_segs[-1][2] + 1500)
+                            retry_end = min(
+                                int(new_segs[-1][2] + 1500),
+                                align_end_ms,
+                            )
                             clip_start_ms = extract_wav(
                                 ffmpeg, mp3_path, start_ms, retry_end, wav_path,
                                 buffer_before_ms=lead_buf,
@@ -759,20 +838,38 @@ def main():
                     if n_smoothed:
                         flag += f' ~{n_smoothed} smoothed'
 
+                    n_tail_passes = 0
+                    for _ in range(2):
+                        n_tw = realign_tail_after_internal_gap(
+                            ffmpeg, mp3_path, wav_path, words, new_segs, scores,
+                            start_ms, align_end_ms, model_a, metadata, device,
+                            gap_threshold_ms=INTRA_VERSE_GAP_RETRY_MS,
+                        )
+                        if n_tw == 0:
+                            break
+                        n_tail_passes += 1
+                        smooth_segments(new_segs, scores, words)
+                    if n_tail_passes:
+                        flag += f' ↳tail×{n_tail_passes}'
+
                     n_realigned = 0
                     n_bridged = 0
                     if verse_dur >= SHORT_VERSE_SKIP_REPETITION_POST_MS:
                         # Re-align trailing words using the repetition section
                         n_realigned = realign_from_repetition(
-                            new_segs, scores, words, start_ms, end_ms,
+                            new_segs, scores, words, start_ms, align_end_ms,
                             ffmpeg, mp3_path, wav_path, model_a, metadata, device
                         )
                         # Bridge large gaps caused by reciter repeating a phrase
-                        n_bridged = bridge_repetition_gaps(new_segs, verse_end_ms=end_ms)
+                        n_bridged = bridge_repetition_gaps(
+                            new_segs, verse_end_ms=align_end_ms
+                        )
                     if n_realigned:
                         flag += f' ♻ {n_realigned} re-aligned from repetition'
                     if n_bridged:
                         flag += f' ↔ {n_bridged} gap(s) bridged'
+
+                    squeeze_spurious_gap_after_first_word(new_segs)
 
                     ts_entry['timestamp_to'] = max(
                         int(ts_entry['timestamp_to']),

@@ -7,7 +7,6 @@ Use this Python server when you need reliable HTTP Range / partial responses
 for MP3 seeking in browsers; PHP's built-in server is simpler but may handle
 Range less consistently for large audio files.
 """
-import io
 import os
 import re
 import sys
@@ -16,6 +15,31 @@ from socketserver import ThreadingMixIn
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 3000
+
+
+class _LimitedFileReader:
+    """Stream at most `length` bytes from an open binary file (avoids buffering whole MP3 on seek)."""
+
+    def __init__(self, raw, length):
+        self.raw = raw
+        self._remaining = length
+
+    def read(self, n=-1):
+        if self._remaining <= 0:
+            return b""
+        if n is None or n < 0:
+            to_read = self._remaining
+        else:
+            to_read = min(n, self._remaining)
+        data = self.raw.read(to_read)
+        self._remaining -= len(data)
+        return data
+
+    def close(self):
+        try:
+            self.raw.close()
+        finally:
+            self._remaining = 0
 
 
 class RangeRequestHandler(SimpleHTTPRequestHandler):
@@ -41,9 +65,15 @@ class RangeRequestHandler(SimpleHTTPRequestHandler):
                 start = int(m.group(1))
                 end = int(m.group(2)) if m.group(2) else file_size - 1
                 end = min(end, file_size - 1)
-                if start > end or start >= file_size:
-                    start = 0
-                    end = min(8191, file_size - 1)
+                # Invalid / out-of-range: must not pretend byte 0 is the seek target (206 + wrong
+                # bytes breaks MP3 decode sync and makes skipping feel random). RFC 7233: 416.
+                if file_size == 0 or start > end or start >= file_size:
+                    self.send_response(416)
+                    self.send_header("Content-Range", f"bytes */{file_size}")
+                    self.send_header("Content-Length", "0")
+                    self.send_header("Accept-Ranges", "bytes")
+                    self.end_headers()
+                    return None
                 length = end - start + 1
             elif suffix_m and file_size > 0:
                 # Suffix range: last N bytes (some players use this)
@@ -55,11 +85,9 @@ class RangeRequestHandler(SimpleHTTPRequestHandler):
 
             if range_header and (m or suffix_m):
                 ctype = self.guess_type(path)
-                with open(path, "rb") as f:
-                    f.seek(start)
-                    chunk = f.read(length)
-                # Return BytesIO so exactly `length` bytes are sent (base class copies until EOF)
-                body = io.BytesIO(chunk)
+                f = open(path, "rb")
+                f.seek(start)
+                body = _LimitedFileReader(f, length)
 
                 self.send_response(206)
                 self.send_header("Content-Type", ctype)
