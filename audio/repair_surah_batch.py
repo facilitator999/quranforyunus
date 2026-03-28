@@ -167,6 +167,14 @@ INTRA_VERSE_GAP_RETRY_MS = 500
 VERSE_PAD_MS = 80
 INTER_VERSE_GAP_MS = 0
 
+# If the next ayah's first word starts much later than our last aligned word, part
+# of that gap is usually trailing sound + breath for the current ayah. Extend
+# timestamp_to into it so playback does not cut off abruptly (e.g. alafasy 113:3).
+INTER_AYAH_GAP_MIN_MS = 400
+INTER_AYAH_GAP_SHARE = 0.55  # fraction of (next_first - last_word_end) to assign to prev ayah
+INTER_AYAH_NEXT_RESERVE_MS = 120  # leave this much before next ayah's first word start
+INTER_AYAH_MAX_TAIL_AFTER_LAST_WORD_MS = 1600  # cap extension beyond last segment end
+
 # ffmpeg slice: leading pad pulls in the previous ayah's audio; WhisperX then aligns
 # the *next* ayah's text onto that tail (wrong words / overlaps). First ayah in a
 # surah keeps a small pre-roll; every later ayah starts the slice exactly at
@@ -630,6 +638,31 @@ def normalize_segments(segs):
     return [segs[i:i+3] for i in range(0, len(segs) - len(segs) % 3, 3)]
 
 
+def extend_timestamp_into_interayah_gap(ts_entry, last_seg_end, next_ts_entry):
+    """Push timestamp_to forward when a long silence precedes the next ayah's speech."""
+    cur = int(ts_entry['timestamp_to'])
+    try:
+        lte = int(float(last_seg_end))
+    except (TypeError, ValueError):
+        return cur
+    if next_ts_entry is None:
+        return cur
+    nsegs = normalize_segments(next_ts_entry.get('segments') or [])
+    if not nsegs:
+        return cur
+    next_first = int(min(float(s[1]) for s in nsegs))
+    gap = next_first - lte
+    if gap < INTER_AYAH_GAP_MIN_MS:
+        return cur
+    from_share = lte + int(gap * INTER_AYAH_GAP_SHARE)
+    before_next = next_first - INTER_AYAH_NEXT_RESERVE_MS
+    target = min(from_share, before_next)
+    target = max(cur, target)
+    cap = lte + INTER_AYAH_MAX_TAIL_AFTER_LAST_WORD_MS
+    target = min(target, cap)
+    return int(target)
+
+
 def save_json(ts_data, ts_path):
     with open(ts_path, 'w', encoding='utf-8') as f:
         json.dump(ts_data, f, ensure_ascii=False, indent=2)
@@ -713,7 +746,7 @@ def main():
     with tempfile.TemporaryDirectory() as tmpdir:
         wav_path = os.path.join(tmpdir, 'verse.wav')
 
-        for ts_entry in timestamps:
+        for idx, ts_entry in enumerate(timestamps):
             vk   = ts_entry['verse_key']
             vnum = int(vk.split(':')[1])
             if vnum < args.start_verse:
@@ -727,6 +760,10 @@ def main():
                 print(f'  [{vk:>8}] SKIP — not found in data/pages/')
                 prev_verse_end_ms = int(ts_entry['timestamp_to'])
                 continue
+
+            next_ts_entry = (
+                timestamps[idx + 1] if idx + 1 < len(timestamps) else None
+            )
 
             if prev_verse_end_ms is not None:
                 ts_entry['timestamp_from'] = max(
@@ -767,6 +804,9 @@ def main():
                     ts_entry['timestamp_to'] = max(
                         int(ts_entry['timestamp_to']),
                         int(dedup_segs[-1][2]) + VERSE_PAD_MS,
+                    )
+                    ts_entry['timestamp_to'] = extend_timestamp_into_interayah_gap(
+                        ts_entry, dedup_segs[-1][2], next_ts_entry
                     )
                     ts_entry['duration'] = (
                         int(ts_entry['timestamp_to']) - int(ts_entry['timestamp_from'])
@@ -874,6 +914,9 @@ def main():
                     ts_entry['timestamp_to'] = max(
                         int(ts_entry['timestamp_to']),
                         int(new_segs[-1][2]) + VERSE_PAD_MS,
+                    )
+                    ts_entry['timestamp_to'] = extend_timestamp_into_interayah_gap(
+                        ts_entry, new_segs[-1][2], next_ts_entry
                     )
                     ts_entry['duration'] = (
                         int(ts_entry['timestamp_to']) - int(ts_entry['timestamp_from'])
