@@ -11,6 +11,9 @@ Usage:
 
 If the run is interrupted, restart with --start-verse N to pick up where it left off.
 Progress is saved to disk every 10 verses so a crash doesn't lose all work.
+
+Very short ayat (e.g. most of surahs 112–114) skip repetition-specific post-processing;
+see SHORT_VERSE_SKIP_REPETITION_POST_MS — there is no hard-coded surah list.
 """
 
 import subprocess
@@ -146,6 +149,13 @@ PAGES_DIR  = os.path.join(ROOT_DIR, 'data', 'pages')
 AUDIO_DIR  = os.path.join(ROOT_DIR, 'audio')
 
 SAVE_EVERY = 10   # save JSON to disk after every N verses
+
+# Below this duration, skip realign_from_repetition + bridge_repetition_gaps. Those steps
+# assume long ayat where the reciter repeats a phrase inside the same timestamp window.
+# Very short ayat (incl. most of 112–114) often have silence or the next surah after the
+# last word; the repetition logic can misfire. There is NO surah-number special case —
+# only verse duration drives this.
+SHORT_VERSE_SKIP_REPETITION_POST_MS = 5000
 
 
 # ---------------------------------------------------------------------------
@@ -706,16 +716,18 @@ def main():
                     if n_smoothed:
                         flag += f' ~{n_smoothed} smoothed'
 
-                    # Re-align trailing words using the repetition section
-                    n_realigned = realign_from_repetition(
-                        new_segs, scores, words, start_ms, end_ms,
-                        ffmpeg, mp3_path, wav_path, model_a, metadata, device
-                    )
+                    n_realigned = 0
+                    n_bridged = 0
+                    if verse_dur >= SHORT_VERSE_SKIP_REPETITION_POST_MS:
+                        # Re-align trailing words using the repetition section
+                        n_realigned = realign_from_repetition(
+                            new_segs, scores, words, start_ms, end_ms,
+                            ffmpeg, mp3_path, wav_path, model_a, metadata, device
+                        )
+                        # Bridge large gaps caused by reciter repeating a phrase
+                        n_bridged = bridge_repetition_gaps(new_segs, verse_end_ms=end_ms)
                     if n_realigned:
                         flag += f' ♻ {n_realigned} re-aligned from repetition'
-
-                    # Bridge large gaps caused by reciter repeating a phrase
-                    n_bridged = bridge_repetition_gaps(new_segs, verse_end_ms=end_ms)
                     if n_bridged:
                         flag += f' ↔ {n_bridged} gap(s) bridged'
 
