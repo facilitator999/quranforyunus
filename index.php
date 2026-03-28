@@ -1,13 +1,55 @@
+<?php
+$_ogTitle = 'Quran for Yunus — Read &amp; Listen | quranforyunus.com';
+$_ogDesc  = 'Read the full Quran with word-by-word recitation and spelling. Listen to Muhammad Siddiq Al-Minshawi. All 604 pages, 114 surahs.';
+$_metaDesc = $_ogDesc . ' quranforyunus.com';
+
+$_verse = isset($_GET['verse']) ? $_GET['verse'] : null;
+if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
+    $_sn = (int)$_vm[1]; $_an = (int)$_vm[2];
+    $_surahNames = [1=>'Al-Fatiha',2=>'Al-Baqarah',3=>'Al-Imran',4=>"An-Nisa'",5=>"Al-Ma'idah",6=>"Al-An'am",7=>"Al-A'raf",8=>'Al-Anfal',9=>'At-Tawbah',10=>'Yunus',11=>'Hud',12=>'Yusuf',13=>"Ar-Ra'd",14=>'Ibrahim',15=>'Al-Hijr',16=>'An-Nahl',17=>'Al-Isra',18=>'Al-Kahf',19=>'Maryam',20=>'Ta Ha',21=>'Al-Anbiya',22=>'Al-Hajj',23=>'Al-Muminun',24=>'An-Nur',25=>'Al-Furqan',26=>"Ash-Shu'ara",27=>'An-Naml',28=>'Al-Qasas',29=>'Al-Ankabut',30=>'Ar-Rum',31=>'Luqman',32=>'As-Sajdah',33=>'Al-Ahzab',34=>'Saba',35=>'Fatir',36=>'Ya Sin',37=>'As-Saffat',38=>'Sad',39=>'Az-Zumar',40=>'Ghafir',41=>'Fussilat',42=>'Ash-Shura',43=>'Az-Zukhruf',44=>'Ad-Dukhan',45=>'Al-Jathiyah',46=>'Al-Ahqaf',47=>'Muhammad',48=>'Al-Fath',49=>'Al-Hujurat',50=>'Qaf',51=>'Ad-Dhariyat',52=>'At-Tur',53=>'An-Najm',54=>'Al-Qamar',55=>'Ar-Rahman',56=>"Al-Waqi'ah",57=>'Al-Hadid',58=>'Al-Mujadalah',59=>'Al-Hashr',60=>'Al-Mumtahanah',61=>'As-Saff',62=>'Al-Jumuah',63=>'Al-Munafiqun',64=>'At-Taghabun',65=>'At-Talaq',66=>'At-Tahrim',67=>'Al-Mulk',68=>'Al-Qalam',69=>'Al-Haqqah',70=>'Al-Maarij',71=>'Nuh',72=>'Al-Jinn',73=>'Al-Muzzammil',74=>'Al-Muddaththir',75=>'Al-Qiyamah',76=>'Al-Insan',77=>'Al-Mursalat',78=>'An-Naba',79=>"An-Nazi'at",80=>'Abasa',81=>'At-Takwir',82=>'Al-Infitar',83=>'Al-Mutaffifin',84=>'Al-Inshiqaq',85=>'Al-Buruj',86=>'At-Tariq',87=>"Al-A'la",88=>'Al-Ghashiyah',89=>'Al-Fajr',90=>'Al-Balad',91=>'Ash-Shams',92=>'Al-Layl',93=>'Ad-Duha',94=>'Ash-Sharh',95=>'At-Tin',96=>'Al-Alaq',97=>'Al-Qadr',98=>'Al-Bayyinah',99=>'Az-Zalzalah',100=>'Al-Adiyat',101=>"Al-Qari'ah",102=>'At-Takathur',103=>'Al-Asr',104=>'Al-Humazah',105=>'Al-Fil',106=>'Quraysh',107=>"Al-Ma'un",108=>'Al-Kawthar',109=>'Al-Kafirun',110=>'An-Nasr',111=>'Al-Masad',112=>'Al-Ikhlas',113=>'Al-Falaq',114=>'An-Nas'];
+    if ($_sn >= 1 && $_sn <= 114 && $_an >= 1) {
+        $_raw = file_get_contents(__DIR__ . '/data/full_quran.json');
+        $_raw = preg_replace('/^\xEF\xBB\xBF/', '', $_raw);
+        $_fq = json_decode($_raw, true);
+        $_ssp = [];
+        foreach ($_fq as $_pg => $_inf) { foreach ($_inf['surahs'] as $_s) { if (!isset($_ssp[$_s])) $_ssp[$_s] = (int)$_pg; } }
+        $_startPg = $_ssp[$_sn] ?? 1;
+        $_vk = $_sn . ':' . $_an;
+        for ($_i = 0; $_i < 40; $_i++) {
+            $_p = $_startPg + $_i; if ($_p > 604) break;
+            $_path = __DIR__ . '/data/pages/' . $_p . '.json';
+            if (!file_exists($_path)) continue;
+            $_pd = json_decode(file_get_contents($_path), true);
+            if (!$_pd || !isset($_pd['verses'])) continue;
+            foreach ($_pd['verses'] as $_v) {
+                if ($_v['verse_key'] === $_vk) {
+                    $_ar = []; $_tr = [];
+                    foreach ($_v['words'] as $_w) {
+                        if ($_w['char_type_name'] === 'word') {
+                            $_ar[] = $_w['text_uthmani'];
+                            $_tr[] = $_w['translation']['text'] ?? '';
+                        }
+                    }
+                    $_ogTitle = 'Surah ' . $_surahNames[$_sn] . ' (' . $_vk . ') — Quran for Yunus';
+                    $_ogDesc  = '&quot;' . implode(' ', $_tr) . '&quot; — ' . implode(' ', $_ar);
+                    $_metaDesc = $_ogDesc;
+                    break 2;
+                }
+            }
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google" content="notranslate">
-  <title>Quran for Yunus — Read &amp; Listen | quranforyunus.com</title>
-  <meta name="description" content="Read the full Quran with word-by-word recitation and spelling. Listen to Muhammad Siddiq Al-Minshawi. All 604 pages, 114 surahs. quranforyunus.com">
-  <meta property="og:title" content="Quran for Yunus — Read &amp; Listen | quranforyunus.com">
-  <meta property="og:description" content="Read the full Quran with word-by-word recitation and spelling. Listen to Muhammad Siddiq Al-Minshawi. All 604 pages, 114 surahs.">
+  <title><?= $_ogTitle ?></title>
+  <meta name="description" content="<?= $_metaDesc ?>">
+  <meta property="og:title" content="<?= $_ogTitle ?>">
+  <meta property="og:description" content="<?= $_ogDesc ?>">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://quranforyunus.com/logo-white.png?v=6">
   <meta property="og:image:type" content="image/png">
@@ -973,12 +1015,26 @@
     .verse-num.shared-verse {
       outline: 3px solid var(--accent);
       outline-offset: 0;
-      background: var(--accent-light);
-      animation: shared-verse-pulse 1.5s ease-out 2;
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+      animation: shared-badge-pulse 1.8s ease-in-out 3;
     }
-    @keyframes shared-verse-pulse {
-      0%, 100% { outline-offset: 0; }
-      50% { outline-offset: 4px; }
+    @keyframes shared-badge-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+    }
+    .word.shared-verse-word {
+      background: rgba(17,94,89,0.13);
+      border-radius: 6px;
+      animation: shared-word-pulse 1.8s ease-in-out 3;
+    }
+    body.night-mode .word.shared-verse-word {
+      background: rgba(45,212,191,0.25);
+    }
+    @keyframes shared-word-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
     }
 
     /* Translation mode — verse by verse */
@@ -1717,7 +1773,7 @@
                 if (_past && i > 0) break;
               } catch(_) { break; }
             }
-            location.replace('?page=' + _foundPage + _qkPl);
+            location.replace('?page=' + _foundPage + '&surah=' + _sNum + '&verse=' + _sharedVerse.split(':')[1] + _qkPl);
             return;
           }
 
@@ -5014,8 +5070,21 @@
             if (el) {
               el.scrollIntoView({ behavior: 'smooth', block: 'center' });
               document.querySelectorAll('.verse-num.shared-verse').forEach(n => n.classList.remove('shared-verse'));
+              document.querySelectorAll('.word.shared-verse-word').forEach(n => n.classList.remove('shared-verse-word'));
               el.classList.add('shared-verse');
-              setTimeout(() => el.classList.remove('shared-verse'), 5000);
+              // highlight all words belonging to this verse
+              if (PAGE_PLAYLIST) {
+                PAGE_PLAYLIST.forEach((p, i) => {
+                  if (p.verse_key === verseKey) {
+                    const wEl = document.querySelector(`.word[data-play-index="${i}"]`);
+                    if (wEl) wEl.classList.add('shared-verse-word');
+                  }
+                });
+              }
+              setTimeout(() => {
+                el.classList.remove('shared-verse');
+                document.querySelectorAll('.word.shared-verse-word').forEach(n => n.classList.remove('shared-verse-word'));
+              }, 10000);
               if (isPagelessMode()) pagelessScrollYForPageLoad = window.scrollY;
               if (toastLabel) showBookmarkToast(toastLabel);
               return;
