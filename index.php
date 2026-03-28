@@ -2,6 +2,8 @@
 $_ogTitle = 'Quran for Yunus — Read &amp; Listen | quranforyunus.com';
 $_ogDesc  = 'Read the full Quran with word-by-word recitation and spelling. Listen to Muhammad Siddiq Al-Minshawi. All 604 pages, 114 surahs.';
 $_metaDesc = $_ogDesc . ' quranforyunus.com';
+$_ogImage = 'https://quranforyunus.com/logo-white.png?v=6';
+$_ogImageW = ''; $_ogImageH = '';
 
 $_verse = isset($_GET['verse']) ? $_GET['verse'] : null;
 if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
@@ -19,7 +21,9 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
             $_p = $_startPg + $_i; if ($_p > 604) break;
             $_path = __DIR__ . '/data/pages/' . $_p . '.json';
             if (!file_exists($_path)) continue;
-            $_pd = json_decode(file_get_contents($_path), true);
+            $_pgRaw = file_get_contents($_path);
+            $_pgRaw = preg_replace('/^\xEF\xBB\xBF/', '', $_pgRaw);
+            $_pd = json_decode($_pgRaw, true);
             if (!$_pd || !isset($_pd['verses'])) continue;
             foreach ($_pd['verses'] as $_v) {
                 if ($_v['verse_key'] === $_vk) {
@@ -33,6 +37,8 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
                     $_ogTitle = 'Surah ' . $_surahNames[$_sn] . ' (' . $_vk . ') — Quran for Yunus';
                     $_ogDesc  = '&quot;' . implode(' ', $_tr) . '&quot; — ' . implode(' ', $_ar);
                     $_metaDesc = $_ogDesc;
+                    $_ogImage = 'https://www.quranforyunus.com/og-image.php?verse=' . $_vk;
+                    $_ogImageW = '500'; $_ogImageH = '500';
                     break 2;
                 }
             }
@@ -51,10 +57,14 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
   <meta property="og:title" content="<?= $_ogTitle ?>">
   <meta property="og:description" content="<?= $_ogDesc ?>">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://quranforyunus.com/logo-white.png?v=6">
+  <meta property="og:image" content="<?= $_ogImage ?>">
   <meta property="og:image:type" content="image/png">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:image" content="https://quranforyunus.com/logo-white.png?v=6">
+<?php if ($_ogImageW): ?>
+  <meta property="og:image:width" content="<?= $_ogImageW ?>">
+  <meta property="og:image:height" content="<?= $_ogImageH ?>">
+<?php endif; ?>
+  <meta name="twitter:card" content="<?= $_ogImageW ? 'summary_large_image' : 'summary' ?>">
+  <meta name="twitter:image" content="<?= $_ogImage ?>">
   <link rel="icon" href="logo-white.png?v=6" type="image/png" sizes="32x32">
   <link rel="icon" href="logo-white.png?v=6" type="image/png" sizes="192x192">
   <link rel="apple-touch-icon" href="logo-white.png?v=6">
@@ -1513,7 +1523,7 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
   </style>
 </head>
 <body>
-  <script>(function(){var on=localStorage.getItem('qk_night_mode')==='1';if(on){document.body.classList.add('night-mode');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#1a1a1a');}var f=localStorage.getItem('qk_mushaf_font')||'uthmani';var fam=(f==='indopak'||f==='indopak13')?'IndoPak':'UthmanicHafs';document.documentElement.style.setProperty('--qk-mushaf-font',fam);})();</script>
+  <script>(function(){var s=localStorage.getItem('qk_night_mode');var on=s==='1'||(s===null&&window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(on){document.body.classList.add('night-mode');var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#1a1a1a');}var f=localStorage.getItem('qk_mushaf_font')||'uthmani';var fam=(f==='indopak'||f==='indopak13')?'IndoPak':'UthmanicHafs';document.documentElement.style.setProperty('--qk-mushaf-font',fam);})();</script>
   <script>if('serviceWorker'in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script>
   <!-- ===== INDEX VIEW ===== -->
   <div id="index-view" dir="ltr">
@@ -5244,7 +5254,8 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
       document.body.appendChild(overlay);
 
       (function initNightMode() {
-        const night = localStorage.getItem('qk_night_mode') === '1';
+        const nightPref = localStorage.getItem('qk_night_mode');
+        const night = nightPref === '1' || (nightPref === null && window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches);
         if (night) document.body.classList.add('night-mode');
         const metaTheme = document.querySelector('meta[name="theme-color"]');
         if (metaTheme) metaTheme.setAttribute('content', night ? '#1a1a1a' : '#115e59');
