@@ -157,6 +157,10 @@ SAVE_EVERY = 10   # save JSON to disk after every N verses
 # only verse duration drives this.
 SHORT_VERSE_SKIP_REPETITION_POST_MS = 5000
 
+# Pad around first/last word ms; gap between ayat when chaining (ms).
+VERSE_PAD_MS = 80
+INTER_VERSE_GAP_MS = 0
+
 
 # ---------------------------------------------------------------------------
 # helpers
@@ -624,6 +628,11 @@ def main():
     partial    = []
     deduped    = []
 
+    # End time of previous ayah in this surah (ms). Chaining fixes bad Tarteel
+    # boundaries: if verse N's audio runs past timestamp_to, verse N+1 must not
+    # be extracted from an overlapping window (common on short suwar / alafasy).
+    prev_verse_end_ms = None
+
     with tempfile.TemporaryDirectory() as tmpdir:
         wav_path = os.path.join(tmpdir, 'verse.wav')
 
@@ -631,6 +640,7 @@ def main():
             vk   = ts_entry['verse_key']
             vnum = int(vk.split(':')[1])
             if vnum < args.start_verse:
+                prev_verse_end_ms = int(ts_entry['timestamp_to'])
                 continue
             if args.end_verse and vnum > args.end_verse:
                 break
@@ -638,10 +648,16 @@ def main():
             words = verse_words.get(vk)
             if not words:
                 print(f'  [{vk:>8}] SKIP — not found in data/pages/')
+                prev_verse_end_ms = int(ts_entry['timestamp_to'])
                 continue
 
-            start_ms  = ts_entry['timestamp_from']
-            end_ms    = ts_entry['timestamp_to']
+            if prev_verse_end_ms is not None:
+                ts_entry['timestamp_from'] = max(
+                    int(ts_entry['timestamp_from']),
+                    prev_verse_end_ms + INTER_VERSE_GAP_MS,
+                )
+            start_ms  = int(ts_entry['timestamp_from'])
+            end_ms    = int(ts_entry['timestamp_to'])
             expected  = len(words)
             orig_segs = normalize_segments(ts_entry.get('segments', []))
 
@@ -668,8 +684,16 @@ def main():
                     print(f'  [{vk:>8}] {expected}/{expected} words  '
                           f'({pct:5.1f}%  {done_count}/{total}) [dedup-orig]')
                     deduped.append(vk)
+                    ts_entry['segments'] = dedup_segs
+                    ts_entry['timestamp_to'] = max(
+                        int(ts_entry['timestamp_to']),
+                        int(dedup_segs[-1][2]) + VERSE_PAD_MS,
+                    )
+                    ts_entry['duration'] = (
+                        int(ts_entry['timestamp_to']) - int(ts_entry['timestamp_from'])
+                    )
+                    prev_verse_end_ms = int(ts_entry['timestamp_to'])
                     if not args.dry_run:
-                        ts_entry['segments'] = dedup_segs
                         changed += 1
                         if changed % SAVE_EVERY == 0:
                             save_json(ts_data, ts_path)
@@ -730,6 +754,15 @@ def main():
                         flag += f' ♻ {n_realigned} re-aligned from repetition'
                     if n_bridged:
                         flag += f' ↔ {n_bridged} gap(s) bridged'
+
+                    ts_entry['timestamp_to'] = max(
+                        int(ts_entry['timestamp_to']),
+                        int(new_segs[-1][2]) + VERSE_PAD_MS,
+                    )
+                    ts_entry['duration'] = (
+                        int(ts_entry['timestamp_to']) - int(ts_entry['timestamp_from'])
+                    )
+                    prev_verse_end_ms = int(ts_entry['timestamp_to'])
 
                     done_count += 1
                     pct = done_count / total * 100

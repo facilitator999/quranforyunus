@@ -35,8 +35,8 @@
       {
         "verse_key": "114:2",
         "timestamp_from": 5830,
-        "timestamp_to": 10730,
-        "duration": 4900,
+        "timestamp_to": 11030,
+        "duration": 5200,
         "segments": [
           [
             1,
@@ -52,19 +52,19 @@
       },
       {
         "verse_key": "114:3",
-        "timestamp_from": 10730,
+        "timestamp_from": 11030,
         "timestamp_to": 15720,
-        "duration": 4990,
+        "duration": 4690,
         "segments": [
           [
             1,
             11431.0,
-            12312.0
+            12473.0
           ],
           [
             2,
-            12392.0,
-            16177.0
+            12573.0,
+            15058.0
           ]
         ]
       },
@@ -132,8 +132,8 @@
       {
         "verse_key": "114:6",
         "timestamp_from": 31020,
-        "timestamp_to": 38140,
-        "duration": 7120,
+        "timestamp_to": 38220,
+        "duration": 7200,
         "segments": [
           [
             1,
