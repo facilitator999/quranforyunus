@@ -161,6 +161,13 @@ SHORT_VERSE_SKIP_REPETITION_POST_MS = 5000
 VERSE_PAD_MS = 80
 INTER_VERSE_GAP_MS = 0
 
+# ffmpeg slice: leading pad pulls in the previous ayah's audio; WhisperX then aligns
+# the *next* ayah's text onto that tail (wrong words / overlaps). First ayah in a
+# surah keeps a small pre-roll; every later ayah starts the slice exactly at
+# timestamp_from (chain already accounts for prior end).
+ALIGN_LEAD_BUFFER_FIRST_MS = 300
+ALIGN_LEAD_BUFFER_CHAINED_MS = 0
+
 
 # ---------------------------------------------------------------------------
 # helpers
@@ -211,9 +218,13 @@ def find_ffmpeg():
     sys.exit(1)
 
 
-def extract_wav(ffmpeg, mp3_path, start_ms, end_ms, out_wav, buffer_ms=300):
-    clip_start_ms = max(0, start_ms - buffer_ms)
-    duration_sec  = (end_ms + buffer_ms - clip_start_ms) / 1000.0
+def extract_wav(ffmpeg, mp3_path, start_ms, end_ms, out_wav, buffer_ms=300,
+                 buffer_before_ms=None):
+    """buffer_ms pads after end_ms. buffer_before_ms defaults to buffer_ms; use 0 when
+    start_ms is a chained ayah boundary so the clip does not include prior ayah audio."""
+    bb = buffer_ms if buffer_before_ms is None else buffer_before_ms
+    clip_start_ms = max(0, start_ms - bb)
+    duration_sec = (end_ms + buffer_ms - clip_start_ms) / 1000.0
     subprocess.run([
         ffmpeg, '-y',
         '-ss', str(clip_start_ms / 1000.0),
@@ -658,6 +669,8 @@ def main():
                 )
             start_ms  = int(ts_entry['timestamp_from'])
             end_ms    = int(ts_entry['timestamp_to'])
+            lead_buf = (ALIGN_LEAD_BUFFER_CHAINED_MS if prev_verse_end_ms is not None
+                        else ALIGN_LEAD_BUFFER_FIRST_MS)
             expected  = len(words)
             orig_segs = normalize_segments(ts_entry.get('segments', []))
 
@@ -699,7 +712,10 @@ def main():
                             save_json(ts_data, ts_path)
                             print(f'             └─ saved ({changed} verses so far)')
                 else:
-                    clip_start_ms = extract_wav(ffmpeg, mp3_path, start_ms, end_ms, wav_path)
+                    clip_start_ms = extract_wav(
+                        ffmpeg, mp3_path, start_ms, end_ms, wav_path,
+                        buffer_before_ms=lead_buf,
+                    )
                     new_segs, n_aligned, scores = align_verse(
                         wav_path, words, clip_start_ms, model_a, metadata, device
                     )
@@ -715,7 +731,10 @@ def main():
                         if coverage < 0.75 and n_aligned >= expected:
                             # Re-extract clip ending just after last aligned word
                             retry_end = int(new_segs[-1][2] + 1500)
-                            clip_start_ms = extract_wav(ffmpeg, mp3_path, start_ms, retry_end, wav_path)
+                            clip_start_ms = extract_wav(
+                                ffmpeg, mp3_path, start_ms, retry_end, wav_path,
+                                buffer_before_ms=lead_buf,
+                            )
                             new_segs, n_aligned, scores = align_verse(
                                 wav_path, words, clip_start_ms, model_a, metadata, device
                             )
