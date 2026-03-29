@@ -423,6 +423,23 @@ def align_full_surah(ffmpeg, mp3_path, surah, verse_words, model_a, metadata, de
             })
             idx += count
 
+        # Validation: check alignment covers the audio
+        last_word_end = timestamps[-1]['segments'][-1][2] if timestamps and timestamps[-1]['segments'] else 0
+        audio_dur_ms = duration * 1000
+        unused_audio = audio_dur_ms - last_word_end
+        if unused_audio > 3000:
+            print(f'  [{surah:>3}] REJECT - WhisperX only used {last_word_end:.0f}/{audio_dur_ms:.0f}ms '
+                  f'({unused_audio:.0f}ms unused)')
+            return None
+
+        # Validation: check no word is crushed below 100ms
+        for verse in timestamps:
+            for seg in verse['segments']:
+                if seg[2] - seg[1] < 100:
+                    print(f'  [{surah:>3}] REJECT - {verse["verse_key"]} w{seg[0]} is only '
+                          f'{seg[2]-seg[1]:.0f}ms')
+                    return None
+
         return timestamps
     except Exception as e:
         print(f'  [{surah:>3}] align error: {e}')
@@ -446,6 +463,7 @@ def process_surah(reciter, edition, surah, ffmpeg, model_a, metadata, device):
     print(f'  [{surah:>3}] Aligning full surah with WhisperX...')
     timestamps = align_full_surah(ffmpeg, mp3_path, surah, verse_words, model_a, metadata, device)
     if not timestamps:
+        print(f'  [{surah:>3}] SKIP - alignment rejected, keeping existing timestamps')
         return False
 
     data = {
