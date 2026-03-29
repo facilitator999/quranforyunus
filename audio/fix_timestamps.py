@@ -205,7 +205,6 @@ def import_bilawal(reciter, edition, surah, ffmpeg, mp3_path):
             'duration': vt - vs,
             'segments': mapped_segs,
         })
-        time.sleep(0.05)
 
     if errors:
         for e in errors:
@@ -354,6 +353,85 @@ def fix_last_word(ffmpeg, mp3_path, verse, vi, timestamps, words, model_a, metad
 # Main pipeline
 # ---------------------------------------------------------------------------
 
+def align_full_surah(ffmpeg, mp3_path, surah, verse_words, model_a, metadata, device):
+    """Align all words of a surah at once using WhisperX. Returns timestamp data."""
+    # Build ordered list of (verse_key, [word_dicts])
+    n_ayahs = AYAH_COUNTS[surah - 1]
+    verse_list = []
+    all_words = []
+    for ayah in range(1, n_ayahs + 1):
+        vk = f'{surah}:{ayah}'
+        words = verse_words.get(vk, [])
+        if not words:
+            print(f'  [{surah:>3}] SKIP - no word data for {vk}')
+            return None
+        verse_list.append((vk, len(words)))
+        all_words.extend(words)
+
+    # Extract full surah wav
+    tmp_wav = os.path.join(tempfile.gettempdir(), f'full_{surah}.wav')
+    subprocess.run([
+        ffmpeg, '-y', '-i', mp3_path,
+        '-ar', '16000', '-ac', '1', '-f', 'wav', tmp_wav,
+    ], capture_output=True, timeout=120)
+
+    try:
+        sample_rate, wav_data = scipy.io.wavfile.read(tmp_wav)
+        if wav_data.dtype == np.int16:
+            audio = wav_data.astype(np.float32) / 32768.0
+        elif wav_data.dtype == np.int32:
+            audio = wav_data.astype(np.float32) / 2147483648.0
+        else:
+            audio = wav_data.astype(np.float32)
+        if audio.ndim > 1:
+            audio = audio.mean(axis=1)
+        duration = len(audio) / 16000.0
+
+        full_text = ' '.join(clean_for_alignment(w['text_uthmani']) for w in all_words)
+        transcript = [{'text': full_text, 'start': 0.0, 'end': duration}]
+        result = whisperx.align(transcript, model_a, metadata, audio, device,
+                                return_char_alignments=False)
+        aligned = result.get('word_segments', [])
+
+        if len(aligned) != len(all_words):
+            print(f'  [{surah:>3}] WARN - aligned {len(aligned)}/{len(all_words)} words')
+            return None
+
+        # Map aligned words back to verses
+        timestamps = []
+        idx = 0
+        for vk, count in verse_list:
+            verse_aligned = aligned[idx:idx + count]
+            words = verse_words[vk]
+
+            segs = []
+            for i, aw in enumerate(verse_aligned):
+                pos = words[i]['position']
+                w_s = int(aw.get('start', 0) * 1000)
+                w_e = int(aw.get('end', 0) * 1000)
+                segs.append([pos, float(w_s), float(w_e)])
+
+            vs = segs[0][1] if segs else 0
+            ve = segs[-1][2] if segs else 0
+
+            timestamps.append({
+                'verse_key': vk,
+                'timestamp_from': int(vs),
+                'timestamp_to': int(ve),
+                'duration': int(ve - vs),
+                'segments': segs,
+            })
+            idx += count
+
+        return timestamps
+    except Exception as e:
+        print(f'  [{surah:>3}] align error: {e}')
+        return None
+    finally:
+        if os.path.exists(tmp_wav):
+            os.remove(tmp_wav)
+
+
 def process_surah(reciter, edition, surah, ffmpeg, model_a, metadata, device):
     mp3_path = os.path.join(ROOT_DIR, 'audio', reciter, 'recitation', f'{surah}.mp3')
     ts_path = os.path.join(ROOT_DIR, 'audio', reciter, 'timestamps', f'{surah}.json')
@@ -362,40 +440,25 @@ def process_surah(reciter, edition, surah, ffmpeg, model_a, metadata, device):
         print(f'  [{surah:>3}] SKIP - no MP3')
         return False
 
-    if reciter in SKIP_BILAWAL:
-        # Use existing timestamps — just fix word boundaries
-        if not os.path.exists(ts_path):
-            print(f'  [{surah:>3}] SKIP - no timestamps')
-            return False
-        print(f'  [{surah:>3}] Step 1: using existing verse boundaries...')
-        with open(ts_path, encoding='utf-8') as f:
-            data = json.load(f)
-    else:
-        # Step 1: Bilawal
-        print(f'  [{surah:>3}] Step 1: importing Bilawal verse boundaries...')
-        data = import_bilawal(reciter, edition, surah, ffmpeg, mp3_path)
-        if not data:
-            return False
-
     verse_words = find_all_verse_words(surah)
-    timestamps = data['audio_file']['timestamps']
 
-    # Step 2: WhisperX full-verse alignment
-    print(f'  [{surah:>3}] Step 2: WhisperX word alignment...')
-    aligned_count = 0
-    for verse in timestamps:
-        vk = verse['verse_key']
-        words = verse_words.get(vk)
-        if not words:
-            continue
+    # Step 1: Full-surah WhisperX alignment
+    print(f'  [{surah:>3}] Aligning full surah with WhisperX...')
+    timestamps = align_full_surah(ffmpeg, mp3_path, surah, verse_words, model_a, metadata, device)
+    if not timestamps:
+        return False
 
-        new_segs = align_verse_words(ffmpeg, mp3_path, verse, words, model_a, metadata, device)
-        if new_segs:
-            verse['segments'] = new_segs
-            aligned_count += 1
+    data = {
+        'audio_file': {
+            'id': 0,
+            'chapter_id': surah,
+            'audio_url': f'audio/{reciter}/recitation/{surah}.mp3',
+            'timestamps': timestamps,
+        }
+    }
 
-    # Step 3: WhisperX last-word fix
-    print(f'  [{surah:>3}] Step 3: fixing last words...')
+    # Step 2: Fix last words with single-word alignment
+    print(f'  [{surah:>3}] Fixing last words...')
     last_fixed = 0
     for vi, verse in enumerate(timestamps):
         vk = verse['verse_key']
@@ -413,7 +476,7 @@ def process_surah(reciter, edition, surah, ffmpeg, model_a, metadata, device):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
     n_ayahs = AYAH_COUNTS[surah - 1]
-    print(f'  [{surah:>3}] OK - {n_ayahs} verses, {aligned_count} word-aligned, {last_fixed} last words fixed')
+    print(f'  [{surah:>3}] OK - {n_ayahs} verses, {last_fixed} last words fixed')
     return True
 
 
@@ -426,9 +489,6 @@ def main():
     args = parser.parse_args()
 
     edition = EDITION_MAP.get(args.reciter)
-    if not edition and args.reciter not in SKIP_BILAWAL:
-        print(f'Unknown reciter: {args.reciter}')
-        sys.exit(1)
 
     ffmpeg = find_ffmpeg()
 
