@@ -36,6 +36,9 @@ EDITION_MAP = {
     'minshawi': 'ar.minshawi',
 }
 
+# Reciters that already have good verse boundaries — skip Bilawal import
+SKIP_BILAWAL = {'maher', 'minshawi'}
+
 AYAH_COUNTS = [
     7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,
     110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,
@@ -359,11 +362,20 @@ def process_surah(reciter, edition, surah, ffmpeg, model_a, metadata, device):
         print(f'  [{surah:>3}] SKIP - no MP3')
         return False
 
-    # Step 1: Bilawal
-    print(f'  [{surah:>3}] Step 1: importing Bilawal verse boundaries...')
-    data = import_bilawal(reciter, edition, surah, ffmpeg, mp3_path)
-    if not data:
-        return False
+    if reciter in SKIP_BILAWAL:
+        # Use existing timestamps — just fix word boundaries
+        if not os.path.exists(ts_path):
+            print(f'  [{surah:>3}] SKIP - no timestamps')
+            return False
+        print(f'  [{surah:>3}] Step 1: using existing verse boundaries...')
+        with open(ts_path, encoding='utf-8') as f:
+            data = json.load(f)
+    else:
+        # Step 1: Bilawal
+        print(f'  [{surah:>3}] Step 1: importing Bilawal verse boundaries...')
+        data = import_bilawal(reciter, edition, surah, ffmpeg, mp3_path)
+        if not data:
+            return False
 
     verse_words = find_all_verse_words(surah)
     timestamps = data['audio_file']['timestamps']
@@ -414,7 +426,7 @@ def main():
     args = parser.parse_args()
 
     edition = EDITION_MAP.get(args.reciter)
-    if not edition:
+    if not edition and args.reciter not in SKIP_BILAWAL:
         print(f'Unknown reciter: {args.reciter}')
         sys.exit(1)
 
