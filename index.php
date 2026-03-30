@@ -402,6 +402,59 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
       color: var(--ink);
       min-width: 5rem;
     }
+    .settings-font-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .font-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+      max-height: 10.5rem;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .font-cards::-webkit-scrollbar { display: none; }
+    .font-card {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+      background: var(--paper);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      scroll-snap-align: start;
+    }
+    .font-card:hover { border-color: var(--ink-muted); }
+    .font-card.active {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    .font-card-sample {
+      flex: 1;
+      direction: rtl;
+      text-align: right;
+      font-size: 1.3rem;
+      line-height: 1.6;
+      color: var(--ink);
+      pointer-events: none;
+    }
+    .font-card-label {
+      flex-shrink: 0;
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      font-weight: 600;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
     .settings-install-row {
       flex-direction: column;
       align-items: stretch;
@@ -1422,6 +1475,47 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
     }
     .idx-bmc a:hover { background: var(--bg-hover); color: var(--ink); }
 
+    .idx-footer {
+      max-width: 680px;
+      margin: 0 auto 3rem;
+      padding: 1.5rem 1rem 0;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+    }
+    .idx-footer .idx-install-row {
+      margin-bottom: 1rem;
+    }
+    .idx-footer .idx-install-btn {
+      display: inline-block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      border: 1.5px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .idx-footer .idx-install-btn:hover { background: var(--accent); color: white; }
+    .idx-footer .idx-install-hint {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      margin-top: 0.4rem;
+      line-height: 1.5;
+    }
+    .idx-footer .idx-dedication {
+      font-style: italic;
+      color: var(--ink);
+      margin: 0.75rem 0 0.5rem;
+    }
+    .idx-footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .idx-footer a:hover { text-decoration: underline; }
+
     .idx-card {
       display: flex;
       align-items: center;
@@ -1592,6 +1686,19 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
         <a href="visitor.html">Visitor stats</a>
         <a href="recitation.html">Recitation log</a>
       </div>
+    </div>
+
+    <div class="idx-footer">
+      <div class="idx-install-row">
+        <div style="font-weight:600;margin-bottom:0.4rem;">Add to Home Screen</div>
+        <button type="button" class="idx-install-btn" id="btn-idx-install">Add to Home screen</button>
+        <div class="idx-install-hint" id="idx-install-hint"></div>
+      </div>
+      <div class="idx-dedication">This is dedicated to Yunus.</div>
+      <div>For errors or support contact via WhatsApp<br>
+        <a href="https://wa.me/447932871227" target="_blank" rel="noopener">+44 7932 871227</a>
+      </div>
+      <div style="margin-top:0.3rem;">Developers: <a href="https://github.com/facilitator999/quranforyunus" target="_blank" rel="noopener">github.com/facilitator999/quranforyunus</a></div>
     </div>
   </div>
 
@@ -5208,13 +5315,22 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
               <option value="maher">Maher Al-Muaiqly</option>
             </select>
           </div>
-          <div class="settings-row">
+          <div class="settings-row settings-font-row">
             <label>Script</label>
-            <select class="settings-select" id="mushaf-font" aria-label="Mushaf font">
-              <option value="uthmani">Uthmani (Hafs)</option>
-              <option value="indopak">IndoPak 15-line</option>
-              <option value="indopak13">IndoPak 13-line</option>
-            </select>
+            <div class="font-cards" id="font-cards">
+              <button type="button" class="font-card" data-font="uthmani">
+                <span class="font-card-label">Uthmani (Hafs)</span>
+                <span class="font-card-sample" style="font-family:'UthmanicHafs',serif;">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</span>
+              </button>
+              <button type="button" class="font-card" data-font="indopak">
+                <span class="font-card-label">IndoPak 15-line</span>
+                <span class="font-card-sample" style="font-family:'IndoPak',serif;">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِیْمِ</span>
+              </button>
+              <button type="button" class="font-card" data-font="indopak13">
+                <span class="font-card-label">IndoPak 13-line</span>
+                <span class="font-card-sample" style="font-family:'IndoPak',serif;">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِیْمِ</span>
+              </button>
+            </div>
           </div>
 
           <div class="settings-row">
@@ -5238,18 +5354,6 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
               <option value="3">3 sec</option>
               <option value="5">5 sec</option>
             </select>
-          </div>
-          <div class="settings-row settings-install-row">
-            <label>Add to Home Screen</label>
-            <button type="button" class="install-btn" id="btn-install-app">Add to Home screen</button>
-            <div class="install-hint" id="install-hint"></div>
-          </div>
-          <div class="settings-info">
-            <div class="dedication">This is dedicated to Yunus.</div>
-            <div>For errors or support contact via WhatsApp<br>
-              <a href="https://wa.me/447932871227" target="_blank" rel="noopener">+44 7932 871227</a>
-            </div>
-            <div>Developers: <a href="https://github.com/facilitator999/quranforyunus" target="_blank" rel="noopener">github.com/facilitator999/quranforyunus</a></div>
           </div>
         </div>`;
       document.body.appendChild(overlay);
@@ -5279,13 +5383,20 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
         });
       }
 
-      const mushafFontSelect = document.getElementById('mushaf-font');
-      if (mushafFontSelect) {
+      const fontCards = document.getElementById('font-cards');
+      if (fontCards) {
         const savedFont = localStorage.getItem('qk_mushaf_font') || 'uthmani';
-        mushafFontSelect.value = ['uthmani', 'indopak', 'indopak13'].includes(savedFont) ? savedFont : 'uthmani';
-        mushafFontSelect.addEventListener('change', () => {
-          const val = mushafFontSelect.value;
+        const validFonts = ['uthmani', 'indopak', 'indopak13'];
+        const activeFont = validFonts.includes(savedFont) ? savedFont : 'uthmani';
+        fontCards.querySelector('[data-font="' + activeFont + '"]').classList.add('active');
+        fontCards.addEventListener('click', (e) => {
+          const card = e.target.closest('.font-card');
+          if (!card) return;
+          const val = card.dataset.font;
           const prevFont = localStorage.getItem('qk_mushaf_font');
+          if (val === prevFont) return;
+          fontCards.querySelectorAll('.font-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
           localStorage.setItem('qk_mushaf_font', val);
           const fam = (val === 'indopak' || val === 'indopak13') ? 'IndoPak' : 'UthmanicHafs';
           document.documentElement.style.setProperty('--qk-mushaf-font', fam);
@@ -5305,7 +5416,6 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
             location.reload();
             return;
           }
-          // Same page count (604↔604): re-render so justification is recalculated for the new font.
           if (isPagelessMode()) {
             refreshHafsMatchLayout();
           } else {
@@ -5348,17 +5458,6 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
         });
       }
 
-      (function setInstallHint() {
-        const hint = document.getElementById('install-hint');
-        if (!hint) return;
-        const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-        const isAndroid = /Android/.test(navigator.userAgent);
-        const after = ' After installing, open <strong>Quran for Yunus</strong> from your home screen.';
-        if (isIOS) hint.innerHTML = 'Share (□↑) → Add to Home Screen.' + after;
-        else if (isAndroid) hint.innerHTML = 'Menu (⋮) → Install app or Add to Home screen.' + after;
-        else hint.innerHTML = after;
-      })();
-
       const pagelessToggle = document.getElementById('toggle-pageless');
       if (pagelessToggle) {
         if (localStorage.getItem('qk_pageless') === '1') pagelessToggle.classList.add('on');
@@ -5382,21 +5481,33 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
       }
 
 
-      const installBtn = document.getElementById('btn-install-app');
-      if (installBtn) {
-        installBtn.addEventListener('click', () => {
-          if (deferredInstallPrompt) triggerInstallPrompt();
-          else {
-            const hint = document.getElementById('install-hint');
-            const msg = hint && hint.textContent ? hint.textContent.replace(/\s+/g, ' ').trim() : 'Use your browser menu: Android — Menu (⋮) → Install app. iPhone — Share → Add to Home Screen.';
-            alert(msg);
-          }
-        });
-      }
       document.querySelectorAll('#btn-quick-install').forEach(quickInstallBtn => {
         if (deferredInstallPrompt) quickInstallBtn.style.display = '';
         quickInstallBtn.addEventListener('click', triggerInstallPrompt);
       });
+
+      // Index footer install button + hint
+      (function() {
+        const idxHint = document.getElementById('idx-install-hint');
+        if (idxHint) {
+          const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+          const isAndroid = /Android/.test(navigator.userAgent);
+          const after = ' After installing, open <strong>Quran for Yunus</strong> from your home screen.';
+          if (isIOS) idxHint.innerHTML = 'Share (□↑) → Add to Home Screen.' + after;
+          else if (isAndroid) idxHint.innerHTML = 'Menu (⋮) → Install app or Add to Home screen.' + after;
+          else idxHint.innerHTML = after;
+        }
+        const idxBtn = document.getElementById('btn-idx-install');
+        if (idxBtn) {
+          idxBtn.addEventListener('click', () => {
+            if (deferredInstallPrompt) triggerInstallPrompt();
+            else {
+              const msg = idxHint && idxHint.textContent ? idxHint.textContent.replace(/\s+/g, ' ').trim() : 'Use your browser menu: Android — Menu (⋮) → Install app. iPhone — Share → Add to Home Screen.';
+              alert(msg);
+            }
+          });
+        }
+      })();
 
       overlay.addEventListener('click', e => {
         if (e.target === overlay) overlay.classList.remove('open');
