@@ -1695,10 +1695,7 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
         <div class="idx-install-hint" id="idx-install-hint"></div>
       </div>
       <div class="idx-dedication">This is dedicated to Yunus.</div>
-      <div>For errors or support contact via WhatsApp<br>
-        <a href="https://wa.me/447932871227" target="_blank" rel="noopener">+44 7932 871227</a>
-      </div>
-      <div style="margin-top:0.3rem;">Developers: <a href="https://github.com/facilitator999/quranforyunus" target="_blank" rel="noopener">github.com/facilitator999/quranforyunus</a></div>
+      <div>For errors or support contact via <a href="https://wa.me/447932871227" target="_blank" rel="noopener">WhatsApp</a> | Developers: <a href="https://github.com/facilitator999/quranforyunus" target="_blank" rel="noopener">GitHub</a></div>
     </div>
   </div>
 
@@ -5015,6 +5012,7 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
       const inMushaf = (useIndopak13() && ip13MushafMatchOn()) || (!useIndopak13() && hafsMusharMatchOn());
       if (wantMushaf !== inMushaf) {
         setMushafMode(wantMushaf); // triggers full re-render with correct layout
+        if (TAJWEED_ON) requestAnimationFrame(() => requestAnimationFrame(() => refreshTajweedLayout()));
       } else {
         requestAnimationFrame(() => requestAnimationFrame(() => {
           applyIp13Justification(document);
@@ -5488,6 +5486,12 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
 
       // Index footer install button + hint
       (function() {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+        if (isStandalone) {
+          const row = document.querySelector('.idx-install-row');
+          if (row) row.style.display = 'none';
+          return;
+        }
         const idxHint = document.getElementById('idx-install-hint');
         if (idxHint) {
           const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
