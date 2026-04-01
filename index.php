@@ -5267,6 +5267,22 @@ if ($_verse && preg_match('/^(\d{1,3}):(\d{1,3})$/', $_verse, $_vm)) {
 
     /* ── Settings Menu ── */
     (function() {
+      // Nudge users who have the PWA installed but are using the browser
+      (async function checkInstalledPwa() {
+        if (!('getInstalledRelatedApps' in navigator)) return;
+        if (window.matchMedia('(display-mode: standalone)').matches) return; // already in app
+        try {
+          const apps = await navigator.getInstalledRelatedApps();
+          if (apps.length > 0 && !sessionStorage.getItem('pwa-nudge-dismissed')) {
+            const bar = document.createElement('div');
+            bar.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:9999;background:var(--accent,#115e59);color:white;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;font-size:14px;box-shadow:0 -2px 8px rgba(0,0,0,.15);';
+            bar.innerHTML = '<span>You have the app installed. Open <strong>Quran for Yunus</strong> from your home screen for the best experience.</span><button style="background:none;border:none;color:white;font-size:20px;padding:0 0 0 12px;cursor:pointer;">&times;</button>';
+            bar.querySelector('button').addEventListener('click', () => { bar.remove(); sessionStorage.setItem('pwa-nudge-dismissed', '1'); });
+            document.body.appendChild(bar);
+          }
+        } catch(e) {}
+      })();
+
       let deferredInstallPrompt = null;
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
